@@ -1,11 +1,14 @@
-import "./App.css";
-import Router from "./routes";
-import ThemeConfig from "./theme";
+import './App.css';
+import Router from './routes';
+import ThemeConfig from './theme';
+import { AppStateProvider } from './state/useAppState';
 
 function App() {
   return (
     <ThemeConfig>
-      <Router />
+      <AppStateProvider>
+        <Router />
+      </AppStateProvider>
     </ThemeConfig>
   );
 }

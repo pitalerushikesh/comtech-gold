@@ -1,23 +1,18 @@
-import React from "react";
-import {
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import React from 'react';
+import { Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const AccordionLayout = ({ title, content, defaultExpanded }) => {
   return (
     <>
       <Accordion
         sx={{
-          boxShadow: "none",
-          border: "1px solid #D2D2D2",
-          borderRadius: "6px",
+          boxShadow: 'none',
+          border: '1px solid #D2D2D2',
+          borderRadius: '6px',
           px: 4,
           py: 1,
-          mt: "29px",
+          mt: '29px'
         }}
       >
         <AccordionSummary
@@ -27,8 +22,8 @@ const AccordionLayout = ({ title, content, defaultExpanded }) => {
         >
           <Typography
             sx={{
-              fontSize: "1.125rem",
-              fontWeight: "bold",
+              fontSize: '1.125rem',
+              fontWeight: 'bold'
             }}
           >
             {title}

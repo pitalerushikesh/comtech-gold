@@ -1,7 +1,5 @@
 // ----------------------------------------------------------------------
 
-import { color } from '@mui/system';
-
 export default function LoadingButton() {
   return {
     MuiLoadingButton: {

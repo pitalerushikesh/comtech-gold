@@ -1,14 +1,17 @@
-import { useRoutes } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/Home";
+import { Navigate, useRoutes } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout';
+import Home from './pages/Home';
 
 const Router = () => {
   return useRoutes([
     {
-      path: "/",
+      path: '/',
       element: <MainLayout />,
-      children: [{ path: "/", element: <Home /> }],
-    },
+      children: [
+        { path: '/', element: <Home /> },
+        { path: 'multisig', element: <Navigate to="/" /> }
+      ]
+    }
   ]);
 };
 

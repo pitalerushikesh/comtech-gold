@@ -1,5 +1,5 @@
-import React from "react";
-import Page from "../components/page";
+import React, { useEffect, useState } from 'react';
+import Page from '../components/page';
 import {
   Container,
   Typography,
@@ -13,36 +13,62 @@ import {
   TableCell,
   TableBody,
   TableContainer,
-  Box,
-  Button,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  Input,
-} from "@mui/material";
+  Box
+} from '@mui/material';
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import AccordionLayout from "../helpers/AccordionLayout";
-import TokenMintingTable from "../components/admin/TokenMintingTable";
-import BlacklistAdminTable from "../components/admin/BlacklistAdminTable";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import AccordionLayout from '../helpers/AccordionLayout';
+import TokenMintingTable from '../components/admin/TokenMintingTable';
+import BlacklistAdminTable from '../components/admin/BlacklistAdminTable';
+import Contract from 'contracts/ABI.json';
+import Web3 from 'web3';
+
+import { useAppState } from '../state/useAppState';
 
 const Home = () => {
+  // console.log('🚀 ~ file: Home.js ~ line 25 ~ Contract', Contract.address, Contract.abi);
+  // const { abi, address: token } = Contract;
+  // const [account, setAccount] = useState('');
+
+  // const web3 = new Web3(Web3.givenProvider);
+  // const contract = new web3.eth.Contract(abi, token);
+
+  // const _account = async () => {
+  //   const account = await web3.eth.getAccounts().then((accounts) => {
+  //     return accounts[0];
+  //   });
+  //   console.log('🚀 ~ file: Home.js ~ line 38 ~ account ~ account', account);
+  //   setAccount(account);
+  //   return account;
+  // };
+
+  // useEffect(() => {
+  //   const acc = _account();
+  //   console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ acc', acc);
+  // }, []);
+  // console.log('Account: ', account);
+
+  const { account, contract, token } = useAppState();
+  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ token', token);
+  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ contract', contract);
+  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
+
   return (
     <Page title="Admin Dashboard | Comtech Gold">
       <Container>
-        <Typography variant="h6" sx={{ fontWeight: "bold", mt: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
           Comtech Gold
         </Typography>
         <Accordion
           defaultExpanded
           sx={{
-            boxShadow: "none",
-            border: "1px solid #D2D2D2",
-            borderRadius: "6px",
+            boxShadow: 'none',
+            border: '1px solid #D2D2D2',
+            borderRadius: '6px',
             px: 4,
             py: 1,
-            mt: "29px",
+            mt: '29px'
           }}
         >
           <AccordionSummary
@@ -52,8 +78,8 @@ const Home = () => {
           >
             <Typography
               sx={{
-                fontSize: "1.125rem",
-                fontWeight: "bold",
+                fontSize: '1.125rem',
+                fontWeight: 'bold'
               }}
             >
               Smart Contracts
@@ -68,7 +94,7 @@ const Home = () => {
                     <TableCell>Contract Address</TableCell>
                     <TableCell
                       sx={{
-                        textAlign: "center",
+                        textAlign: 'center'
                       }}
                     >
                       View On Blocks Scan
@@ -77,40 +103,35 @@ const Home = () => {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      Comtech Gold Token
-                    </TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Comtech Gold Token</TableCell>
                     <TableCell>
                       <Box
                         sx={{
-                          display: "flex",
-                          flexDirection: "row",
+                          display: 'flex',
+                          flexDirection: 'row',
                           m: 0,
                           p: 0,
-                          alignItems: "center",
+                          alignItems: 'center'
                         }}
                       >
                         <Box
                           sx={{
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden'
                           }}
                         >
                           Address
                         </Box>
-                        <IconButton
-                          aria-label="subs detail"
-                          onClick={console.log("copy")}
-                        >
-                          <ContentCopyIcon sx={{ fontSize: "1rem" }} />
+                        <IconButton aria-label="subs detail" onClick={console.log('copy')}>
+                          <ContentCopyIcon sx={{ fontSize: '1rem' }} />
                         </IconButton>
                       </Box>
                     </TableCell>
                     <TableCell
                       sx={{
-                        display: "flex",
-                        justifyContent: "center",
+                        display: 'flex',
+                        justifyContent: 'center'
                       }}
                     >
                       AddressFieldTools
@@ -171,14 +192,8 @@ const Home = () => {
             </TableContainer>
           </AccordionDetails>
         </Accordion>
-        <AccordionLayout
-          title="Token Minting"
-          content={<TokenMintingTable />}
-        />
-        <AccordionLayout
-          title="Blacklist Admin"
-          content={<BlacklistAdminTable />}
-        />
+        <AccordionLayout title="Token Minting" content={<TokenMintingTable />} />
+        <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
       </Container>
     </Page>
   );

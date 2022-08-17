@@ -1,11 +1,11 @@
-import React from "react";
-import { IconButton, Box, Typography } from "@mui/material";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { ethToXdcAddress } from "helpers/web3";
-import { useWeb3 } from "state";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import { useSnackbar } from "notistack";
+import React from 'react';
+import { IconButton, Box, Typography } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { ethToXdcAddress } from 'helpers/web3';
+import { useWeb3 } from 'state';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import { useSnackbar } from 'notistack';
 
 const AddressFieldTools = ({
   address,
@@ -15,27 +15,27 @@ const AddressFieldTools = ({
   showInBlockExplorer = false,
   withBackground = false,
   symbol,
-  decimals,
+  decimals
 }) => {
   const { chainId, web3 } = useWeb3();
   const { enqueueSnackbar } = useSnackbar();
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         m: 0,
         p: 0,
-        alignItems: "center",
+        alignItems: 'center'
       }}
     >
       {showAddress && (
         <Box
           sx={{
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
           }}
         >
           {ethToXdcAddress(address)}
@@ -44,15 +44,11 @@ const AddressFieldTools = ({
       {showCopyButton && (
         <IconButton
           aria-label="subs detail"
-          onClick={() =>
-            navigator.clipboard.writeText(ethToXdcAddress(address))
-          }
+          onClick={() => navigator.clipboard.writeText(ethToXdcAddress(address))}
         >
-          {!withBackground && <ContentCopyIcon sx={{ fontSize: "1.2rem" }} />}
+          {!withBackground && <ContentCopyIcon sx={{ fontSize: '1.2rem' }} />}
           {withBackground && (
-            <ContentCopyIcon
-              sx={{ fontSize: "1.8rem", p: 0.7, backgroundColor: "#F5F8FA" }}
-            />
+            <ContentCopyIcon sx={{ fontSize: '1.8rem', p: 0.7, backgroundColor: '#F5F8FA' }} />
           )}
         </IconButton>
       )}
@@ -62,30 +58,24 @@ const AddressFieldTools = ({
             switch (chainId) {
               case 50:
                 window.open(
-                  `https://explorer.xinfin.network/address/${ethToXdcAddress(
-                    address
-                  )}`,
-                  "_blank"
+                  `https://explorer.xinfin.network/address/${ethToXdcAddress(address)}`,
+                  '_blank'
                 );
                 break;
               case 51:
                 window.open(
-                  `https://explorer.apothem.network/address/${ethToXdcAddress(
-                    address
-                  )}`,
-                  "_blank"
+                  `https://explorer.apothem.network/address/${ethToXdcAddress(address)}`,
+                  '_blank'
                 );
                 break;
               default:
-                window.open("https://explorer.xinfin.network/ ", "_blank");
+                window.open('https://explorer.xinfin.network/ ', '_blank');
             }
           }}
         >
-          {!withBackground && <OpenInNewIcon sx={{ fontSize: "1.2rem" }} />}
+          {!withBackground && <OpenInNewIcon sx={{ fontSize: '1.2rem' }} />}
           {withBackground && (
-            <OpenInNewIcon
-              sx={{ fontSize: "1.8rem", p: 0.7, backgroundColor: "#F5F8FA" }}
-            />
+            <OpenInNewIcon sx={{ fontSize: '1.8rem', p: 0.7, backgroundColor: '#F5F8FA' }} />
           )}
         </IconButton>
       )}
@@ -95,37 +85,35 @@ const AddressFieldTools = ({
             const provider = web3.currentProvider;
             provider.sendAsync(
               {
-                method: "metamask_watchAsset",
+                method: 'metamask_watchAsset',
                 params: {
-                  type: "ERC20",
+                  type: 'ERC20',
                   options: {
                     address,
                     symbol,
-                    decimals,
-                  },
+                    decimals
+                  }
                 },
-                id: Math.round(Math.random() * 100000),
+                id: Math.round(Math.random() * 100000)
               },
               (err, added) => {
-                console.log("provider returned", err, added);
-                if (err || "error" in added) {
-                  enqueueSnackbar("Something went wrong!", {
-                    variant: "error",
+                console.log('provider returned', err, added);
+                if (err || 'error' in added) {
+                  enqueueSnackbar('Something went wrong!', {
+                    variant: 'error'
                   });
                   return;
                 }
-                enqueueSnackbar("Added token to wallet", {
-                  variant: "success",
+                enqueueSnackbar('Added token to wallet', {
+                  variant: 'success'
                 });
               }
             );
           }}
         >
-          {!withBackground && <AddBoxIcon sx={{ fontSize: "1.2rem" }} />}
+          {!withBackground && <AddBoxIcon sx={{ fontSize: '1.2rem' }} />}
           {withBackground && (
-            <AddBoxIcon
-              sx={{ fontSize: "1.8rem", p: 0.7, backgroundColor: "#F5F8FA" }}
-            />
+            <AddBoxIcon sx={{ fontSize: '1.8rem', p: 0.7, backgroundColor: '#F5F8FA' }} />
           )}
         </IconButton>
       )}
