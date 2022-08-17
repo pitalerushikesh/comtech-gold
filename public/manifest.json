@@ -1,6 +1,9 @@
 {
+  "name": "ComTech Gold",
+  "iconPath": "favicon.ico",
+  "description": "Tokenize ComTech Gold",
+  "providedBy": "Yodaplus",
   "short_name": "React App",
-  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
