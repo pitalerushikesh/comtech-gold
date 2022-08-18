@@ -1,32 +1,166 @@
 import constate from 'constate';
 import Contract from 'contracts/ABI.json';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Web3 from 'web3';
+import Onboard from 'bnc-onboard';
+import { useWeb3React } from '@web3-react/core';
+import { SafeAppConnector, useSafeAppConnection } from '@gnosis.pm/safe-apps-web3-react';
+import { selectedWalletPersistence } from 'persistence';
+import WALLETS from 'config/wallets';
+import { InjectedConnector, NoEthereumProviderError } from '@yodaplus/injected-connector';
 
-const AppState = async () => {
-  const { abi, address: token } = Contract;
-  console.log('🚀 ~ file: useAppState.js ~ line 8 ~ AppState ~ token', token);
-  const [account, setAccount] = useState('');
+import {
+  sendTransaction,
+  sendTransactionHashOnly,
+  WEB3_STATUS,
+  currentNetwork,
+  transformProviderFromXinfin,
+  readOnlyWeb3,
+  sendNativeTransaction,
+  getTransactionHash
+} from 'helpers/web3';
 
-  const web3 = new Web3(Web3.givenProvider);
-  const contract = new web3.eth.Contract(abi, token);
+const safeAppConnector = new SafeAppConnector();
 
-  const _account = async () => {
-    const account = await web3.eth.getAccounts().then((accounts) => {
-      return accounts[0];
-    });
-    console.log('🚀 ~ file: Home.js ~ line 38 ~ account ~ account', account);
-    setAccount(account);
-    return account;
+const getOnboard = ({ onProvider }) => {
+  const onboard = Onboard({
+    networkId: currentNetwork.id,
+    networkName: currentNetwork.name,
+    subscriptions: {
+      wallet: (wallet) => {
+        if (wallet.provider && 'qrcodeModalOptions' in wallet.provider) {
+          wallet.provider.connector._qrcodeModalOptions = {
+            desktopLinks: []
+          };
+        }
+
+        if (wallet.provider) {
+          onProvider(transformProviderFromXinfin(wallet.provider));
+        }
+      }
+    },
+    walletSelect: {
+      description: 'Please select a wallet to connect to Yodaplus Tokenization Platform',
+      explanation:
+        'Wallets are used to send, receive, and store digital assets. Wallets come in many forms. They are either built into your browser, an extension added to your browser, a piece of hardware plugged into your computer or even an app on your phone.',
+      wallets: WALLETS
+    },
+    walletCheck: [
+      { checkName: 'derivationPath' },
+      { checkName: 'connect' },
+      { checkName: 'accounts' }
+    ]
+  });
+
+  return onboard;
+};
+
+const useMultisigStatus = () => {
+  const [isMultisig, setIsMultisig] = useState(null);
+
+  useEffect(() => {
+    safeAppConnector.isSafeApp().then(setIsMultisig);
+  }, []);
+
+  return { isMultisig };
+};
+
+const AppState = () => {
+  const { activate, deactivate, active, account, library: walletWeb3, chainId } = useWeb3React();
+
+  const [status, setStatus] = useState(WEB3_STATUS.UNKNOWN);
+  const { isMultisig } = useMultisigStatus();
+
+  // const { throwErrorMessage } = useAppState();
+
+  const web3 = walletWeb3 ?? readOnlyWeb3;
+
+  if (!web3) {
+    throw new Error('web3 must be available at this point');
+  }
+
+  const onProvider = useCallback(
+    async (provider) => {
+      setStatus(WEB3_STATUS.UNKNOWN);
+
+      const connector =
+        typeof provider.safe !== 'undefined'
+          ? safeAppConnector
+          : new InjectedConnector({ provider });
+
+      try {
+        await activate(connector, undefined, true);
+        setStatus(WEB3_STATUS.READY);
+      } catch (e) {
+        if (e instanceof NoEthereumProviderError) {
+          setStatus(WEB3_STATUS.UNAVAILABLE);
+        }
+      }
+    },
+    [activate]
+  );
+
+  const onboard = useMemo(() => getOnboard({ onProvider }), [onProvider]);
+
+  const connectWallet = useCallback(
+    async (wallet) => {
+      const selected = await onboard.walletSelect(wallet);
+      if (!selected) {
+        return false;
+      }
+
+      const ready = await onboard.walletCheck();
+      if (!ready) {
+        return false;
+      }
+
+      const {
+        wallet: { name }
+      } = onboard.getState();
+
+      selectedWalletPersistence.set(name);
+
+      return true;
+    },
+    [onboard]
+  );
+
+  const disconnectWallet = async () => {
+    onboard.walletReset();
+    deactivate();
+    selectedWalletPersistence.clear();
   };
 
   useEffect(() => {
-    const acc = _account();
-    console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ acc', acc);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (isMultisig === null || isMultisig === true) {
+      return;
+    }
 
-  return { account, contract, token };
+    (async () => {
+      const selectedWallet = selectedWalletPersistence.get();
+
+      if (!selectedWallet) {
+        return;
+      }
+
+      const connected = await connectWallet(selectedWallet);
+
+      if (!connected) {
+        selectedWalletPersistence.clear();
+      }
+    })();
+  }, [isMultisig]);
+
+  return {
+    isMultisig,
+    status,
+    active,
+    account,
+    chainId,
+    web3,
+    connectWallet,
+    disconnectWallet
+  };
 };
 
 export const [AppStateProvider, useAppState] = constate(AppState);

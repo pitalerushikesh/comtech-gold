@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Grid, FormLabel, TextField } from '@mui/material';
+import { Grid, FormLabel, TextField, Button } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 
 import Contract from 'contracts/ABI.json';
@@ -7,35 +7,108 @@ import { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useSafeAppConnection, SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 
+import Onboard from 'bnc-onboard';
+
+import { useAppState } from 'state';
+
 const TokenMintingTable = () => {
   // **************************************** Temporary Solution ****************************************//
 
-  const { abi, address: token } = Contract;
-  console.log('🚀 ~ file: useAppState.js ~ line 8 ~ AppState ~ token', token);
-  const [account, setAccount] = useState('');
+  // // ************************************** BNC-ONBOARD **************************************//
 
-  const web3 = new Web3(Web3.givenProvider);
-  const contract = new web3.eth.Contract(abi, token);
+  // //   wallet connect
+  // // set a variable to store instantiated web3
+  // let web3;
 
-  const _account = async () => {
-    const account = await web3.eth.getAccounts().then((accounts) => {
-      return accounts[0];
-    });
-    console.log('🚀 ~ file: Home.js ~ line 38 ~ account ~ account', account);
-    setAccount(account);
-    return account;
-  };
+  // // head to blocknative.com to create a key
+  // // const BLOCKNATIVE_KEY = 'blocknative-api-key'
 
-  const safeAppConnector = new SafeAppConnector();
-  useSafeAppConnection(safeAppConnector);
+  // // the network id that your dapp runs on
+  // const NETWORK_ID = 51;
 
-  useEffect(() => {
-    const acc = _account();
-    // safeAppConnector.isSafeApp().then(setIsMultisig);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // // initialize onboard
+  // const onboard = Onboard({
+  //   //   dappId: BLOCKNATIVE_KEY,
+  //   networkId: NETWORK_ID,
+  //   subscriptions: {
+  //     wallet: (wallet) => {
+  //       // instantiate web3 when the user has selected a wallet
+  //       web3 = new Web3(wallet.provider);
+  //       console.log({ wallet });
+  //       console.log(wallet.provider);
+  //       console.log(`${wallet.name} connected!`);
+  //     }
+  //   }
+  // });
+
+  // Prompt user to select a wallet
+
+  // const connectWallet = async () => {
+  //   await onboard.walletSelect();
+  //   // Run wallet checks to make sure that user is ready to transact
+  //   await onboard.walletCheck();
+  // };
+
+  // // ************************************** BNC-ONBOARD END **************************************//
+
+  // const { abi, address: token } = Contract;
+  // console.log('🚀 ~ file: useAppState.js ~ line 8 ~ AppState ~ token', token);
+  // const [account, setAccount] = useState('');
+
+  // const web3 = new Web3(Web3.givenProvider);
+  // let contract;
+  // const _account = async () => {
+  //   const account = await web3.eth.getAccounts().then((accounts) => {
+  //     return accounts[0];
+  //   });
+  //   console.log('🚀 ~ file: Home.js ~ line 38 ~ account ~ account', account);
+  //   setAccount(account);
+  //   return account;
+  // };
+
+  // const safeAppConnector = new SafeAppConnector();
+  // useSafeAppConnection(safeAppConnector);
+
+  // const useMultisigStatus = () => {
+  //   const [isMultisig, setIsMultisig] = useState(null);
+
+  //   useEffect(() => {
+  //     safeAppConnector.isSafeApp().then(setIsMultisig);
+  //   }, []);
+
+  //   return { isMultisig };
+  // };
+
+  // const { isMultisig } = useMultisigStatus();
+  // if (isMultisig) {
+  //   console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ isMultisig', isMultisig);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // } else {
+  //   connectWallet();
+  // }
+
+  // useEffect(() => {
+  //   if (web3) {
+  //     console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ web3', web3);
+  //     contract = new web3.eth.Contract(abi, token);
+  //     _account();
+  //   }
+  //   // return;
+  // }, [web3]);
+
+  // useEffect(() => {
+  //   const acc = _account();
+
+  //   // safeAppConnector.isSafeApp().then(setIsMultisig);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   // ********************************************** Temporary Solution ***********************************************//
+
+  const { account, contract, token, connectWallet } = useAppState();
+  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ token', token);
+  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ contract', contract);
+  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
   console.log({ account });
   const formik = useFormik({
@@ -60,6 +133,7 @@ const TokenMintingTable = () => {
 
   return (
     <FormikProvider value={formik}>
+      <Button onClick={connectWallet}>Connect</Button>
       <Form autoComplete="off" onSubmit={handleSubmit}>
         <Grid
           container

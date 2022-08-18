@@ -1,5 +1,5 @@
 import { AppBar, Box, Container } from '@mui/material';
-import logo from '../assets/img/logo.png';
+import logo from 'assets/images/logo.png';
 
 const MainNavbar = () => {
   return (
