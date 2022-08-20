@@ -120,7 +120,7 @@ const TokenMintingTable = () => {
       console.log(data);
 
       const res = await contract.methods.mint(data.address, data.quantity).send({
-        from: '0x08c7b249a76aa982b01fabc9a4d990bd39d3119a'
+        from: account
       });
       console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
 
