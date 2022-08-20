@@ -1,0 +1,12 @@
+{
+  "name": "@yodaplus/injected-connector",
+  "version": "1.0.0",
+  "description": "Injected connector for @web3-react",
+  "main": "src/index.js",
+  "scripts": {},
+  "dependencies": {
+    "@web3-react/abstract-connector": "^6.0.7",
+    "tiny-warning": "^1.0.3"
+  },
+  "license": "UNLICENSED"
+}

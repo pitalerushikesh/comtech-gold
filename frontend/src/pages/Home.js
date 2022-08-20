@@ -24,8 +24,6 @@ import BlacklistAdminTable from '../components/admin/BlacklistAdminTable';
 import Contract from 'contracts/ABI.json';
 import Web3 from 'web3';
 
-
-
 const Home = () => {
   // console.log('🚀 ~ file: Home.js ~ line 25 ~ Contract', Contract.address, Contract.abi);
   // const { abi, address: token } = Contract;
@@ -48,8 +46,6 @@ const Home = () => {
   //   console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ acc', acc);
   // }, []);
   // console.log('Account: ', account);
-
- 
 
   return (
     <Page title="Admin Dashboard | Comtech Gold">

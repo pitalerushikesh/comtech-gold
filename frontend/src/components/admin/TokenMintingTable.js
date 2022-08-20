@@ -4,10 +4,6 @@ import { useFormik, Form, FormikProvider } from 'formik';
 
 import Contract from 'contracts/ABI.json';
 import { useEffect, useState } from 'react';
-import Web3 from 'web3';
-import { useSafeAppConnection, SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-
-import Onboard from 'bnc-onboard';
 
 import { useAppState } from 'state';
 
@@ -104,10 +100,13 @@ const TokenMintingTable = () => {
   // }, []);
 
   // ********************************************** Temporary Solution ***********************************************//
+  const { address, abi } = Contract;
+  const { web3, account, connectWallet } = useAppState();
 
-  const { account, contract, token, connectWallet } = useAppState();
-  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ token', token);
-  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ contract', contract);
+  const contract = new web3.eth.Contract(abi, address);
+
+  // console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ token', token);
+  // console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ contract', contract);
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
   console.log({ account });
@@ -120,9 +119,10 @@ const TokenMintingTable = () => {
     onSubmit: async (data, { resetForm }) => {
       console.log(data);
 
-      contract.methods.mint(data.address, data.quantity).send({
-        from: account
+      const res = await contract.methods.mint(data.address, data.quantity).send({
+        from: '0x08c7b249a76aa982b01fabc9a4d990bd39d3119a'
       });
+      console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
 
       resetForm();
     }
@@ -133,7 +133,14 @@ const TokenMintingTable = () => {
 
   return (
     <FormikProvider value={formik}>
-      <Button onClick={connectWallet}>Connect</Button>
+      <Button
+        onClick={() => {
+          connectWallet();
+          console.log({ account });
+        }}
+      >
+        Connect
+      </Button>
       <Form autoComplete="off" onSubmit={handleSubmit}>
         <Grid
           container
@@ -145,6 +152,7 @@ const TokenMintingTable = () => {
           }}
         >
           <Grid item lg={6} md={6} xs={12}>
+            {JSON.stringify(account)}
             <FormLabel>Mint to</FormLabel>
             <TextField
               fullWidth

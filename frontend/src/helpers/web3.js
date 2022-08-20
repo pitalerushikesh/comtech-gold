@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import Web3PromiEvent from 'web3-core-promievent';
-import axios from 'axios';
+// import axios from 'axios';
 
-import { NETWORK_ID, NETWORKS, API_URL } from 'config';
+import { NETWORK_ID, NETWORKS, API_URL } from '../config';
 
 export const currentNetwork = NETWORKS.find(({ id }) => id === NETWORK_ID);
 
@@ -21,23 +21,23 @@ export const WEB3_STATUS = {
   READY: 'READY'
 };
 
-const createTransactionRecord = async (methodCallObj, hash) => {
-  await axios.post(
-    `${API_URL}blockchain/blockchain-transaction/`,
-    {
-      transaction_hash: hash,
-      method: methodCallObj._method.name,
-      params: JSON.stringify(methodCallObj.arguments),
-      executor: methodCallObj._parent.options.from,
-      contract: methodCallObj._parent.options.address
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-  );
-};
+// const createTransactionRecord = async (methodCallObj, hash) => {
+//   await axios.post(
+//     `${API_URL}blockchain/blockchain-transaction/`,
+//     {
+//       transaction_hash: hash,
+//       method: methodCallObj._method.name,
+//       params: JSON.stringify(methodCallObj.arguments),
+//       executor: methodCallObj._parent.options.from,
+//       contract: methodCallObj._parent.options.address
+//     },
+//     {
+//       headers: {
+//         'Content-Type': 'application/json'
+//       }
+//     }
+//   );
+// };
 export class TransactionError extends Error {
   constructor(code, message) {
     super();
@@ -207,7 +207,7 @@ export const sendTransactionHashOnly = async (web3, methodCallObj, options) => {
 
   const eventEmitter = methodCallObj.send(options);
   const hash = await getTransactionHash(eventEmitter);
-  createTransactionRecord(methodCallObj, hash);
+  // createTransactionRecord(methodCallObj, hash);
   return hash;
 };
 

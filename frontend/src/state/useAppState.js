@@ -67,6 +67,7 @@ const useMultisigStatus = () => {
 
 const AppState = () => {
   const { activate, deactivate, active, account, library: walletWeb3, chainId } = useWeb3React();
+  console.log('🚀 ~ file: useAppState.js ~ line 70 ~ AppState ~ account', account);
 
   const [status, setStatus] = useState(WEB3_STATUS.UNKNOWN);
   const { isMultisig } = useMultisigStatus();
