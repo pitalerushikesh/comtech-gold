@@ -23,6 +23,9 @@ import TokenMintingTable from '../components/admin/TokenMintingTable';
 import BlacklistAdminTable from '../components/admin/BlacklistAdminTable';
 import Contract from 'contracts/ABI.json';
 import Web3 from 'web3';
+import { useAppState } from 'state';
+import { currentNetwork, ethToXdcAddress } from 'helpers/web3';
+import AddressFieldTools from 'components/AddressFieldTools';
 
 const Home = () => {
   return (
@@ -92,9 +95,9 @@ const Home = () => {
                             overflow: 'hidden'
                           }}
                         >
-                          Address
+                          {ethToXdcAddress(currentNetwork.tokenContractAddress)}
                         </Box>
-                        <IconButton aria-label="subs detail" onClick={console.log('copy')}>
+                        <IconButton aria-label="subs detail" onClick={() => navigator.clipboard.writeText(ethToXdcAddress(currentNetwork.tokenContractAddress))}>
                           <ContentCopyIcon sx={{ fontSize: '1rem' }} />
                         </IconButton>
                       </Box>
@@ -105,12 +108,11 @@ const Home = () => {
                         justifyContent: 'center'
                       }}
                     >
-                      AddressFieldTools
-                      {/* <AddressFieldTools
-                        address={currentNetwork.custodianContractAddress}
+                      <AddressFieldTools
+                        address={currentNetwork.tokenContractAddress}
                         showInBlockExplorer
                         showAddress={false}
-                      /> */}
+                      />
                     </TableCell>
                   </TableRow>
                   {/* <TableRow>

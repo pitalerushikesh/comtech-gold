@@ -2,10 +2,10 @@ import React from 'react';
 import { IconButton, Box, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { ethToXdcAddress } from 'helpers/web3';
-import { useWeb3 } from 'state';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useSnackbar } from 'notistack';
+import { useAppState } from 'state';
 
 const AddressFieldTools = ({
   address,
@@ -17,7 +17,7 @@ const AddressFieldTools = ({
   symbol,
   decimals
 }) => {
-  const { chainId, web3 } = useWeb3();
+  const { chainId, web3 } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
   return (
     <Box
