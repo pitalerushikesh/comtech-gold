@@ -170,6 +170,18 @@ const AppState = () => {
     [wrapContractCall, web3, contract]
   );
 
+  const checkBlackList = useCallback(
+    wrapContractCall((addr) => contract.methods.isBlackListed(addr).call()),
+    [wrapContractCall, web3, contract]
+  );
+
+  const updateBlackList = useCallback(
+    wrapContractCall((addr, isBlackList) =>
+      sendTransactionHashOnly(web3, contract.methods.blacklistUpdate(addr, isBlackList))
+    ),
+    [wrapContractCall, web3, contract]
+  );
+
   useEffect(() => {
     if (!web3 || !account) {
       setBalance('0');
@@ -238,7 +250,9 @@ const AppState = () => {
     mintToken,
     balance,
     connectWallet,
-    disconnectWallet
+    disconnectWallet,
+    checkBlackList,
+    updateBlackList
   };
 };
 
