@@ -25,28 +25,6 @@ import Contract from 'contracts/ABI.json';
 import Web3 from 'web3';
 
 const Home = () => {
-  // console.log('🚀 ~ file: Home.js ~ line 25 ~ Contract', Contract.address, Contract.abi);
-  // const { abi, address: token } = Contract;
-  // const [account, setAccount] = useState('');
-
-  // const web3 = new Web3(Web3.givenProvider);
-  // const contract = new web3.eth.Contract(abi, token);
-
-  // const _account = async () => {
-  //   const account = await web3.eth.getAccounts().then((accounts) => {
-  //     return accounts[0];
-  //   });
-  //   console.log('🚀 ~ file: Home.js ~ line 38 ~ account ~ account', account);
-  //   setAccount(account);
-  //   return account;
-  // };
-
-  // useEffect(() => {
-  //   const acc = _account();
-  //   console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ acc', acc);
-  // }, []);
-  // console.log('Account: ', account);
-
   return (
     <Page title="Admin Dashboard | Comtech Gold">
       <Container>
@@ -185,7 +163,7 @@ const Home = () => {
             </TableContainer>
           </AccordionDetails>
         </Accordion>
-        <AccordionLayout title="Token Minting" content={<TokenMintingTable />} />
+        <AccordionLayout defaultExpanded title="Token Minting" content={<TokenMintingTable />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
       </Container>
     </Page>

@@ -6,6 +6,7 @@ const AccordionLayout = ({ title, content, defaultExpanded }) => {
   return (
     <>
       <Accordion
+        defaultExpanded={defaultExpanded}
         sx={{
           boxShadow: 'none',
           border: '1px solid #D2D2D2',

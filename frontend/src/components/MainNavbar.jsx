@@ -1,12 +1,13 @@
 import { AppBar, Box, Container } from '@mui/material';
 import logo from 'assets/images/logo.png';
+import WalletNavbar from './WalletNavbar';
 
 const MainNavbar = () => {
   return (
     <AppBar
       position="sticky"
       sx={{
-        backgroundColor: '#fff',
+        backgroundColor: '#111',
         height: '3.8rem',
         alignItems: 'center',
         display: 'flex',
@@ -15,7 +16,7 @@ const MainNavbar = () => {
     >
       <Container
         sx={{
-          backgroundColor: '#fff',
+          backgroundColor: 'inherit',
           height: '3.8rem',
           alignItems: 'center',
           display: 'flex',
@@ -26,6 +27,8 @@ const MainNavbar = () => {
         <Box component="img" src={logo} sx={{ height: '2.6rem' }} alt="Comtech Gold" />
 
         <Box sx={{ flexGrow: 1.2 }} />
+
+        <WalletNavbar />
       </Container>
     </AppBar>
   );

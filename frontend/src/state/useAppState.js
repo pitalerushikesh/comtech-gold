@@ -20,7 +20,11 @@ import {
   getTransactionHash
 } from 'helpers/web3';
 
+require('dotenv').config();
+
 const safeAppConnector = new SafeAppConnector();
+
+const POLL_INTERVAL = 1000;
 
 const getOnboard = ({ onProvider }) => {
   const onboard = Onboard({
@@ -70,6 +74,8 @@ const AppState = () => {
   console.log('🚀 ~ file: useAppState.js ~ line 70 ~ AppState ~ account', account);
 
   const [status, setStatus] = useState(WEB3_STATUS.UNKNOWN);
+  const [balance, setBalance] = useState('0');
+
   const { isMultisig } = useMultisigStatus();
 
   // const { throwErrorMessage } = useAppState();
@@ -132,6 +138,76 @@ const AppState = () => {
     selectedWalletPersistence.clear();
   };
 
+  const contract = useMemo(
+    () =>
+      new web3.eth.Contract(currentNetwork.tokenContractAbi, currentNetwork.tokenContractAddress, {
+        from: account,
+        gasPrice: 1 * 10 ** 9
+      }),
+    [web3, account]
+  );
+
+  const wrapContractCall = useCallback(
+    (func) => {
+      return (...args) => {
+        if (!contract) {
+          throw new Error('Smart contract is not available');
+        }
+
+        return func(...args);
+      };
+    },
+    [contract]
+  );
+
+  const mintToken = useCallback(
+    wrapContractCall((addr, amount) =>
+      sendTransactionHashOnly(
+        web3,
+        contract.methods.mint(addr, web3.utils.toWei(amount.toString(), 'ether'))
+      )
+    ),
+    [wrapContractCall, web3, contract]
+  );
+
+  useEffect(() => {
+    if (!web3 || !account) {
+      setBalance('0');
+      return () => {};
+    }
+
+    let timerId = null;
+    let canceled = false;
+
+    const poll = async () => {
+      timerId = null;
+
+      try {
+        const balance_ = await web3.eth.getBalance(account);
+
+        if (!canceled) {
+          setBalance(balance_);
+        }
+      } catch (e) {
+        console.warn(`Something is wrong when polling for account balance: ${e}`);
+      }
+
+      if (!canceled) {
+        timerId = setTimeout(poll, POLL_INTERVAL);
+      }
+    };
+
+    poll();
+
+    return () => {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+
+      canceled = true;
+    };
+  }, [web3, account]);
+
   useEffect(() => {
     if (isMultisig === null || isMultisig === true) {
       return;
@@ -159,6 +235,8 @@ const AppState = () => {
     account,
     chainId,
     web3,
+    mintToken,
+    balance,
     connectWallet,
     disconnectWallet
   };

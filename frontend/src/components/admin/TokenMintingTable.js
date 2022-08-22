@@ -1,130 +1,44 @@
 import { LoadingButton } from '@mui/lab';
 import { Grid, FormLabel, TextField, Button } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
-
-import Contract from 'contracts/ABI.json';
-import { useEffect, useState } from 'react';
-
+import * as Yup from 'yup';
 import { useAppState } from 'state';
+import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 
 const TokenMintingTable = () => {
-  // **************************************** Temporary Solution ****************************************//
+  const { account, mintToken } = useAppState();
 
-  // // ************************************** BNC-ONBOARD **************************************//
-
-  // //   wallet connect
-  // // set a variable to store instantiated web3
-  // let web3;
-
-  // // head to blocknative.com to create a key
-  // // const BLOCKNATIVE_KEY = 'blocknative-api-key'
-
-  // // the network id that your dapp runs on
-  // const NETWORK_ID = 51;
-
-  // // initialize onboard
-  // const onboard = Onboard({
-  //   //   dappId: BLOCKNATIVE_KEY,
-  //   networkId: NETWORK_ID,
-  //   subscriptions: {
-  //     wallet: (wallet) => {
-  //       // instantiate web3 when the user has selected a wallet
-  //       web3 = new Web3(wallet.provider);
-  //       console.log({ wallet });
-  //       console.log(wallet.provider);
-  //       console.log(`${wallet.name} connected!`);
-  //     }
-  //   }
-  // });
-
-  // Prompt user to select a wallet
-
-  // const connectWallet = async () => {
-  //   await onboard.walletSelect();
-  //   // Run wallet checks to make sure that user is ready to transact
-  //   await onboard.walletCheck();
-  // };
-
-  // // ************************************** BNC-ONBOARD END **************************************//
-
-  // const { abi, address: token } = Contract;
-  // console.log('🚀 ~ file: useAppState.js ~ line 8 ~ AppState ~ token', token);
-  // const [account, setAccount] = useState('');
-
-  // const web3 = new Web3(Web3.givenProvider);
-  // let contract;
-  // const _account = async () => {
-  //   const account = await web3.eth.getAccounts().then((accounts) => {
-  //     return accounts[0];
-  //   });
-  //   console.log('🚀 ~ file: Home.js ~ line 38 ~ account ~ account', account);
-  //   setAccount(account);
-  //   return account;
-  // };
-
-  // const safeAppConnector = new SafeAppConnector();
-  // useSafeAppConnection(safeAppConnector);
-
-  // const useMultisigStatus = () => {
-  //   const [isMultisig, setIsMultisig] = useState(null);
-
-  //   useEffect(() => {
-  //     safeAppConnector.isSafeApp().then(setIsMultisig);
-  //   }, []);
-
-  //   return { isMultisig };
-  // };
-
-  // const { isMultisig } = useMultisigStatus();
-  // if (isMultisig) {
-  //   console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ isMultisig', isMultisig);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // } else {
-  //   connectWallet();
-  // }
-
-  // useEffect(() => {
-  //   if (web3) {
-  //     console.log('🚀 ~ file: Home.js ~ line 44 ~ useEffect ~ web3', web3);
-  //     contract = new web3.eth.Contract(abi, token);
-  //     _account();
-  //   }
-  //   // return;
-  // }, [web3]);
-
-  // useEffect(() => {
-  //   const acc = _account();
-
-  //   // safeAppConnector.isSafeApp().then(setIsMultisig);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // ********************************************** Temporary Solution ***********************************************//
-  const { address, abi } = Contract;
-  const { web3, account, connectWallet } = useAppState();
-
-  const contract = new web3.eth.Contract(abi, address);
-
-  // console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ token', token);
-  // console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ contract', contract);
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
-  console.log({ account });
+  const MintSchema = Yup.object().shape({
+    address: Yup.string().required('Recipient Address is required'),
+    quantity: Yup.number().required('Quantity is required')
+  });
+
   const formik = useFormik({
     initialValues: {
       address: '',
       quantity: ''
     },
-
+    validationSchema: MintSchema,
     onSubmit: async (data, { resetForm }) => {
       console.log(data);
 
-      const res = await contract.methods.mint(data.address, data.quantity).send({
-        from: account
-      });
-      console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
+      try {
+        const _address = toChecksumAddress(xdcToEthAddress(data.address));
+        const _qty = data.quantity;
+        const res = await mintToken(_address, _qty);
+        // const res = await contract.methods.mint(data.address, data.quantity).send({
+        //   from: account
+        // });
 
-      resetForm();
+        console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
+        if (res) {
+          resetForm();
+        }
+      } catch (e) {
+        console.log(e);
+      }
     }
   });
 
@@ -133,14 +47,6 @@ const TokenMintingTable = () => {
 
   return (
     <FormikProvider value={formik}>
-      <Button
-        onClick={() => {
-          connectWallet();
-          console.log({ account });
-        }}
-      >
-        Connect
-      </Button>
       <Form autoComplete="off" onSubmit={handleSubmit}>
         <Grid
           container
@@ -152,7 +58,6 @@ const TokenMintingTable = () => {
           }}
         >
           <Grid item lg={6} md={6} xs={12}>
-            {JSON.stringify(account)}
             <FormLabel>Mint to</FormLabel>
             <TextField
               fullWidth
@@ -162,6 +67,8 @@ const TokenMintingTable = () => {
               size="small"
               autoComplete="off"
               type="text"
+              error={Boolean(touched.address && errors.address)}
+              helperText={touched.address && errors.address}
             />
           </Grid>
 
@@ -173,7 +80,9 @@ const TokenMintingTable = () => {
               size="small"
               {...getFieldProps('quantity')}
               autoComplete="off"
-              type="text"
+              type="number"
+              error={Boolean(touched.quantity && errors.quantity)}
+              helperText={touched.quantity && errors.quantity}
             />
           </Grid>
         </Grid>

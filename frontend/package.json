@@ -24,12 +24,14 @@
     "react-scripts": "4.0.0",
     "tiny-warning": "^1.0.3",
     "web-vitals": "^2.1.4",
-    "web3": "^1.7.5"
+    "web3": "^1.7.5",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-app-rewired start",
     "start-https": "HTTPS=true react-app-rewired start",
     "build": "HTTPS=true react-app-rewired build",
+    "normal-build": "react-scripts build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
