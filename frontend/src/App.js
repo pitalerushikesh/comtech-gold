@@ -18,17 +18,17 @@ function App() {
     <Web3ReactProvider getLibrary={getWeb3Library}>
       <ThemeConfig>
         <SnackbarProvider
-            ref={notistackRef}
-            action={(key) => (
-              <IconButton onClick={onClickDismiss(key)}>
-                <CancelIcon />
-              </IconButton>
-            )}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right'
-            }}
-          >
+          ref={notistackRef}
+          action={(key) => (
+            <IconButton onClick={onClickDismiss(key)}>
+              <CancelIcon />
+            </IconButton>
+          )}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+        >
           <GlobalAppStateProvider>
             <Router />
           </GlobalAppStateProvider>
