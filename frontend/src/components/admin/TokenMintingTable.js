@@ -4,9 +4,11 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useAppState } from 'state';
 import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
+import { useSnackbar } from 'notistack';
 
 const TokenMintingTable = () => {
   const { account, mintToken } = useAppState();
+  const { enqueueSnackbar } = useSnackbar();
 
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
@@ -38,6 +40,9 @@ const TokenMintingTable = () => {
         }
       } catch (e) {
         console.log(e);
+        if (e.message) {
+          enqueueSnackbar(e.message, { variant: 'error' });
+        }
       }
     }
   });
