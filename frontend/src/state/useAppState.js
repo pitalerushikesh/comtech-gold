@@ -160,6 +160,7 @@ const AppState = () => {
     [contract]
   );
 
+  // eslint-disable-next-line
   const mintToken = useCallback(
     wrapContractCall((addr, amount) =>
       sendTransactionHashOnly(
@@ -170,11 +171,13 @@ const AppState = () => {
     [wrapContractCall, web3, contract]
   );
 
+  // eslint-disable-next-line
   const checkBlackList = useCallback(
     wrapContractCall((addr) => contract.methods.isBlackListed(addr).call()),
     [wrapContractCall, web3, contract]
   );
 
+  // eslint-disable-next-line
   const updateBlackList = useCallback(
     wrapContractCall((addr, isBlackList) =>
       sendTransactionHashOnly(web3, contract.methods.blacklistUpdate(addr, isBlackList))
@@ -238,6 +241,7 @@ const AppState = () => {
         selectedWalletPersistence.clear();
       }
     })();
+    // eslint-disable-next-line
   }, [isMultisig]);
 
   return {
