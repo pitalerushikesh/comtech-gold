@@ -1,20 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { Grid, FormLabel, TextField, Button, MenuItem, Select, FormControl } from '@mui/material';
+import {
+  Grid,
+  FormLabel,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  FormHelperText,
+  Chip
+} from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
 import { useAppState } from 'state';
+import * as Yup from 'yup';
+import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const BlacklistAdminTable = () => {
   const { checkBlackList, updateBlackList, web3 } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
+
+  const [blackListStatus, setBlackListStatus] = useState(undefined);
+
+  const BlackListValidation = Yup.object().shape({
+    blacklist_address: Yup.string().required('Wallet Address is required'),
+    isBlacklisted: Yup.string().required('Black List Status is required')
+  });
+
   const formik = useFormik({
     initialValues: {
       blacklist_address: '',
       isBlacklisted: ''
     },
-
+    validationSchema: BlackListValidation,
     onSubmit: async (data, { resetForm }) => {
       console.log('data', data);
       try {
@@ -58,6 +79,8 @@ const BlacklistAdminTable = () => {
               size="small"
               autoComplete="off"
               type="text"
+              error={Boolean(touched.blacklist_address && errors.blacklist_address)}
+              helperText={touched.blacklist_address && errors.blacklist_address}
             />
           </Grid>
           <Grid item lg={5} md={5} xs={12}>
@@ -67,17 +90,35 @@ const BlacklistAdminTable = () => {
                 displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
                 {...getFieldProps('isBlacklisted')}
+                error={Boolean(touched.isBlacklisted && errors.isBlacklisted)}
+                helperText={touched.isBlacklisted && errors.isBlacklisted}
                 id="isBlacklisted"
               >
                 <MenuItem value>True</MenuItem>
                 <MenuItem value={false}>False</MenuItem>
               </Select>
 
-              {/* <FormHelperText sx={{ color: '#d32f2f' }}>
-                {touched.issue_category_id && errors.issue_category_id}
-              </FormHelperText> */}
+              <FormHelperText sx={{ color: '#d32f2f' }}>
+                {touched.isBlacklisted && errors.isBlacklisted}
+              </FormHelperText>
             </FormControl>
           </Grid>
+          {blackListStatus !== undefined && (
+            <Grid item lg={2} md={2} xs={3}>
+              <Chip
+                label={blackListStatus ? 'Blacklisted' : ' Whitelisted'}
+                color={blackListStatus ? 'error' : 'success'}
+                sx={{ mt: 4, height: '2.6rem', borderRadius: '1rem', px: 2 }}
+                icon={
+                  blackListStatus ? (
+                    <CancelIcon color="error" />
+                  ) : (
+                    <CheckCircleIcon color="success" />
+                  )
+                }
+              />
+            </Grid>
+          )}
         </Grid>
         <Grid
           container
@@ -98,6 +139,7 @@ const BlacklistAdminTable = () => {
                 const _address = toChecksumAddress(xdcToEthAddress(values.blacklist_address));
                 if (web3.utils.isAddress) {
                   const res = await checkBlackList(_address);
+                  setBlackListStatus(res);
                   console.log('🚀 ~ file: BlacklistAdminTable.js ~ line 74 ~ res ~ res', res);
                   return res;
                 } else {
@@ -107,8 +149,7 @@ const BlacklistAdminTable = () => {
                 enqueueSnackbar('Please enter a valid address', { variant: 'error' });
               }
             }}
-            variant="gradient"
-            type="submit"
+            variant="contained"
             sx={{ mt: 3, mr: 2, height: '2.6rem', width: '7.813rem' }}
           >
             Check

@@ -67,7 +67,6 @@ const TokenMintingTable = () => {
             <TextField
               fullWidth
               sx={{ mt: 1 }}
-              label="Address"
               {...getFieldProps('address')}
               size="small"
               autoComplete="off"
@@ -78,10 +77,10 @@ const TokenMintingTable = () => {
           </Grid>
 
           <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Quantity</FormLabel>
             <TextField
-              sx={{ mt: 4 }}
+              sx={{ mt: 1 }}
               fullWidth
-              label="Quantity"
               size="small"
               {...getFieldProps('quantity')}
               autoComplete="off"
