@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoadingButton } from '@mui/lab';
-import { Grid, FormLabel, TextField, Button } from '@mui/material';
+import { Grid, FormLabel, TextField, Button, MenuItem, Select, FormControl } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
@@ -11,13 +11,27 @@ const BlacklistAdminTable = () => {
   const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: {
-      blacklist_address: ''
+      blacklist_address: '',
+      isBlacklisted: ''
     },
 
     onSubmit: async (data, { resetForm }) => {
-      console.log(data);
+      console.log('data', data);
+      try {
+        const _addr = toChecksumAddress(xdcToEthAddress(data.blacklist_address));
+        const _isBlacklist = data.isBlacklisted;
+        const res = await updateBlackList(_addr, _isBlacklist);
 
-      resetForm();
+        console.log('🚀 ~ file: BlacklistAdminTable.js ~ line 25 ~ res ~ res', res);
+        if (res) {
+          resetForm();
+        }
+      } catch (e) {
+        console.log(e);
+        if (e.message) {
+          enqueueSnackbar(e.message, { variant: 'error' });
+        }
+      }
     }
   });
 
@@ -46,6 +60,24 @@ const BlacklistAdminTable = () => {
               type="text"
             />
           </Grid>
+          <Grid item lg={5} md={5} xs={12}>
+            <FormLabel>Blacklisted</FormLabel>
+            <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1 }}>
+              <Select
+                displayEmpty
+                inputProps={{ 'aria-label': 'Without label' }}
+                {...getFieldProps('isBlacklisted')}
+                id="isBlacklisted"
+              >
+                <MenuItem value>True</MenuItem>
+                <MenuItem value={false}>False</MenuItem>
+              </Select>
+
+              {/* <FormHelperText sx={{ color: '#d32f2f' }}>
+                {touched.issue_category_id && errors.issue_category_id}
+              </FormHelperText> */}
+            </FormControl>
+          </Grid>
         </Grid>
         <Grid
           container
@@ -66,6 +98,7 @@ const BlacklistAdminTable = () => {
                 if (web3.utils.isAddress) {
                   const res = await checkBlackList(_address);
                   console.log('🚀 ~ file: BlacklistAdminTable.js ~ line 74 ~ res ~ res', res);
+                  return res;
                 } else {
                   enqueueSnackbar('Please enter a valid address', { variant: 'error' });
                 }
