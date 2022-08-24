@@ -110,8 +110,8 @@ const BlacklistAdminTable = () => {
           </Grid> */}
           <Grid item lg={2} md={2} xs={3}>
             <Button
-              // eslint-disable-next-line
               sx={{ mt: 4, ml: 2, height: '2.6rem', width: '7.813rem' }}
+              // eslint-disable-next-line
               onClick={async () => {
                 try {
                   const _address = toChecksumAddress(xdcToEthAddress(values.blacklist_address));

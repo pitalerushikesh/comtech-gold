@@ -31,8 +31,8 @@
   "scripts": {
     "start": "react-app-rewired start",
     "start-https": "HTTPS=true react-app-rewired start",
-    "build": "HTTPS=true react-app-rewired build",
-    "normal-build": "react-scripts build",
+    "build": "react-app-rewired build",
+    "https-build": "HTTPS=true react-scripts build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
