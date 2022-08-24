@@ -26,8 +26,8 @@ const BlacklistAdminTable = () => {
   const [blackListStatus, setBlackListStatus] = useState(undefined);
 
   const BlackListValidation = Yup.object().shape({
-    blacklist_address: Yup.string().required('Wallet Address is required'),
-    isBlacklisted: Yup.string().required('Black List Status is required')
+    blacklist_address: Yup.string().required('Wallet Address is required')
+    // isBlacklisted: Yup.string().required('Black List Status is required')
   });
 
   const formik = useFormik({
@@ -40,7 +40,12 @@ const BlacklistAdminTable = () => {
       console.log('data', data);
       try {
         const _addr = toChecksumAddress(xdcToEthAddress(data.blacklist_address));
+        data.isBlacklisted = !blackListStatus;
         const _isBlacklist = data.isBlacklisted;
+        console.log(
+          '🚀 ~ file: BlacklistAdminTable.js ~ line 45 ~ onSubmit: ~ _isBlacklist',
+          _isBlacklist
+        );
         const res = await updateBlackList(_addr, _isBlacklist);
 
         console.log('🚀 ~ file: BlacklistAdminTable.js ~ line 25 ~ res ~ res', res);
@@ -71,7 +76,7 @@ const BlacklistAdminTable = () => {
           }}
         >
           <Grid item lg={5} md={5} xs={12}>
-            <FormLabel>Blacklist Address</FormLabel>
+            <FormLabel>Address</FormLabel>
             <TextField
               sx={{ mt: 1 }}
               fullWidth
@@ -83,7 +88,7 @@ const BlacklistAdminTable = () => {
               helperText={touched.blacklist_address && errors.blacklist_address}
             />
           </Grid>
-          <Grid item lg={5} md={5} xs={12}>
+          {/* <Grid item lg={5} md={5} xs={12}>
             <FormLabel>Blacklisted</FormLabel>
             <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1 }}>
               <Select
@@ -102,11 +107,36 @@ const BlacklistAdminTable = () => {
                 {touched.isBlacklisted && errors.isBlacklisted}
               </FormHelperText>
             </FormControl>
+          </Grid> */}
+          <Grid item lg={2} md={2} xs={3}>
+            <Button
+              // eslint-disable-next-line
+              sx={{ mt: 4, ml: 2, height: '2.6rem', width: '7.813rem' }}
+              onClick={async () => {
+                try {
+                  const _address = toChecksumAddress(xdcToEthAddress(values.blacklist_address));
+                  if (web3.utils.isAddress) {
+                    const res = await checkBlackList(_address);
+                    setBlackListStatus(res);
+                    console.log('🚀 ~ file: BlacklistAdminTable.js ~ line 74 ~ res ~ res', res);
+                    return res;
+                  } else {
+                    enqueueSnackbar('Please enter a valid address', { variant: 'error' });
+                  }
+                } catch (error) {
+                  enqueueSnackbar('Please enter a valid address', { variant: 'error' });
+                }
+              }}
+              variant="contained"
+            >
+              Check Status
+            </Button>
           </Grid>
+
           {blackListStatus !== undefined && (
             <Grid item lg={2} md={2} xs={3}>
               <Chip
-                label={blackListStatus ? 'Blacklisted' : ' Whitelisted'}
+                label={blackListStatus ? 'Blacklisted' : ' Not Blacklisted'}
                 color={blackListStatus ? 'error' : 'success'}
                 sx={{ mt: 4, height: '2.6rem', borderRadius: '1rem', px: 2 }}
                 icon={
@@ -132,7 +162,7 @@ const BlacklistAdminTable = () => {
           }}
         >
           {/* <Grid item lg={12} md={12} xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}> */}
-          <Button
+          {/* <Button
             // eslint-disable-next-line
             onClick={async () => {
               try {
@@ -153,16 +183,18 @@ const BlacklistAdminTable = () => {
             sx={{ mt: 3, mr: 2, height: '2.6rem', width: '7.813rem' }}
           >
             Check
-          </Button>
-          <LoadingButton
-            loadingPosition="start"
-            variant="gradient"
-            type="submit"
-            sx={{ mt: 3, height: '2.6rem', width: '7.813rem' }}
-            loading={isSubmitting}
-          >
-            Blacklist
-          </LoadingButton>
+          </Button> */}
+          {blackListStatus !== undefined && (
+            <LoadingButton
+              loadingPosition="start"
+              variant="gradient"
+              type="submit"
+              sx={{ mt: 3, height: '2.6rem' }}
+              loading={isSubmitting}
+            >
+              {blackListStatus ? 'Remove from Blacklist' : 'Add to Blacklist'}
+            </LoadingButton>
+          )}
           {/* </Grid> */}
         </Grid>
       </Form>

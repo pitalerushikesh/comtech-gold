@@ -117,8 +117,10 @@ const Home = () => {
                     >
                       <AddressFieldTools
                         address={currentNetwork.tokenContractAddress}
+                        showAddToWallet
                         showInBlockExplorer
                         showAddress={false}
+                        showCopyButton
                       />
                     </TableCell>
                   </TableRow>
