@@ -97,7 +97,7 @@ const Home = () => {
                         >
                           {ethToXdcAddress(currentNetwork.tokenContractAddress)}
                         </Box>
-                        <IconButton
+                        {/* <IconButton
                           aria-label="subs detail"
                           onClick={() =>
                             navigator.clipboard.writeText(
@@ -106,7 +106,7 @@ const Home = () => {
                           }
                         >
                           <ContentCopyIcon sx={{ fontSize: '1rem' }} />
-                        </IconButton>
+                        </IconButton> */}
                       </Box>
                     </TableCell>
                     <TableCell
