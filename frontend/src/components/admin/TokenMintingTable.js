@@ -19,7 +19,7 @@ const TokenMintingTable = () => {
 
   const formik = useFormik({
     initialValues: {
-      address: '',
+      address: 'xdc821ab84ce0aC467b3e30F462059577B2cecD8B76',
       quantity: ''
     },
     validationSchema: MintSchema,
@@ -73,6 +73,8 @@ const TokenMintingTable = () => {
               type="text"
               error={Boolean(touched.address && errors.address)}
               helperText={touched.address && errors.address}
+              disabled
+              inputProps={{ readOnly: true }}
             />
           </Grid>
 
