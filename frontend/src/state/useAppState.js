@@ -172,6 +172,17 @@ const AppState = () => {
   );
 
   // eslint-disable-next-line
+  const burnToken = useCallback(
+    wrapContractCall((amount) =>
+      sendTransactionHashOnly(
+        web3,
+        contract.methods.burn(web3.utils.toWei(amount.toString(), 'ether'))
+      )
+    ),
+    [wrapContractCall, web3, contract]
+  );
+
+  // eslint-disable-next-line
   const checkBlackList = useCallback(
     wrapContractCall((addr) => contract.methods.isBlackListed(addr).call()),
     [wrapContractCall, web3, contract]
@@ -256,7 +267,8 @@ const AppState = () => {
     connectWallet,
     disconnectWallet,
     checkBlackList,
-    updateBlackList
+    updateBlackList,
+    burnToken
   };
 };
 

@@ -26,6 +26,7 @@ import Web3 from 'web3';
 import { useAppState } from 'state';
 import { currentNetwork, ethToXdcAddress } from 'helpers/web3';
 import AddressFieldTools from 'components/AddressFieldTools';
+import BurnToken from 'components/admin/BurnToken';
 
 const Home = () => {
   return (
@@ -172,7 +173,8 @@ const Home = () => {
             </TableContainer>
           </AccordionDetails>
         </Accordion>
-        <AccordionLayout defaultExpanded title="Token Minting" content={<TokenMintingTable />} />
+        <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} />
+        <AccordionLayout title="Burn Token" content={<BurnToken />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
       </Container>
     </Page>
