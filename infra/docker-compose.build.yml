@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  redis:
+    build:
+      context: docker/redis
+      args:
+        - REDIS_PASSWORD
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+      args:
+        - REACT_APP_NETWORK_ID
+        - REACT_APP_APP_VERSION
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
