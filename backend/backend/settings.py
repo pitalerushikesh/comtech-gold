@@ -187,5 +187,10 @@ ETHEREUM_NODE_URI = env('ETHEREUM_NODE_URI',
 NETWORK_ID = env('NETWORK_ID', default='51')
 ERC20_CONTRACT_ABI = readFileJSON(
     '../../dapps-lib/contracts/ERC20.json')['abi']
+CGO_CONTROLLER_CONTRACT_ABI = readFileJSON(
+    '../../dapps-lib/contracts/CgoController.json')['abi']
+CGO_CONTROLLER_CONTRACT_ADDRESS = readFileJSON(
+    '../../dapps-lib/contracts/CgoController.json')['address']
 
-CGO_TOKEN_ADDRESS = "0x11c63490732A6BB77C5963b6Ef287946BD471fA1"
+CGO_TOKEN_ADDRESS = "0x049fd2e07b3872c947C1F5a0dA888A5F76d1b980"
+# CGO_CONTROLLER_CONTRACT = "0x348D90737268f35B162F4645771245aB2E609Fad"

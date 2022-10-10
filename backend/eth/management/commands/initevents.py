@@ -21,3 +21,11 @@ class Command(BaseCommand):
             contract_abi=settings.ERC20_CONTRACT_ABI,
             event_receiver='eth.event_receivers.TransferEventReceiver'
         )
+        MonitoredEvent.objects.register_event(
+            event_name='BarMint',
+            # put your contract address here
+            contract_address=settings.CGO_CONTROLLER_CONTRACT_ADDRESS,
+            # put your contract abi here
+            contract_abi=settings.CGO_CONTROLLER_CONTRACT_ABI,
+            event_receiver='eth.event_receivers.MintEventReceiver'
+        )
