@@ -20,7 +20,9 @@ const TokenMintingTable = () => {
   const formik = useFormik({
     initialValues: {
       address: 'xdc821ab84ce0aC467b3e30F462059577B2cecD8B76',
-      quantity: ''
+      quantity: '1000',
+      bar_number: '',
+      warrant_number: ''
     },
     validationSchema: MintSchema,
     onSubmit: async (data, { resetForm }) => {
@@ -89,6 +91,36 @@ const TokenMintingTable = () => {
               type="number"
               error={Boolean(touched.quantity && errors.quantity)}
               helperText={touched.quantity && errors.quantity}
+              disabled
+              inputProps={{ readOnly: true }}
+            />
+          </Grid>
+          <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Bar Number</FormLabel>
+            <TextField
+              fullWidth
+              sx={{ mt: 1 }}
+              {...getFieldProps('bar_number')}
+              size="small"
+              autoComplete="off"
+              type="number"
+              error={Boolean(touched.bar_number && errors.bar_number)}
+              helperText={touched.bar_number && errors.bar_number}
+              inputProps={{ readOnly: true }}
+            />
+          </Grid>
+
+          <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Warrant Number</FormLabel>
+            <TextField
+              sx={{ mt: 1 }}
+              fullWidth
+              size="small"
+              {...getFieldProps('warrent_number')}
+              autoComplete="off"
+              type="number"
+              error={Boolean(touched.warrant_number && errors.warrant_number)}
+              helperText={touched.warrant_number && errors.warrant_number}
             />
           </Grid>
         </Grid>

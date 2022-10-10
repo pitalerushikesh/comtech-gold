@@ -1,5 +1,14 @@
 import { LoadingButton } from '@mui/lab';
-import { Grid, FormLabel, TextField, Button } from '@mui/material';
+import {
+  Grid,
+  FormLabel,
+  TextField,
+  Button,
+  FormControl,
+  Select,
+  FormHelperText,
+  MenuItem
+} from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useAppState } from 'state';
@@ -15,7 +24,9 @@ const BurnToken = () => {
 
   const formik = useFormik({
     initialValues: {
-      quantity: ''
+      quantity: '',
+      bar_number: '',
+      warrant_number: ''
     },
     validationSchema: MintSchema,
     onSubmit: async (data, { resetForm }) => {
@@ -65,6 +76,60 @@ const BurnToken = () => {
               type="number"
               error={Boolean(touched.quantity && errors.quantity)}
               helperText={touched.quantity && errors.quantity}
+            />
+          </Grid>
+          <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Bar Number</FormLabel>
+            <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1.5 }}>
+              <Select
+                {...getFieldProps('bar_number')}
+                error={Boolean(touched.bar_number && errors.bar_number)}
+                helperText={touched.bar_number && errors.bar_number}
+              >
+                <MenuItem className="Mui-selected" key="1" value="1">
+                  1
+                </MenuItem>
+                <MenuItem className="Mui-selected" key="2" value="2">
+                  2
+                </MenuItem>
+              </Select>
+
+              <FormHelperText sx={{ color: '#d32f2f' }}>
+                {touched.bar_number && errors.bar_number}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Warrant Number</FormLabel>
+            <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1.5 }}>
+              <Select
+                {...getFieldProps('warrant_number')}
+                error={Boolean(touched.warrant_number && errors.warrant_number)}
+                helperText={touched.warrant_number && errors.warrant_number}
+              >
+                <MenuItem className="Mui-selected" key="1" value="1">
+                  1
+                </MenuItem>
+                <MenuItem className="Mui-selected" key="2" value="2">
+                  2
+                </MenuItem>
+              </Select>
+              <FormHelperText sx={{ color: '#d32f2f' }}>
+                {touched.warrant_number && errors.warrant_number}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Warrant Number</FormLabel>
+            <TextField
+              sx={{ mt: 1 }}
+              fullWidth
+              size="small"
+              {...getFieldProps('warrant_number')}
+              autoComplete="off"
+              type="number"
+              error={Boolean(touched.warrant_number && errors.warrant_number)}
+              helperText={touched.warrant_number && errors.warrant_number}
             />
           </Grid>
         </Grid>
