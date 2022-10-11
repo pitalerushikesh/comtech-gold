@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import AddressFieldTools from 'components/AddressFieldTools';
 import DummyData from './DummyData.json';
 
-export default function TransactionHistoryTable() {
+export default function HoldingsTable() {
   const updateData = () => {
     const data = DummyData;
     return data;

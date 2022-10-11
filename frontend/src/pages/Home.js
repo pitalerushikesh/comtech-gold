@@ -17,24 +17,21 @@ import {
 } from '@mui/material';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AccordionLayout from '../helpers/AccordionLayout';
 import TokenMintingTable from '../components/admin/TokenMintingTable';
 import BlacklistAdminTable from '../components/admin/BlacklistAdminTable';
-import Contract from 'contracts/ABI.json';
-import Web3 from 'web3';
-import { useAppState } from 'state';
 import { currentNetwork, ethToXdcAddress } from 'helpers/web3';
 import AddressFieldTools from 'components/AddressFieldTools';
 import BurnToken from 'components/admin/BurnToken';
-import TransactionHistoryTable from 'components/admin/TransactionHistoryTable';
+import HoldingsTable from 'components/admin/HoldingsTable';
+import BurnHistoryTable from 'components/admin/BurnHistoryTable';
 
 const Home = () => {
   return (
     <Page title="Admin Dashboard | Comtech Gold">
       <Container>
         <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
-          Comtech Gold
+          Dashboard
         </Typography>
         <Accordion
           defaultExpanded
@@ -176,9 +173,10 @@ const Home = () => {
         </Accordion>
 
         <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} />
-        <AccordionLayout title="Transaction History" content={<TransactionHistoryTable />} />
         <AccordionLayout title="Burn Token" content={<BurnToken />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
+        <AccordionLayout title="Burn History" content={<BurnHistoryTable />} />
+        <AccordionLayout title="Holdings" content={<HoldingsTable />} />
       </Container>
     </Page>
   );
