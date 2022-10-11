@@ -1,3 +1,4 @@
+import TabBars from 'pages/TabBars';
 import { Navigate, useRoutes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
@@ -8,7 +9,7 @@ const Router = () => {
       path: '/',
       element: <MainLayout />,
       children: [
-        { path: '/', element: <Home /> },
+        { path: '/', element: <TabBars /> },
         { path: 'multisig', element: <Navigate to="/" /> }
       ]
     }
