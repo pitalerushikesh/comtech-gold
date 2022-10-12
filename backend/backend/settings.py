@@ -184,14 +184,21 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 ETHEREUM_NODE_URI = env('ETHEREUM_NODE_URI',
                         default='https://rpc-apothem.xinfin.yodaplus.net')
 
-NETWORK_ID = env('NETWORK_ID', default='51')
-ERC20_CONTRACT_ABI = readFileJSON(
-    '../../dapps-lib/contracts/ERC20.json')['abi']
-CGO_CONTROLLER_CONTRACT_ABI = readFileJSON(
-    '../../dapps-lib/contracts/CgoController.json')['abi']
-CGO_CONTROLLER_CONTRACT_ADDRESS = readFileJSON(
-    '../../dapps-lib/contracts/CgoController.json')['address']
+CONTRACTS = {
+    '50': readFileJSON('../../dapps-lib/contracts/mainnet.json'),
+    '51': readFileJSON('../../dapps-lib/contracts/apothem.json')
+}
 
-CGO_TOKEN_ADDRESS = readFileJSON(
-    '../../dapps-lib/contracts/ERC20.json')['address']
+NETWORK_ID = env('NETWORK_ID', default='51')
+
+
+ERC20_CONTRACT_ABI = CONTRACTS[NETWORK_ID]['contracts']['Goldtoken']['abi']
+CGO_TOKEN_ADDRESS = CONTRACTS[NETWORK_ID]['contracts']['Goldtoken']['address']
+
+
+
+CGO_CONTROLLER_CONTRACT_ABI = CONTRACTS[NETWORK_ID]['contracts']['CGOController']['abi']
+CGO_CONTROLLER_CONTRACT_ADDRESS = CONTRACTS[NETWORK_ID]['contracts']['CGOController']['address']
+
+
 # CGO_CONTROLLER_CONTRACT = "0x348D90737268f35B162F4645771245aB2E609Fad"
