@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import GoldBar, Mint, Burn, BarHolder
+from .models import BurnHistory, GoldBar, Mint, Burn, BarHolder
 
 # Register your models here.
 
@@ -27,7 +27,14 @@ class BarHolderAdmin(admin.ModelAdmin):
     search_fields = ('bar_details', 'holder_xinfin_address')
     readonly_fields = ('holder_date',)
 
+class BurnHistoryAdmin(admin.ModelAdmin):
+    list_display = ('burnt_bar', 'adjusted_bar', 'adjusted_user', 'adjusted_amount', 'tx_hash')
+    list_filter = ('burnt_bar', 'adjusted_bar', 'adjusted_user', 'tx_hash')
+    search_fields = ('burnt_bar', 'adjusted_bar', 'adjusted_user', 'tx_hash')
+    readonly_fields = ('burnt_bar', 'adjusted_bar', 'adjusted_user', 'adjusted_amount', 'tx_hash')
+
 admin.site.register(GoldBar, GoldBarAdmin)
 admin.site.register(Mint, MintAdmin)
 admin.site.register(Burn, BurnAdmin)
 admin.site.register(BarHolder, BarHolderAdmin)
+admin.site.register(BurnHistory, BurnHistoryAdmin)

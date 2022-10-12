@@ -192,5 +192,6 @@ CGO_CONTROLLER_CONTRACT_ABI = readFileJSON(
 CGO_CONTROLLER_CONTRACT_ADDRESS = readFileJSON(
     '../../dapps-lib/contracts/CgoController.json')['address']
 
-CGO_TOKEN_ADDRESS = "0x049fd2e07b3872c947C1F5a0dA888A5F76d1b980"
+CGO_TOKEN_ADDRESS = readFileJSON(
+    '../../dapps-lib/contracts/ERC20.json')['address']
 # CGO_CONTROLLER_CONTRACT = "0x348D90737268f35B162F4645771245aB2E609Fad"

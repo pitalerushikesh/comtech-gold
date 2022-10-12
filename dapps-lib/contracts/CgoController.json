@@ -1,5 +1,5 @@
 {
-  "address": "0x348D90737268f35B162F4645771245aB2E609Fad",
+  "address": "0x88fc1b007Af9C38Cd217699B991b3889E080A251",
   "abi": [
     {
       "inputs": [
@@ -11,6 +11,37 @@
       ],
       "stateMutability": "nonpayable",
       "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "burn_from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "Bar_Number",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "Warrant_Number",
+          "type": "string"
+        }
+      ],
+      "name": "BarBurn",
+      "type": "event"
     },
     {
       "anonymous": false,
@@ -42,6 +73,47 @@
       ],
       "name": "BarMint",
       "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "name": "blacklistUpdate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "Bar_Number",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "Warrant_Number",
+          "type": "string"
+        }
+      ],
+      "name": "burn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "inputs": [

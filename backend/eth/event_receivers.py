@@ -12,7 +12,7 @@ from django_ethereum_events.chainevents import AbstractEventReceiver
 from django_ethereum_events.models import MonitoredEvent
 
 from eth.models import BlockChainTransaction, EventsLog, TransactionAction
-from core_table.models import GoldBar, Mint, Burn, BarHolder
+from core_table.models import BurnHistory, GoldBar, Mint, Burn, BarHolder
 
 def update_blockchain_transaction(decoded_event):
     EventsLog.objects.create(
@@ -79,8 +79,12 @@ class TransferEventReceiver(AbstractEventReceiver):
         if transfer_from == '0x0000000000000000000000000000000000000000':
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
+        
+        if transfer_to == '0x0000000000000000000000000000000000000000':
+            print(f'Burn From: {transfer_from}, Amount: {amount}')
+            return 'Burn Transfer'
 
-        from_bar_holding = BarHolder.objects.filter(holder_xinfin_address=transfer_from)
+        from_bar_holding = BarHolder.objects.filter(holder_xinfin_address=transfer_from, token_balance__gt=0)
         for obj in from_bar_holding:
             _bar_details = obj.bar_details
             if updated_amount == 0:
@@ -102,4 +106,62 @@ class TransferEventReceiver(AbstractEventReceiver):
 class BurnEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
         print(f'Received Burn event: {decoded_event!r}')
-       
+        update_blockchain_transaction(decoded_event)
+        args = decoded_event['args']
+
+        burn_from = args.get('burn_from')
+        amount = args.get('amount')
+        bar_number = args.get('Bar_Number')
+        warrant_number = args.get('Warrant_Number')
+        tx_hash = decoded_event['transactionHash'].hex()
+
+        gold_bar = GoldBar.objects.get(bar_number=bar_number, warrant_number=warrant_number)
+
+        bar_holders = BarHolder.objects.filter(bar_details=gold_bar, token_balance__gt=0)
+
+        user_holdings = BarHolder.objects.filter(holder_xinfin_address=burn_from, token_balance__gt=0)
+
+        for obj in bar_holders:
+            updated_bar_balance = obj.token_balance
+            bar_user = obj.holder_xinfin_address
+
+            for user_obj in user_holdings:
+                user_bar_details = user_obj.bar_details
+
+                if updated_bar_balance == 0:
+                    break
+
+                if user_obj.token_balance >= updated_bar_balance:
+                    user_obj.token_balance -= updated_bar_balance
+                    user_obj.save()
+                    CreateUpdateBarHolder(user_bar_details, bar_user, updated_bar_balance)
+                    BurnHistory.objects.create(
+                        burnt_bar=gold_bar, 
+                        adjusted_bar=user_bar_details, 
+                        adjusted_user=bar_user, adjusted_amount=updated_bar_balance,
+                        tx_hash=tx_hash
+                        )
+                    updated_bar_balance = 0
+                    break
+                if user_obj.token_balance < updated_bar_balance and user_obj.token_balance > 0:
+                    updated_bar_balance -= user_obj.token_balance
+                    CreateUpdateBarHolder(user_bar_details, bar_user, user_obj.token_balance)
+                    BurnHistory.objects.create(
+                        burnt_bar=gold_bar,
+                        adjusted_bar=user_bar_details,
+                        adjusted_user=bar_user, 
+                        adjusted_amount=user_obj.token_balance,
+                        tx_hash=tx_hash
+                        )
+                    user_obj.token_balance = 0
+                    user_obj.save()
+
+        Burn.objects.create(bar_details=gold_bar)
+        mint_obj = Mint.objects.get(bar_details=gold_bar)
+        mint_obj.burnt = True
+        mint_obj.save()
+
+        gold_bar.is_deleted = True
+        gold_bar.save()
+
+        print(f'Burn From: {burn_from}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')

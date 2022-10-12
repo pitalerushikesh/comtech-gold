@@ -2,6 +2,7 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "ERC20",
   "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+  "address": "0x1ab4d1333a0Ed35797f4CC6B1Da12E6040d1592f",
   "abi": [
     {
       "inputs": [
