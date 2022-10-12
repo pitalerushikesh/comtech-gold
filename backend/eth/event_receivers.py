@@ -133,14 +133,14 @@ class BurnEventReceiver(AbstractEventReceiver):
 
                 # if user in bar is same as burn_from user dont conpensate
                 if bar_user == burn_from:
-                    updated_bar_balance = 0
-                    CreateUpdateBarHolder(gold_bar, bar_user, updated_bar_balance)
+                    CreateUpdateBarHolder(gold_bar, bar_user, 0)
                     BurnHistory.objects.create(
                         burnt_bar=gold_bar, 
                         adjusted_bar=gold_bar, 
                         adjusted_user=bar_user, adjusted_amount=updated_bar_balance,
                         tx_hash=tx_hash
                         )
+                    updated_bar_balance = 0
                     break
                     
 
