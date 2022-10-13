@@ -9,11 +9,11 @@ const Holdings = () => {
   return (
     <Page title="Holdings | Comtech Gold">
       <Container>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
+        {/* <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
           Holdings
-        </Typography>
-        <AccordionLayout title="Burn History" defaultExpanded content={<BurnHistoryTable />} />
+        </Typography> */}
         <AccordionLayout title="Holdings" content={<HoldingsTable />} />
+        <AccordionLayout title="Burn History" defaultExpanded content={<BurnHistoryTable />} />
       </Container>
     </Page>
   );

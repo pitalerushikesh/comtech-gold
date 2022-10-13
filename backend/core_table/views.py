@@ -1,10 +1,14 @@
 from django.shortcuts import render
 
-from .serializers import BarHolderSerializer, BurnHistorySerializer
-from .models import BarHolder, BurnHistory
+from .serializers import BarHolderSerializer, BurnHistorySerializer, GoldBarSerializer
+from .models import BarHolder, BurnHistory, GoldBar
 from rest_framework.generics import ListAPIView
 
 # Create your views here.
+
+class AllGoldBar(ListAPIView):
+    queryset = GoldBar.objects.filter(is_deleted=False)
+    serializer_class = GoldBarSerializer
 
 class AllBarHolder(ListAPIView):
     queryset = BarHolder.objects.filter(bar_details__is_deleted=False, token_balance__gt=0)

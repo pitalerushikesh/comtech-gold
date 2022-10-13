@@ -163,7 +163,7 @@ const EnhancedTable = ({
                             mb: 0
                           }}
                           padding="normal"
-                          size="small"
+                          size="medium"
                           key={key}
                           {...cell.getCellProps()}
                         >

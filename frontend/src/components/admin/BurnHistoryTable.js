@@ -2,11 +2,14 @@ import EnhancedTable from 'components/tables/EnhancedTable';
 import React, { useMemo, useEffect } from 'react';
 import { Box } from '@mui/material';
 import DummyData from './DummyData.json';
+import { useCoreTableState } from 'state';
 
 export default function BurnHistoryTable() {
+  const { burnHistory, fetchBurnHistory } = useCoreTableState();
+
   const updateData = () => {
-    const data = DummyData;
-    return data;
+    const res = fetchBurnHistory();
+    console.log('🚀 ~ file: BurnHistoryTable.js ~ line 13 ~ updateData ~ res', res);
   };
 
   const data = DummyData;
@@ -14,27 +17,36 @@ export default function BurnHistoryTable() {
   const headCells = useMemo(
     () => [
       {
-        accessor: 'method',
-        Header: 'Method',
+        accessor: 'burnt_bar',
+        Header: 'Burnt Bar',
         show: true,
-        width: 100
-      },
-      {
-        accessor: 'id',
-        Header: 'Transaction ID',
-        show: true,
-        Cell: ({ value }) => {
-          return <Box>{value}</Box>;
+        width: 100,
+        Cell: ({ row: { original } }) => {
+          return <Box>{original.burnt_bar.bar_number}</Box>;
         }
       },
-
       {
-        accessor: 'name',
-        Header: 'Name',
+        accessor: 'adjusted_bar',
+        Header: 'Adjusted Bar',
         show: true,
-        Cell: ({ value }) => {
-          return <Box>{value}</Box>;
+        Cell: ({ row: { original } }) => {
+          return <Box>{original.adjusted_bar.bar_number}</Box>;
         }
+      },
+      {
+        accessor: 'adjusted_amount',
+        Header: 'Amount',
+        show: true
+      },
+      {
+        accessor: 'burnt_date',
+        Header: 'Burnt Date',
+        show: true
+      },
+      {
+        accessor: 'tx_hash',
+        Header: 'Txn. hash',
+        show: true
       }
     ],
     []
@@ -45,7 +57,7 @@ export default function BurnHistoryTable() {
       <EnhancedTable
         tableTitle="Transactions"
         columns={headCells}
-        data={data}
+        data={burnHistory}
         refreshFunction={updateData}
       />
     </>

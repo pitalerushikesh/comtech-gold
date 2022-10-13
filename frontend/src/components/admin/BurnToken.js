@@ -1,3 +1,4 @@
+import React from 'react';
 import { LoadingButton } from '@mui/lab';
 import {
   Grid,
@@ -12,11 +13,13 @@ import {
 } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
-import { useAppState } from 'state';
+import { useAppState, useCoreTableState } from 'state';
 import { useSnackbar } from 'notistack';
 
 const BurnToken = () => {
   const { account, burnToken } = useAppState();
+  const { goldBars, fetchGoldBars } = useCoreTableState();
+
   const { enqueueSnackbar } = useSnackbar();
 
   const MintSchema = Yup.object().shape({
@@ -31,31 +34,43 @@ const BurnToken = () => {
     },
     validationSchema: MintSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log('data', data);
-      try {
-        const _qty = data.quantity;
-        const res = await burnToken(_qty);
+      console.log('🚀 ~ file: BurnToken.js ~ line 36 ~ onSubmit: ~ data', data);
+      // try {
+      //   const _qty = data.quantity;
+      //   const res = await burnToken(_qty);
 
-        console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
+      //   console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
 
-        if (res) {
-          resetForm();
-        }
-      } catch (e) {
-        console.log(e);
-        if (e.message) {
-          enqueueSnackbar(e.message, { variant: 'error' });
-        }
-      }
+      //   if (res) {
+      //     resetForm();
+      //   }
+      // } catch (e) {
+      //   console.log(e);
+      //   if (e.message) {
+      //     enqueueSnackbar(e.message, { variant: 'error' });
+      //   }
+      // }
     }
   });
 
   // eslint-disable-next-line no-unused-vars
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
-  const options = [
-    { label: 'The Godfather', id: 1 },
-    { label: 'Pulp Fiction', id: 2 }
-  ];
+  // const options = [
+  //   { label: 'The Godfather', id: 1 },
+  //   { label: 'Pulp Fiction', id: 2 }
+  // ];
+
+  const options = goldBars.map((bar) => {
+    return {
+      label: bar.bar_number,
+      id: bar.bar_number,
+      value: bar.bar_number,
+      warrant_number: bar.warrant_number
+    };
+  });
+
+  const [value, setValue] = React.useState(options[0]);
+  const [inputValue, setInputValue] = React.useState('');
 
   return (
     <FormikProvider value={formik}>
@@ -85,16 +100,27 @@ const BurnToken = () => {
           <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Bar Number</FormLabel>
             <Autocomplete
+              // freeSolo
               fullWidth
               disablePortal
               size="small"
               sx={{ mt: 1 }}
-              {...getFieldProps('bar_number')}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+
+                formik.setFieldValue('bar_number', newValue?.value);
+                formik.setFieldValue('warrant_number', newValue?.warrant_number);
+              }}
+              inputValue={inputValue}
+              onInputChange={(event, newInputValue) => {
+                setInputValue(newInputValue);
+              }}
+              // {...getFieldProps('bar_number')}
               options={options}
               renderInput={(params) => <TextField {...params} />}
             />
           </Grid>
-          <Grid item lg={6} md={6} xs={12}>
+          {/* <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Warrant Number</FormLabel>
             <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1 }}>
               <Select
@@ -113,7 +139,7 @@ const BurnToken = () => {
                 {touched.warrant_number && errors.warrant_number}
               </FormHelperText>
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Warrant Number</FormLabel>
             <TextField
@@ -122,7 +148,7 @@ const BurnToken = () => {
               size="small"
               {...getFieldProps('warrant_number')}
               autoComplete="off"
-              type="number"
+              type="text"
               error={Boolean(touched.warrant_number && errors.warrant_number)}
               helperText={touched.warrant_number && errors.warrant_number}
             />

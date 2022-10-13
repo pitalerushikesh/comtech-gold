@@ -1,6 +1,11 @@
 from rest_framework import serializers
 
-from .models import BarHolder, BurnHistory
+from .models import BarHolder, BurnHistory, GoldBar
+
+class GoldBarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoldBar
+        fields = '__all__'
 
 class BarHolderSerializer(serializers.ModelSerializer):
     class Meta:

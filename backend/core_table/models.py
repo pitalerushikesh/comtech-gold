@@ -51,8 +51,8 @@ class BurnHistory(models.Model):
 
     burnt_date = models.DateField(auto_now=True, auto_created=True)
 
-    def __str__(self):
-        return self.bar_details.bar_number + '|' + str(self.burnt_date)
+    # def __str__(self):
+    #     return self.bar_details.bar_number + '|' + str(self.burnt_date)
 
     class Meta:
         verbose_name = 'Burnt History'

@@ -119,7 +119,7 @@ class BurnEventReceiver(AbstractEventReceiver):
 
         bar_holders = BarHolder.objects.filter(bar_details=gold_bar, token_balance__gt=0)
 
-        user_holdings = BarHolder.objects.filter(holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
+        user_holdings = BarHolder.objects.filter(holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False).exclude(bar_details=gold_bar)
 
         for obj in bar_holders:
             updated_bar_balance = obj.token_balance

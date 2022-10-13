@@ -1,7 +1,9 @@
 import { AppStateProvider } from './useAppState';
+import { CoreTableProvider } from './useCoreTableState';
+import { HttpApiProvider } from './useHttpApi';
 
 export const GlobalAppStateProvider = ({ children }) => {
-  const Providers = [AppStateProvider];
+  const Providers = [AppStateProvider, HttpApiProvider, CoreTableProvider];
 
   let element = children;
 
@@ -12,4 +14,6 @@ export const GlobalAppStateProvider = ({ children }) => {
   return element;
 };
 
+export { useCoreTableState } from './useCoreTableState';
 export { useAppState } from './useAppState';
+export { useHttpApi, useHttpApiLoading } from './useHttpApi';
