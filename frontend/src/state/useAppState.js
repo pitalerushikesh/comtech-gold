@@ -147,6 +147,19 @@ const AppState = () => {
     [web3, account]
   );
 
+  const controllerContract = useMemo(
+    () =>
+      new web3.eth.Contract(
+        currentNetwork.controllerContractAbi,
+        currentNetwork.controllerContractAddress,
+        {
+          from: account,
+          gasPrice: 1 * 10 ** 9
+        }
+      ),
+    [web3, account]
+  );
+
   const wrapContractCall = useCallback(
     (func) => {
       return (...args) => {
@@ -161,25 +174,48 @@ const AppState = () => {
   );
 
   // eslint-disable-next-line
+
+  // default Mint implementation with CGO token Contract
+  // const mintToken = useCallback(
+  //   wrapContractCall((addr, amount) =>
+  //     sendTransactionHashOnly(
+  //       web3,
+  //       contract.methods.mint(addr, web3.utils.toWei(amount.toString(), 'ether'))
+  //     )
+  //   ),
+  //   [wrapContractCall, web3, contract]
+  // );
+
   const mintToken = useCallback(
-    wrapContractCall((addr, amount) =>
+    wrapContractCall((addr, amount, barNumber, warrantNumber) =>
       sendTransactionHashOnly(
         web3,
-        contract.methods.mint(addr, web3.utils.toWei(amount.toString(), 'ether'))
+        controllerContract.methods.mint(addr, amount, barNumber, warrantNumber)
       )
     ),
-    [wrapContractCall, web3, contract]
+    [wrapContractCall, web3, controllerContract]
   );
 
   // eslint-disable-next-line
+  // default Burn implementation with CGO token Contract
+  // const burnToken = useCallback(
+  //   wrapContractCall((amount) =>
+  //     sendTransactionHashOnly(
+  //       web3,
+  //       contract.methods.burn(web3.utils.toWei(amount.toString(), 'ether'))
+  //     )
+  //   ),
+  //   [wrapContractCall, web3, contract]
+  // );
+
   const burnToken = useCallback(
-    wrapContractCall((amount) =>
+    wrapContractCall((amount, barNumber, warrantNumber) =>
       sendTransactionHashOnly(
         web3,
-        contract.methods.burn(web3.utils.toWei(amount.toString(), 'ether'))
+        controllerContract.methods.burn(amount, barNumber, warrantNumber)
       )
     ),
-    [wrapContractCall, web3, contract]
+    [wrapContractCall, web3, controllerContract]
   );
 
   // eslint-disable-next-line
@@ -191,9 +227,9 @@ const AppState = () => {
   // eslint-disable-next-line
   const updateBlackList = useCallback(
     wrapContractCall((addr, isBlackList) =>
-      sendTransactionHashOnly(web3, contract.methods.blacklistUpdate(addr, isBlackList))
+      sendTransactionHashOnly(web3, controllerContract.methods.blacklistUpdate(addr, isBlackList))
     ),
-    [wrapContractCall, web3, contract]
+    [wrapContractCall, web3, controllerContract]
   );
 
   useEffect(() => {

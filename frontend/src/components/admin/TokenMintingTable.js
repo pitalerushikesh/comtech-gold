@@ -14,7 +14,9 @@ const TokenMintingTable = () => {
 
   const MintSchema = Yup.object().shape({
     address: Yup.string().required('Recipient Address is required'),
-    quantity: Yup.number().required('Quantity is required')
+    quantity: Yup.number().required('Quantity is required'),
+    bar_number: Yup.string().required('Bar Number is required'),
+    warrant_number: Yup.string().required('Warrant Number is required')
   });
 
   const formik = useFormik({
@@ -31,7 +33,9 @@ const TokenMintingTable = () => {
       try {
         const _address = toChecksumAddress(xdcToEthAddress(data.address));
         const _qty = data.quantity;
-        const res = await mintToken(_address, _qty);
+        const _barNumber = data.bar_number;
+        const _warrantNumber = data.warrant_number;
+        const res = await mintToken(_address, _qty, _barNumber, _warrantNumber);
         // const res = await contract.methods.mint(data.address, data.quantity).send({
         //   from: account
         // });
@@ -75,8 +79,8 @@ const TokenMintingTable = () => {
               type="text"
               error={Boolean(touched.address && errors.address)}
               helperText={touched.address && errors.address}
-              disabled
-              inputProps={{ readOnly: true }}
+              // disabled
+              // inputProps={{ readOnly: true }}
             />
           </Grid>
 
@@ -103,10 +107,9 @@ const TokenMintingTable = () => {
               {...getFieldProps('bar_number')}
               size="small"
               autoComplete="off"
-              type="number"
+              type="text"
               error={Boolean(touched.bar_number && errors.bar_number)}
               helperText={touched.bar_number && errors.bar_number}
-              inputProps={{ readOnly: true }}
             />
           </Grid>
 
@@ -116,9 +119,9 @@ const TokenMintingTable = () => {
               sx={{ mt: 1 }}
               fullWidth
               size="small"
-              {...getFieldProps('warrent_number')}
+              {...getFieldProps('warrant_number')}
               autoComplete="off"
-              type="number"
+              type="text"
               error={Boolean(touched.warrant_number && errors.warrant_number)}
               helperText={touched.warrant_number && errors.warrant_number}
             />

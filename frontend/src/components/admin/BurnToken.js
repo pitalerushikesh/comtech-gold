@@ -22,8 +22,10 @@ const BurnToken = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const MintSchema = Yup.object().shape({
-    quantity: Yup.number().required('Quantity is required')
+  const BurnSchema = Yup.object().shape({
+    quantity: Yup.number().required('Quantity is required'),
+    bar_number: Yup.string().required('Bar Number is required'),
+    warrant_number: Yup.string().required('Warrant Number is required')
   });
 
   const formik = useFormik({
@@ -32,24 +34,26 @@ const BurnToken = () => {
       bar_number: '',
       warrant_number: ''
     },
-    validationSchema: MintSchema,
+    validationSchema: BurnSchema,
     onSubmit: async (data, { resetForm }) => {
       console.log('🚀 ~ file: BurnToken.js ~ line 36 ~ onSubmit: ~ data', data);
-      // try {
-      //   const _qty = data.quantity;
-      //   const res = await burnToken(_qty);
+      try {
+        const _qty = data.quantity;
+        const _barNumber = data.bar_number;
+        const _warrantNumber = data.warrant_number;
+        const res = await burnToken(_qty, _barNumber, _warrantNumber);
 
-      //   console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
+        console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
 
-      //   if (res) {
-      //     resetForm();
-      //   }
-      // } catch (e) {
-      //   console.log(e);
-      //   if (e.message) {
-      //     enqueueSnackbar(e.message, { variant: 'error' });
-      //   }
-      // }
+        if (res) {
+          resetForm();
+        }
+      } catch (e) {
+        console.log(e);
+        if (e.message) {
+          enqueueSnackbar(e.message, { variant: 'error' });
+        }
+      }
     }
   });
 
@@ -117,7 +121,13 @@ const BurnToken = () => {
               }}
               // {...getFieldProps('bar_number')}
               options={options}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={Boolean(touched.bar_number && errors.bar_number)}
+                  helperText={touched.bar_number && errors.bar_number}
+                />
+              )}
             />
           </Grid>
           {/* <Grid item lg={6} md={6} xs={12}>
@@ -143,6 +153,7 @@ const BurnToken = () => {
           <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Warrant Number</FormLabel>
             <TextField
+              disabled
               sx={{ mt: 1 }}
               fullWidth
               size="small"

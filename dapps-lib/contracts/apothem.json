@@ -3,7 +3,7 @@
   "chainId": "51",
   "contracts": {
     "Goldtoken": {
-      "address": "0x620E72339acbe9f6741141b4f7499e443a5b8312",
+      "address": "0x3fC8AAb11A01138abC885479c4E899433508b9EF",
       "abi": [
         {
           "inputs": [],
@@ -440,7 +440,7 @@
       ]
     },
     "CGOController": {
-      "address": "0xBd6eD135b956e90162d26c5b8BCf16A02B17CA7d",
+      "address": "0x4642225b48a7b266d69AeE4cD3514Ef03aCebA7e",
       "abi": [
         {
           "inputs": [
@@ -452,6 +452,25 @@
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "Bar_Number",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "Warrant_Number",
+              "type": "string"
+            }
+          ],
+          "name": "BarAdded",
+          "type": "event"
         },
         {
           "anonymous": false,
@@ -533,6 +552,43 @@
           ],
           "name": "OwnershipTransferred",
           "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "WithdrawFunds",
+          "type": "event"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "Bar_Number",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "Warrant_Number",
+              "type": "string"
+            }
+          ],
+          "name": "addBarNumWarrantNum",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
         },
         {
           "inputs": [
@@ -677,6 +733,24 @@
             }
           ],
           "name": "transferOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "withdrawFunds",
           "outputs": [],
           "stateMutability": "nonpayable",
           "type": "function"

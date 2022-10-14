@@ -121,6 +121,52 @@ const Home = () => {
                       />
                     </TableCell>
                   </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Comtech Controller Contract</TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          m: 0,
+                          p: 0,
+                          alignItems: 'center'
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {ethToXdcAddress(currentNetwork.controllerContractAddress)}
+                        </Box>
+                        {/* <IconButton
+                          aria-label="subs detail"
+                          onClick={() =>
+                            navigator.clipboard.writeText(
+                              ethToXdcAddress(currentNetwork.tokenContractAddress)
+                            )
+                          }
+                        >
+                          <ContentCopyIcon sx={{ fontSize: '1rem' }} />
+                        </IconButton> */}
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <AddressFieldTools
+                        address={currentNetwork.controllerContractAddress}
+                        showInBlockExplorer
+                        showAddress={false}
+                      />
+                    </TableCell>
+                  </TableRow>
                   {/* <TableRow>
                     <TableCell sx={{ fontWeight: "bold" }}>
                       Escrow & Settlement

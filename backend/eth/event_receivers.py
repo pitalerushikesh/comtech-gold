@@ -119,7 +119,7 @@ class BurnEventReceiver(AbstractEventReceiver):
 
         bar_holders = BarHolder.objects.filter(bar_details=gold_bar, token_balance__gt=0)
 
-        user_holdings = BarHolder.objects.filter(holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False).exclude(bar_details=gold_bar)
+        user_holdings = BarHolder.objects.filter(holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
 
         for obj in bar_holders:
             updated_bar_balance = obj.token_balance
@@ -133,16 +133,22 @@ class BurnEventReceiver(AbstractEventReceiver):
 
                 # if user in bar is same as burn_from user dont conpensate
                 if bar_user == burn_from:
-                    CreateUpdateBarHolder(gold_bar, bar_user, 0)
-                    BurnHistory.objects.create(
+                    # CreateUpdateBarHolder(gold_bar, bar_user, 0)
+                    obj.token_balance = 0
+                    obj.save()
+
+                    print(f'Bar User: {bar_user}, Amount: {updated_bar_balance}')
+                    burn_history = BurnHistory.objects.create(
                         burnt_bar=gold_bar, 
                         adjusted_bar=gold_bar, 
                         adjusted_user=bar_user, adjusted_amount=updated_bar_balance,
                         tx_hash=tx_hash
                         )
+                    print(f'Burn_history: {burn_history}, adjusted_amount: {updated_bar_balance}')
                     updated_bar_balance = 0
                     break
-                    
+                if user_bar_details == gold_bar:
+                    continue
 
                 if user_obj.token_balance >= updated_bar_balance:
                     user_obj.token_balance -= updated_bar_balance
@@ -162,6 +168,7 @@ class BurnEventReceiver(AbstractEventReceiver):
                         )
                     updated_bar_balance = 0
                     break
+
                 if user_obj.token_balance < updated_bar_balance and user_obj.token_balance > 0:
                     updated_bar_balance -= user_obj.token_balance
                     _create_upadte_balance = user_obj.token_balance
