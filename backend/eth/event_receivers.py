@@ -187,6 +187,8 @@ class BurnEventReceiver(AbstractEventReceiver):
                         )
                     user_obj.token_balance = 0
                     user_obj.save()
+            obj.token_balance = 0
+            obj.save()
 
         Burn.objects.create(bar_details=gold_bar)
         mint_obj = Mint.objects.get(bar_details=gold_bar)
