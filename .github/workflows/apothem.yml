@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_DEFAULT_REGION: ap-south-1
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   # AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME_PROD }}
@@ -43,7 +43,7 @@ jobs:
             ${{ runner.os }}-comtech-buildx-
 
       - name: ECR docker login
-        run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.ap-south-1.amazonaws.com
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com
 
       - name: Build redis
         uses: docker/build-push-action@v2
@@ -52,7 +52,7 @@ jobs:
           build-args: |
             REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}
           push: true
-          tags: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/comtech-redis:apothem
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-redis:apothem
           cache-from: type=local,src=/tmp/.buildx-cache-redis
           cache-to: type=local,dest=/tmp/.buildx-cache-redis-new,mode=max
 
@@ -65,7 +65,7 @@ jobs:
             REACT_APP_APP_VERSION=${{ hashFiles('./package-lock.json', './frontend/**', './dapps-lib/**', './injected-connector/**') }}
           file: docker/frontend/Dockerfile
           push: true
-          tags: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/comtech-frontend:apothem
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-frontend:apothem
           cache-from: type=local,src=/tmp/.buildx-cache-frontend
           cache-to: type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
 
@@ -75,7 +75,7 @@ jobs:
           context: .
           file: docker/backend/Dockerfile
           push: true
-          tags: 135135176603.dkr.ecr.ap-south-1.amazonaws.com/comtech-backend:apothem
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-backend:apothem
           cache-from: type=local,src=/tmp/.buildx-cache-backend
           cache-to: type=local,dest=/tmp/.buildx-cache-backend-new,mode=max
 
@@ -106,7 +106,7 @@ jobs:
         run: docker context use yodaplus
 
       - name: ECR docker login
-        run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.ap-south-1.amazonaws.com
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com
 
       - name: Deploy to ECS
         run: >

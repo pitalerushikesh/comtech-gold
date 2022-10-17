@@ -13,7 +13,7 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: ap-south-1
+        awslogs-region: ${AWS_DEFAULT_REGION}
   frontend:
     volumes:
       - django-static:/nginx/django
@@ -28,7 +28,7 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: ap-south-1
+        awslogs-region: ${AWS_DEFAULT_REGION}
 
   backend:
     environment:
@@ -44,7 +44,7 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: ap-south-1
+        awslogs-region: ${AWS_DEFAULT_REGION}
     command: ./docker/backend/run.prod.sh
 
 x-aws-cloudformation:
