@@ -17,11 +17,11 @@ x-aws-cloudformation:
     Backend8000Listener:
       Properties:
         # Certificates:
-        #   - CertificateArn: 'arn:aws:acm:ap-south-1:135135176603:certificate/eef9be07-c8f2-4f92-8d88-20dbc16ca67f' #replace your deployment certificate from aws certificate manager
-        Protocol: HTTP
+          - CertificateArn: 'arn:aws:acm:ap-south-1:135135176603:certificate/5df0b355-d004-44df-a1d7-c88573fd301b' #replace your deployment certificate from aws certificate manager
+        Protocol: HTTPS
 
     FrontendTCP443Listener:
       Properties:
         # Certificates:
-        #   - CertificateArn: 'arn:aws:acm:ap-south-1:135135176603:certificate/eef9be07-c8f2-4f92-8d88-20dbc16ca67f' #replace your deployment certificate from aws certificate manager
-        Protocol: HTTP
+          - CertificateArn: 'arn:aws:acm:ap-south-1:135135176603:certificate/5df0b355-d004-44df-a1d7-c88573fd301b' #replace your deployment certificate from aws certificate manager
+        Protocol: HTTPS
