@@ -16,12 +16,12 @@ x-aws-cloudformation:
   Resources:
     Backend8000Listener:
       Properties:
-        # Certificates:
-        #   - CertificateArn: 'arn:aws:acm:${AWS_DEFAULT_REGION}:135135176603:certificate/0fd23893-579f-455a-9a01-88cd3043c214' #replace your deployment certificate from aws certificate manager
-        Protocol: HTTP
+        Certificates:
+          - CertificateArn: 'arn:aws:acm:${AWS_DEFAULT_REGION}:135135176603:certificate/4ee2d343-a5a9-4b20-a4d0-165c0dab9b20' #replace your deployment certificate from aws certificate manager
+        Protocol: HTTPS
 
     FrontendTCP443Listener:
       Properties:
-        # Certificates:
-        #   - CertificateArn: 'arn:aws:acm:${AWS_DEFAULT_REGION}:135135176603:certificate/0fd23893-579f-455a-9a01-88cd3043c214' #replace your deployment certificate from aws certificate manager
+        Certificates:
+          - CertificateArn: 'arn:aws:acm:${AWS_DEFAULT_REGION}:135135176603:certificate/4ee2d343-a5a9-4b20-a4d0-165c0dab9b20' #replace your deployment certificate from aws certificate manager
         Protocol: HTTPS
