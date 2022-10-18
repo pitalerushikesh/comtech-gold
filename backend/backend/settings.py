@@ -193,7 +193,8 @@ CELERY_BEAT_SCHEDULE = {
 
 CELERY_TIMEZONE = "UTC"
 
-ADMIN_EMAIL = env('ADMIN_EMAIL', default="admin")
+ADMIN_USERNAME = env('ADMIN_USERNAME', default='admin')
+ADMIN_EMAIL = env('ADMIN_EMAIL', default="admin@admin.com")
 ADMIN_PASSWORD = env('ADMIN_PASSWORD', default="admin123")
 CELERY_BROKER_URL = env('CELERY_BROKER_URL',
                         default="redis://127.0.0.1:6379/0")
