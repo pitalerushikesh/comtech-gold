@@ -18,7 +18,7 @@ env:
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   ETHEREUM_NODE_URI: https://rpc-apothem.xinfin.yodaplus.net
   NETWORK_ID: '51'
-  # STATIC_URL: https://comtech-apothem.yodaplus.net/django/staticfiles/
+  STATIC_URL: https://tokenization-apothem-qa.yodaplus.net/django/staticfiles/
   REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
 jobs:
