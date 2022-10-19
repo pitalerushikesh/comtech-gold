@@ -221,8 +221,8 @@ const Home = () => {
         <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} />
         <AccordionLayout title="Burn Token" content={<BurnToken />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
-        <AccordionLayout title="Burn History" content={<BurnHistoryTable />} />
-        <AccordionLayout title="Holdings" content={<HoldingsTable />} />
+        {/* <AccordionLayout title="Burn History" content={<BurnHistoryTable />} />
+        <AccordionLayout title="Holdings" content={<HoldingsTable />} /> */}
       </Container>
     </Page>
   );

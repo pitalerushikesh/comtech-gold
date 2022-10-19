@@ -18,7 +18,7 @@ export default function BurnHistoryTable() {
     () => [
       {
         accessor: 'burnt_bar',
-        Header: 'Burnt Bar',
+        Header: 'Bar Number',
         show: true,
         width: 100,
         Cell: ({ row: { original } }) => {

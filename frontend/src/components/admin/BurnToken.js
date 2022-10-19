@@ -30,7 +30,7 @@ const BurnToken = () => {
 
   const formik = useFormik({
     initialValues: {
-      quantity: '',
+      quantity: 1000,
       bar_number: '',
       warrant_number: ''
     },
@@ -97,6 +97,7 @@ const BurnToken = () => {
               {...getFieldProps('quantity')}
               autoComplete="off"
               type="number"
+              disabled
               error={Boolean(touched.quantity && errors.quantity)}
               helperText={touched.quantity && errors.quantity}
             />
