@@ -31,24 +31,6 @@ def get_blockchain_executor(decoded_event):
         transaction_hash=decoded_event.transactionHash.hex()).first().executor
 
 
-class BarAddedEventReceiver(AbstractEventReceiver):
-    def save(self, decoded_event):
-        print(f'Received Mint event: {decoded_event!r}')
-        update_blockchain_transaction(decoded_event)
-        args = decoded_event['args']
-        bar_number = args.get('Bar_Number')
-        warrant_number = args.get('Warrant_Number')
-        tx_hash = decoded_event['transactionHash'].hex()
-
-        gold_bar = GoldBar.objects.create(
-            bar_number=bar_number, warrant_number=warrant_number)
-        Mint.objects.create(
-            bar_details=gold_bar
-        )
-
-        print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
-        return 'Manual Bar Minted Successfully'
-
 class MintEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
         print(f'Received Mint event: {decoded_event!r}')
@@ -235,23 +217,26 @@ class BurnEventReceiver(AbstractEventReceiver):
 
         print(f'Burn From: {burn_from}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
 
+# Remove the BarAddedEventReceiver after Final roll out
+class BarAddedEventReceiver(AbstractEventReceiver):
+    def save(self, decoded_event):
+        print(f'Received Mint event: {decoded_event!r}')
+        update_blockchain_transaction(decoded_event)
+        args = decoded_event['args']
+        bar_number = args.get('Bar_Number')
+        warrant_number = args.get('Warrant_Number')
+        tx_hash = decoded_event['transactionHash'].hex()
 
-# POC ERC20 MInt Event based
-# class MintERC20EventReceiver(AbstractEventReceiver):
-#     def save(self, decoded_event):
-#         print(f'Received MintERC20 event: {decoded_event!r}')
-#         update_blockchain_transaction(decoded_event)
-#         args = decoded_event['args']
+        if GoldBar.objects.filter(bar_number=bar_number).exists(): 
+            print('Data Migration Completed')
+            return 'Bar Already Exists'
 
-#         mint_to = args.get('to')
-#         amount = args.get('value') / 1e18
-#         bar_number = args.get('Bar_Number')
-#         warrant_number = args.get('Warrant_Number')
-#         tx_hash = decoded_event['transactionHash'].hex()
+        gold_bar = GoldBar.objects.create(
+            bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
+        # Mint.objects.create(
+        #     bar_details=gold_bar
+        # )
 
-#         gold_bar = GoldBar.objects.get(bar_number=bar_number, warrant_number=warrant_number)
-#         CreateUpdateBarHolder(gold_bar, mint_to, amount)
+        print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
+        return 'Manual Bar Minted Successfully'
 
-#         Mint.objects.create(bar_details=gold_bar, tx_hash=tx_hash)
-
-#         print(f'Mint To: {mint_to}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')

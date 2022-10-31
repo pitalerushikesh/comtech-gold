@@ -3,7 +3,7 @@
   "chainId": "51",
   "contracts": {
     "Goldtoken": {
-      "address": "0xbeF878AF286d00a826352dfB5Df7bc738bcc3850",
+      "address": "0x892F1668b361Cf68FA5D5F39777b19a7f7aE6bD5",
       "abi": [
         {
           "inputs": [],
@@ -440,7 +440,7 @@
       ]
     },
     "CGOController": {
-      "address": "0x61fdF530241458ce7c303928f597d65f06Ab1De0",
+      "address": "0x7E439ef834e0d765068a28bAa04E4Df47fd343e2",
       "abi": [
         {
           "inputs": [
@@ -689,6 +689,37 @@
             }
           ],
           "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "pauseEditBar",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "Bar_Number",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "Warrant_Number",
+              "type": "string"
+            }
+          ],
+          "name": "removeBarNumWarrantNum",
+          "outputs": [],
+          "stateMutability": "nonpayable",
           "type": "function"
         },
         {
