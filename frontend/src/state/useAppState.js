@@ -242,6 +242,30 @@ const AppState = () => {
     [wrapContractCall, web3, controllerContract]
   );
 
+  // eslint-disable-next-line
+  const checkEditBarStatus = useCallback(
+    wrapContractCall(() => controllerContract.methods.isEditBarPaused().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const updateEditBarStatus = useCallback(
+    wrapContractCall((status) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.pauseEditBar(status))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  const RemoveExistingBar = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.removeBarNumWarrantNum(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
   useEffect(() => {
     if (!web3 || !account) {
       setBalance('0');
@@ -315,7 +339,10 @@ const AppState = () => {
     checkBlackList,
     updateBlackList,
     burnToken,
-    addExistingBar
+    addExistingBar,
+    checkEditBarStatus,
+    updateEditBarStatus,
+    RemoveExistingBar
   };
 };
 

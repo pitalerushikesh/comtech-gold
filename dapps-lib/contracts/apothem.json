@@ -3,7 +3,7 @@
   "chainId": "51",
   "contracts": {
     "Goldtoken": {
-      "address": "0x892F1668b361Cf68FA5D5F39777b19a7f7aE6bD5",
+      "address": "0x464EC16641915CA42EaAc42a75c1e29587f7FC21",
       "abi": [
         {
           "inputs": [],
@@ -440,7 +440,7 @@
       ]
     },
     "CGOController": {
-      "address": "0x7E439ef834e0d765068a28bAa04E4Df47fd343e2",
+      "address": "0x53c59D2208f14Ba622084789Ae4aFBf46E1eb37E",
       "abi": [
         {
           "inputs": [
@@ -532,6 +532,19 @@
             }
           ],
           "name": "BarMint",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bool",
+              "name": "status",
+              "type": "bool"
+            }
+          ],
+          "name": "EditBarStatusPaused",
           "type": "event"
         },
         {
@@ -651,6 +664,19 @@
           "type": "function"
         },
         {
+          "inputs": [],
+          "name": "isEditBarPaused",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
           "inputs": [
             {
               "internalType": "address",
@@ -692,16 +718,16 @@
           "type": "function"
         },
         {
-          "inputs": [],
-          "name": "pauseEditBar",
-          "outputs": [
+          "inputs": [
             {
               "internalType": "bool",
-              "name": "",
+              "name": "status",
               "type": "bool"
             }
           ],
-          "stateMutability": "view",
+          "name": "pauseEditBar",
+          "outputs": [],
+          "stateMutability": "nonpayable",
           "type": "function"
         },
         {

@@ -26,6 +26,8 @@ import BurnToken from 'components/admin/BurnToken';
 import HoldingsTable from 'components/admin/HoldingsTable';
 import BurnHistoryTable from 'components/admin/BurnHistoryTable';
 import AddExistingBar from 'components/admin/AddExistingBar';
+import CheckEditBarPause from 'components/admin/CheckEditBarPause';
+import RemoveExistingBar from 'components/admin/RemoveExistingBar';
 
 const Home = () => {
   return (
@@ -223,7 +225,14 @@ const Home = () => {
         <AccordionLayout title="Burn Token" content={<BurnToken />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
 
-        <AccordionLayout defaultExpanded title="Manual Bar Entry" content={<AddExistingBar />} />
+        {/* ***START*** Remove the Following ui in production */}
+
+        <AccordionLayout title="Edit Bar Status" content={<CheckEditBarPause />} />
+        <AccordionLayout title="Manual Bar Entry" content={<AddExistingBar />} />
+        <AccordionLayout title="Manual Bar Deletion" content={<RemoveExistingBar />} />
+
+        {/* ***END*** Remove the Following ui in production */}
+
         {/* <AccordionLayout title="Burn History" content={<BurnHistoryTable />} />
         <AccordionLayout title="Holdings" content={<HoldingsTable />} /> */}
       </Container>
