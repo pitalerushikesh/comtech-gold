@@ -25,6 +25,7 @@ import AddressFieldTools from 'components/AddressFieldTools';
 import BurnToken from 'components/admin/BurnToken';
 import HoldingsTable from 'components/admin/HoldingsTable';
 import BurnHistoryTable from 'components/admin/BurnHistoryTable';
+import AddExistingBar from 'components/admin/AddExistingBar';
 
 const Home = () => {
   return (
@@ -221,6 +222,8 @@ const Home = () => {
         <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} />
         <AccordionLayout title="Burn Token" content={<BurnToken />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
+
+        <AccordionLayout defaultExpanded title="Manual Bar Entry" content={<AddExistingBar />} />
         {/* <AccordionLayout title="Burn History" content={<BurnHistoryTable />} />
         <AccordionLayout title="Holdings" content={<HoldingsTable />} /> */}
       </Container>

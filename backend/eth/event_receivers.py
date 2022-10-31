@@ -30,6 +30,25 @@ def get_blockchain_executor(decoded_event):
     return BlockChainTransaction.objects.filter(
         transaction_hash=decoded_event.transactionHash.hex()).first().executor
 
+
+class BarAddedEventReceiver(AbstractEventReceiver):
+    def save(self, decoded_event):
+        print(f'Received Mint event: {decoded_event!r}')
+        update_blockchain_transaction(decoded_event)
+        args = decoded_event['args']
+        bar_number = args.get('Bar_Number')
+        warrant_number = args.get('Warrant_Number')
+        tx_hash = decoded_event['transactionHash'].hex()
+
+        gold_bar = GoldBar.objects.create(
+            bar_number=bar_number, warrant_number=warrant_number)
+        Mint.objects.create(
+            bar_details=gold_bar
+        )
+
+        print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
+        return 'Manual Bar Minted Successfully'
+
 class MintEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
         print(f'Received Mint event: {decoded_event!r}')
@@ -77,6 +96,22 @@ class TransferEventReceiver(AbstractEventReceiver):
         updated_amount = amount
 
         if transfer_from == '0x0000000000000000000000000000000000000000':
+            mint_amount = amount
+            
+            bars = GoldBar.objects.filter(is_deleted=True)
+            if bars.exists():
+                for bar in bars:
+                    if mint_amount > 0:
+                        Mint.objects.create(
+                            bar_details=bar
+                        )
+                        BarHolder.objects.create(
+                            bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000
+                            )
+                        bar.is_deleted = False
+                        bar.save()
+                        mint_amount -= 1000
+
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
         
@@ -199,3 +234,24 @@ class BurnEventReceiver(AbstractEventReceiver):
         gold_bar.save()
 
         print(f'Burn From: {burn_from}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
+
+
+# POC ERC20 MInt Event based
+# class MintERC20EventReceiver(AbstractEventReceiver):
+#     def save(self, decoded_event):
+#         print(f'Received MintERC20 event: {decoded_event!r}')
+#         update_blockchain_transaction(decoded_event)
+#         args = decoded_event['args']
+
+#         mint_to = args.get('to')
+#         amount = args.get('value') / 1e18
+#         bar_number = args.get('Bar_Number')
+#         warrant_number = args.get('Warrant_Number')
+#         tx_hash = decoded_event['transactionHash'].hex()
+
+#         gold_bar = GoldBar.objects.get(bar_number=bar_number, warrant_number=warrant_number)
+#         CreateUpdateBarHolder(gold_bar, mint_to, amount)
+
+#         Mint.objects.create(bar_details=gold_bar, tx_hash=tx_hash)
+
+#         print(f'Mint To: {mint_to}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')

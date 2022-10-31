@@ -196,6 +196,16 @@ const AppState = () => {
     [wrapContractCall, web3, controllerContract]
   );
 
+  const addExistingBar = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.addBarNumWarrantNum(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
   // eslint-disable-next-line
   // default Burn implementation with CGO token Contract
   // const burnToken = useCallback(
@@ -304,7 +314,8 @@ const AppState = () => {
     disconnectWallet,
     checkBlackList,
     updateBlackList,
-    burnToken
+    burnToken,
+    addExistingBar
   };
 };
 

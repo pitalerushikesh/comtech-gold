@@ -37,3 +37,11 @@ class Command(BaseCommand):
             contract_abi=settings.CGO_CONTROLLER_CONTRACT_ABI,
             event_receiver='eth.event_receivers.BurnEventReceiver'
         )
+        MonitoredEvent.objects.register_event(
+            event_name='BarAdded',
+            # put your contract address here
+            contract_address=settings.CGO_CONTROLLER_CONTRACT_ADDRESS,
+            # put your contract abi here
+            contract_abi=settings.CGO_CONTROLLER_CONTRACT_ABI,
+            event_receiver='eth.event_receivers.BarAddedEventReceiver'
+        )
