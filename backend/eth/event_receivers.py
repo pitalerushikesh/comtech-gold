@@ -105,9 +105,11 @@ class TransferEventReceiver(AbstractEventReceiver):
         if transfer_to == '0x0000000000000000000000000000000000000000':
             print(f'Burn From: {transfer_from}, Amount: {amount}')
             return 'Burn Transfer'
+
         if transfer_from == transfer_to:
             print(f'No Transfer')
             return 'No Transfer'
+            
         from_bar_holding = BarHolder.objects.filter(
             holder_xinfin_address=transfer_from, token_balance__gt=0, bar_details__is_deleted=False)
         print(from_bar_holding)
