@@ -14,6 +14,7 @@ from django_ethereum_events.models import MonitoredEvent
 from eth.models import BlockChainTransaction, EventsLog, TransactionAction
 from core_table.models import BurnHistory, GoldBar, Mint, Burn, BarHolder
 
+
 def update_blockchain_transaction(decoded_event):
     EventsLog.objects.create(
         transaction_hash=decoded_event.transactionHash.hex(),
@@ -49,13 +50,16 @@ class MintEventReceiver(AbstractEventReceiver):
         )
         BarHolder.objects.create(
             bar_details=gold_bar, holder_xinfin_address=mint_to, token_balance=amount/1e18
-            )
+        )
 
-        print(f'Mint To: {mint_to}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
+        print(
+            f'Mint To: {mint_to}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
         return 'New Bar Minted Successfully'
 
+
 def CreateUpdateBarHolder(bar_detail, holder_xinfin_address, token_balance):
-    bar_holder = BarHolder.objects.filter(bar_details=bar_detail, holder_xinfin_address=holder_xinfin_address)
+    bar_holder = BarHolder.objects.filter(
+        bar_details=bar_detail, holder_xinfin_address=holder_xinfin_address)
     if bar_holder.exists():
         # bar_holder.update(token_balance=token_balance)
         update_bar_holder = bar_holder.first()
@@ -64,7 +68,8 @@ def CreateUpdateBarHolder(bar_detail, holder_xinfin_address, token_balance):
     else:
         BarHolder.objects.create(
             bar_details=bar_detail, holder_xinfin_address=holder_xinfin_address, token_balance=token_balance
-            )
+        )
+
 
 class TransferEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
@@ -79,7 +84,7 @@ class TransferEventReceiver(AbstractEventReceiver):
 
         if transfer_from == '0x0000000000000000000000000000000000000000':
             mint_amount = amount
-            
+
             bars = GoldBar.objects.filter(is_deleted=True)
             if bars.exists():
                 for bar in bars:
@@ -89,19 +94,23 @@ class TransferEventReceiver(AbstractEventReceiver):
                         )
                         BarHolder.objects.create(
                             bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000
-                            )
+                        )
                         bar.is_deleted = False
                         bar.save()
                         mint_amount -= 1000
 
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
-        
+
         if transfer_to == '0x0000000000000000000000000000000000000000':
             print(f'Burn From: {transfer_from}, Amount: {amount}')
             return 'Burn Transfer'
-
-        from_bar_holding = BarHolder.objects.filter(holder_xinfin_address=transfer_from, token_balance__gt=0, bar_details__is_deleted=False)
+        if transfer_from == transfer_to:
+            print(f'No Transfer')
+            return 'No Transfer'
+        from_bar_holding = BarHolder.objects.filter(
+            holder_xinfin_address=transfer_from, token_balance__gt=0, bar_details__is_deleted=False)
+        print(from_bar_holding)
         for obj in from_bar_holding:
             _bar_details = obj.bar_details
             if updated_amount == 0:
@@ -109,15 +118,16 @@ class TransferEventReceiver(AbstractEventReceiver):
             if obj.token_balance >= updated_amount:
                 obj.token_balance -= updated_amount
                 obj.save()
-                CreateUpdateBarHolder(_bar_details, transfer_to, updated_amount)
+                CreateUpdateBarHolder(
+                    _bar_details, transfer_to, updated_amount)
                 updated_amount = 0
                 break
             if obj.token_balance < updated_amount and obj.token_balance > 0:
                 updated_amount -= obj.token_balance
-                CreateUpdateBarHolder(_bar_details, transfer_to, obj.token_balance)
+                CreateUpdateBarHolder(
+                    _bar_details, transfer_to, obj.token_balance)
                 obj.token_balance = 0
                 obj.save()
-
 
 
 class BurnEventReceiver(AbstractEventReceiver):
@@ -132,11 +142,14 @@ class BurnEventReceiver(AbstractEventReceiver):
         warrant_number = args.get('Warrant_Number')
         tx_hash = decoded_event['transactionHash'].hex()
 
-        gold_bar = GoldBar.objects.get(bar_number=bar_number, warrant_number=warrant_number)
+        gold_bar = GoldBar.objects.get(
+            bar_number=bar_number, warrant_number=warrant_number)
 
-        bar_holders = BarHolder.objects.filter(bar_details=gold_bar, token_balance__gt=0)
+        bar_holders = BarHolder.objects.filter(
+            bar_details=gold_bar, token_balance__gt=0)
 
-        user_holdings = BarHolder.objects.filter(holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
+        user_holdings = BarHolder.objects.filter(
+            holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
 
         for obj in bar_holders:
             updated_bar_balance = obj.token_balance
@@ -154,14 +167,16 @@ class BurnEventReceiver(AbstractEventReceiver):
                     obj.token_balance = 0
                     obj.save()
 
-                    print(f'Bar User: {bar_user}, Amount: {updated_bar_balance}')
+                    print(
+                        f'Bar User: {bar_user}, Amount: {updated_bar_balance}')
                     burn_history = BurnHistory.objects.create(
-                        burnt_bar=gold_bar, 
-                        adjusted_bar=gold_bar, 
+                        burnt_bar=gold_bar,
+                        adjusted_bar=gold_bar,
                         adjusted_user=bar_user, adjusted_amount=updated_bar_balance,
                         tx_hash=tx_hash
-                        )
-                    print(f'Burn_history: {burn_history}, adjusted_amount: {updated_bar_balance}')
+                    )
+                    print(
+                        f'Burn_history: {burn_history}, adjusted_amount: {updated_bar_balance}')
                     updated_bar_balance = 0
                     break
                 if user_bar_details == gold_bar:
@@ -176,13 +191,14 @@ class BurnEventReceiver(AbstractEventReceiver):
                     # if bar_user == burn_from:
                     #     create_upadte_balance = 0
 
-                    CreateUpdateBarHolder(user_bar_details, bar_user, create_upadte_balance)
+                    CreateUpdateBarHolder(
+                        user_bar_details, bar_user, create_upadte_balance)
                     BurnHistory.objects.create(
-                        burnt_bar=gold_bar, 
-                        adjusted_bar=user_bar_details, 
+                        burnt_bar=gold_bar,
+                        adjusted_bar=user_bar_details,
                         adjusted_user=bar_user, adjusted_amount=updated_bar_balance,
                         tx_hash=tx_hash
-                        )
+                    )
                     updated_bar_balance = 0
                     break
 
@@ -194,14 +210,15 @@ class BurnEventReceiver(AbstractEventReceiver):
                     # if bar_user == burn_from:
                     #     _create_upadte_balance = 0
 
-                    CreateUpdateBarHolder(user_bar_details, bar_user, _create_upadte_balance)
+                    CreateUpdateBarHolder(
+                        user_bar_details, bar_user, _create_upadte_balance)
                     BurnHistory.objects.create(
                         burnt_bar=gold_bar,
                         adjusted_bar=user_bar_details,
-                        adjusted_user=bar_user, 
+                        adjusted_user=bar_user,
                         adjusted_amount=user_obj.token_balance,
                         tx_hash=tx_hash
-                        )
+                    )
                     user_obj.token_balance = 0
                     user_obj.save()
             obj.token_balance = 0
@@ -215,9 +232,12 @@ class BurnEventReceiver(AbstractEventReceiver):
         gold_bar.is_deleted = True
         gold_bar.save()
 
-        print(f'Burn From: {burn_from}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
+        print(
+            f'Burn From: {burn_from}, Amount: {amount}, Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
 
 # Remove the BarAddedEventReceiver after Final roll out
+
+
 class BarAddedEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
         print(f'Received Mint event: {decoded_event!r}')
@@ -227,7 +247,7 @@ class BarAddedEventReceiver(AbstractEventReceiver):
         warrant_number = args.get('Warrant_Number')
         tx_hash = decoded_event['transactionHash'].hex()
 
-        if GoldBar.objects.filter(bar_number=bar_number).exists(): 
+        if GoldBar.objects.filter(bar_number=bar_number).exists():
             print('Data Migration Completed')
             return 'Bar Already Exists'
 
@@ -237,6 +257,6 @@ class BarAddedEventReceiver(AbstractEventReceiver):
         #     bar_details=gold_bar
         # )
 
-        print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
+        print(
+            f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
         return 'Manual Bar Minted Successfully'
-
