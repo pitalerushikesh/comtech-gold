@@ -3,9 +3,9 @@
 echo "==> $(date +%H:%M:%S) ==> Migrating Django models... "
 python manage.py migrate --noinput
 
-echo "==> $(date +%H:%M:%S) ==> Initializing insert data to database script .. "
+# echo "==> $(date +%H:%M:%S) ==> Initializing insert data to database script .. "
 
-python manage.py runscript loaddata
+# python manage.py runscript loaddata
 
 echo "==> $(date +%H:%M:%S) ==> Initializing Django admin account.. "
 

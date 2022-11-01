@@ -36,6 +36,7 @@ const RemoveExistingBar = () => {
 
         console.log('🚀 ~ file: RemoveExistingBar.js ~ line 128 ~ res ~ res', res);
         if (res) {
+          enqueueSnackbar('Bar removed successfully', { variant: 'success' });
           resetForm();
         }
       } catch (e) {

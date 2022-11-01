@@ -49,7 +49,9 @@ const BlacklistAdminTable = () => {
         const res = await updateBlackList(_addr, _isBlacklist);
 
         console.log('🚀 ~ file: BlacklistAdminTable.js ~ line 25 ~ res ~ res', res);
+
         if (res) {
+          enqueueSnackbar('Blacklist status updated successfully', { variant: 'success' });
           resetForm();
         }
       } catch (e) {

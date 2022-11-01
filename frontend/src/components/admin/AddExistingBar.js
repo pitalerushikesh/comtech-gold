@@ -36,6 +36,7 @@ const AddExistingBar = () => {
 
         console.log('🚀 ~ file: AddExistingBar.js ~ line 128 ~ res ~ res', res);
         if (res) {
+          enqueueSnackbar('Bar added successfully', { variant: 'success' });
           resetForm();
         }
       } catch (e) {

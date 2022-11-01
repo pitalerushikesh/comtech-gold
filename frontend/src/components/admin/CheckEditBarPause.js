@@ -49,6 +49,7 @@ const CheckEditBarPause = () => {
 
         console.log('🚀 ~ file: CheckEditBarPause.js ~ line 25 ~ res ~ res', res);
         if (res) {
+          enqueueSnackbar('Edit Bar status updated successfully', { variant: 'success' });
           resetForm();
         }
       } catch (e) {

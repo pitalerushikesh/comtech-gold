@@ -46,6 +46,7 @@ const BurnToken = () => {
         console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
 
         if (res) {
+          enqueueSnackbar('Token burn successful', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
