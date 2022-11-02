@@ -17,24 +17,24 @@ export default function BurnHistoryTable() {
   const headCells = useMemo(
     () => [
       {
-        accessor: 'burnt_bar',
+        accessor: 'burnt_bar_number',
         Header: 'Bar Number',
         show: true,
-        width: 100,
-        Cell: ({ row: { original } }) => {
-          return <Box>{original.burnt_bar.bar_number}</Box>;
-        }
+        width: 100
+        // Cell: ({ row: { original } }) => {
+        //   return <Box>{original.burnt_bar.bar_number}</Box>;
+        // }
       },
       {
-        accessor: 'adjusted_bar',
+        accessor: 'adjusted_bar_number',
         Header: 'Adjusted Bar',
-        show: true,
-        Cell: ({ row: { original } }) => {
-          return <Box>{original.adjusted_bar.bar_number}</Box>;
-        }
+        show: true
+        // Cell: ({ row: { original } }) => {
+        //   return <Box>{original.adjusted_bar.bar_number}</Box>;
+        // }
       },
       {
-        accessor: 'adjusted_amount',
+        accessor: 'adjusted_amount_formatted',
         Header: 'Amount',
         show: true
       },

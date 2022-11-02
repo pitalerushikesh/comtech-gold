@@ -46,7 +46,7 @@ class BurnHistory(models.Model):
     burnt_bar = models.ForeignKey(GoldBar, on_delete=models.PROTECT, related_name='burnt_bar')
     adjusted_bar = models.ForeignKey(GoldBar, on_delete=models.PROTECT, related_name='adjusted_bar')
     adjusted_user = models.CharField(max_length=42)
-    adjusted_amount = models.FloatField()
+    adjusted_amount = models.CharField(max_length=36)
     tx_hash = models.CharField(max_length=66)
 
     burnt_date = models.DateField(auto_now=True, auto_created=True)
@@ -62,7 +62,7 @@ class BarHolder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bar_details = models.ForeignKey(GoldBar, on_delete=models.PROTECT)
     holder_xinfin_address = models.CharField(max_length=42)
-    token_balance = models.FloatField()
+    token_balance = models.CharField(max_length=36)
     holder_date = models.DateField(auto_now=True, auto_created=True)
 
     def __str__(self):

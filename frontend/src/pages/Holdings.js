@@ -12,8 +12,8 @@ const Holdings = () => {
         {/* <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
           Holdings
         </Typography> */}
-        <AccordionLayout title="Holdings" content={<HoldingsTable />} />
-        <AccordionLayout title="Burn History" defaultExpanded content={<BurnHistoryTable />} />
+        <AccordionLayout title="Holdings" defaultExpanded content={<HoldingsTable />} />
+        <AccordionLayout title="Burn History" content={<BurnHistoryTable />} />
       </Container>
     </Page>
   );

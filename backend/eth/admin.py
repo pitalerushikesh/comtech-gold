@@ -15,6 +15,12 @@ class EventsLogAdmin(admin.ModelAdmin):
     list_display = (
         "transaction_hash",
         "event_name",
+        "event_data",
+        "created_at",
+    )
+    search_fields= (
+        "transaction_hash",
+        "event_name",
         "event_data"
     )
 

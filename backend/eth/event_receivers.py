@@ -49,7 +49,7 @@ class MintEventReceiver(AbstractEventReceiver):
             bar_details=gold_bar
         )
         BarHolder.objects.create(
-            bar_details=gold_bar, holder_xinfin_address=mint_to, token_balance=amount/1e18
+            bar_details=gold_bar, holder_xinfin_address=mint_to, token_balance=amount
         )
 
         print(
@@ -79,7 +79,7 @@ class TransferEventReceiver(AbstractEventReceiver):
         args = decoded_event['args']
         transfer_from = args.get('from')
         transfer_to = args.get('to')
-        amount = args.get('value') / 1e18
+        amount = args.get('value')
         updated_amount = amount
 
         if transfer_from == '0x0000000000000000000000000000000000000000':
@@ -93,11 +93,11 @@ class TransferEventReceiver(AbstractEventReceiver):
                             bar_details=bar
                         )
                         BarHolder.objects.create(
-                            bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000
+                            bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000*1e18
                         )
                         bar.is_deleted = False
                         bar.save()
-                        mint_amount -= 1000
+                        mint_amount -= 1000*1e18
 
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'

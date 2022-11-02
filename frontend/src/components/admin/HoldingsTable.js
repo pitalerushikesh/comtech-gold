@@ -27,21 +27,21 @@ export default function HoldingsTable() {
       {
         accessor: 'bar_number',
         Header: 'Bar Number',
-        show: true,
-        Cell: ({ row: { original } }) => {
-          return <Box>{original.bar_details.bar_number}</Box>;
-        }
+        show: true
+        // Cell: ({ row: { original } }) => {
+        //   return <Box>{original.bar_details.bar_number}</Box>;
+        // }
       },
       {
-        accessor: 'warrant_numeber',
+        accessor: 'warrant_number',
         Header: 'Warrant Number',
-        show: true,
-        Cell: ({ row: { original } }) => {
-          return <Box>{original.bar_details.warrant_number}</Box>;
-        }
+        show: true
+        // Cell: ({ row: { original } }) => {
+        //   return <Box>{original.bar_details.warrant_number}</Box>;
+        // }
       },
       {
-        accessor: 'token_balance',
+        accessor: 'token_balance_formatted',
         Header: 'Token Balance',
         show: true
       }
