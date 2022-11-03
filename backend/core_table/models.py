@@ -1,6 +1,8 @@
 from django.db import models
 import uuid
 
+from solo.models import SingletonModel
+
 # Create your models here.
 
 class GoldBar(models.Model):
@@ -71,3 +73,13 @@ class BarHolder(models.Model):
     class Meta:
         verbose_name = 'Bar Holder'
         verbose_name_plural = 'Bar Holders'
+
+class EditBarStatus(SingletonModel):
+    status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.status)
+
+    class Meta:
+        verbose_name = 'Edit Bar Status'
+        verbose_name_plural = 'Edit Bar Status'

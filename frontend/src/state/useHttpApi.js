@@ -65,11 +65,14 @@ const buildApi = (setIsLoading) => {
   const getBurnHistory = () => get(`api/burn-history/`);
   const getBarHolderByAddress = (address) => get(`api/bar-holder/${address}/`);
 
+  const getEditBarStatus = () => get(`api/edit-bar-status/`);
+
   return {
     getGoldBars,
     getBarHolder,
     getBurnHistory,
-    getBarHolderByAddress
+    getBarHolderByAddress,
+    getEditBarStatus
   };
 };
 

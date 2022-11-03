@@ -3,11 +3,13 @@ import { useHttpApi } from './useHttpApi';
 import constate from 'constate';
 
 const CoreTableState = () => {
-  const { getGoldBars, getBarHolder, getBurnHistory } = useHttpApi();
+  const { getGoldBars, getBarHolder, getBurnHistory, getEditBarStatus } = useHttpApi();
 
   const [goldBars, setGoldBars] = useState([]);
   const [barHolders, setBarHolders] = useState([]);
   const [burnHistory, setBurnHistory] = useState([]);
+
+  const [editBarStatus, setEditBarStatus] = useState();
 
   const fetchBarHolders = async () => {
     const res = await getBarHolder();
@@ -24,10 +26,20 @@ const CoreTableState = () => {
     setBurnHistory(res);
   };
 
+  const fetchEditBarStatus = async () => {
+    const res = await getEditBarStatus();
+    console.log(
+      '🚀 ~ file: useCoreTableState.js ~ line 31 ~ fetchEditBarStatus ~ res',
+      res[0].status
+    );
+    setEditBarStatus(res[0].status);
+  };
+
   useEffect(() => {
     fetchBarHolders();
     fetchGoldBars();
     fetchBurnHistory();
+    fetchEditBarStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -37,7 +49,8 @@ const CoreTableState = () => {
     barHolders,
     fetchBarHolders,
     burnHistory,
-    fetchBurnHistory
+    fetchBurnHistory,
+    editBarStatus
   };
 };
 

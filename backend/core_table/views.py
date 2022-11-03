@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .serializers import BarHolderSerializer, BurnHistorySerializer, GoldBarSerializer
-from .models import BarHolder, BurnHistory, GoldBar
+from .serializers import BarHolderSerializer, BurnHistorySerializer, GoldBarSerializer, EditBarStatusSerializer
+from .models import BarHolder, BurnHistory, GoldBar, EditBarStatus
 from rest_framework.generics import ListAPIView
 
 # Create your views here.
@@ -25,3 +25,7 @@ class BarHolderByAddress(ListAPIView):
 class GetBurnHistory(ListAPIView):
     queryset = BurnHistory.objects.all()
     serializer_class = BurnHistorySerializer
+
+class GetEditBarStatus(ListAPIView):
+    queryset = EditBarStatus.objects.all()
+    serializer_class = EditBarStatusSerializer

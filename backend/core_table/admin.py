@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import BurnHistory, GoldBar, Mint, Burn, BarHolder
+from .models import BurnHistory, GoldBar, Mint, Burn, BarHolder, EditBarStatus
+
+from solo.admin import SingletonModelAdmin
 
 # Register your models here.
 
@@ -38,3 +40,4 @@ admin.site.register(Mint, MintAdmin)
 admin.site.register(Burn, BurnAdmin)
 admin.site.register(BarHolder, BarHolderAdmin)
 admin.site.register(BurnHistory, BurnHistoryAdmin)
+admin.site.register(EditBarStatus, SingletonModelAdmin)

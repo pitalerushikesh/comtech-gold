@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import BarHolder, BurnHistory, GoldBar
+from .models import BarHolder, BurnHistory, GoldBar, EditBarStatus
 
 class GoldBarSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +18,8 @@ class BurnHistorySerializer(serializers.ModelSerializer):
         model = BurnHistory
         fields = '__all__'
         depth = 2
+
+class EditBarStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EditBarStatus
+        fields = '__all__'

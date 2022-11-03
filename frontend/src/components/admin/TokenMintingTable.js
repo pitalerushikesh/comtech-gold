@@ -21,7 +21,8 @@ const TokenMintingTable = () => {
 
   const formik = useFormik({
     initialValues: {
-      address: 'xdc821ab84ce0aC467b3e30F462059577B2cecD8B76',
+      address: '',
+      // address: 'xdc821ab84ce0aC467b3e30F462059577B2cecD8B76',
       quantity: '1000',
       bar_number: '',
       warrant_number: ''

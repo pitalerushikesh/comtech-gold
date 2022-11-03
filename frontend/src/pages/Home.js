@@ -28,8 +28,11 @@ import BurnHistoryTable from 'components/admin/BurnHistoryTable';
 import AddExistingBar from 'components/admin/AddExistingBar';
 import CheckEditBarPause from 'components/admin/CheckEditBarPause';
 import RemoveExistingBar from 'components/admin/RemoveExistingBar';
+import { useCoreTableState } from 'state';
 
 const Home = () => {
+  const { editBarStatus } = useCoreTableState();
+
   return (
     <Page title="Admin Dashboard | Comtech Gold">
       <Container>
@@ -227,9 +230,13 @@ const Home = () => {
 
         {/* ***START*** Remove the Following ui in production */}
 
-        <AccordionLayout title="Edit Bar Status" content={<CheckEditBarPause />} />
-        <AccordionLayout title="Manual Bar Entry" content={<AddExistingBar />} />
-        <AccordionLayout title="Manual Bar Deletion" content={<RemoveExistingBar />} />
+        {editBarStatus && (
+          <>
+            <AccordionLayout title="Edit Bar Status" content={<CheckEditBarPause />} />
+            <AccordionLayout title="Manual Bar Entry" content={<AddExistingBar />} />
+            <AccordionLayout title="Manual Bar Deletion" content={<RemoveExistingBar />} />
+          </>
+        )}
 
         {/* ***END*** Remove the Following ui in production */}
 
