@@ -30,10 +30,8 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "start-https": "HTTPS=true react-app-rewired start",
-    "build": "react-app-rewired build",
-    "https-build": "HTTPS=true react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
@@ -68,7 +66,6 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.3.1",
-    "react-app-rewired": "^2.2.1"
+    "prettier": "^2.3.1"
   }
 }
