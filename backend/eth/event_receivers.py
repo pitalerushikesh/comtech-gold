@@ -12,7 +12,7 @@ from django_ethereum_events.chainevents import AbstractEventReceiver
 from django_ethereum_events.models import MonitoredEvent
 
 from eth.models import BlockChainTransaction, EventsLog, TransactionAction
-from core_table.models import BurnHistory, GoldBar, Mint, Burn, BarHolder
+from core_table.models import BurnHistory, GoldBar, Mint, Burn, BarHolder, EditBarStatus
 
 
 def update_blockchain_transaction(decoded_event):
@@ -85,19 +85,22 @@ class TransferEventReceiver(AbstractEventReceiver):
         if transfer_from == '0x0000000000000000000000000000000000000000':
             mint_amount = amount
 
-            bars = GoldBar.objects.filter(is_deleted=True)
-            if bars.exists():
-                for bar in bars:
-                    if mint_amount > 0:
-                        Mint.objects.create(
-                            bar_details=bar
-                        )
-                        BarHolder.objects.create(
-                            bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000
-                        )
-                        bar.is_deleted = False
-                        bar.save()
-                        mint_amount -= 1000
+            edit_status = EditBarStatus.objects.all().first()
+
+            if edit_status:
+                bars = GoldBar.objects.filter(is_deleted=True)
+                if bars.exists():
+                    for bar in bars:
+                        if mint_amount > 0:
+                            Mint.objects.create(
+                                bar_details=bar
+                            )
+                            BarHolder.objects.create(
+                                bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000
+                            )
+                            bar.is_deleted = False
+                            bar.save()
+                            mint_amount -= 1000
 
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
@@ -244,20 +247,24 @@ class BarAddedEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
         print(f'Received Mint event: {decoded_event!r}')
         update_blockchain_transaction(decoded_event)
-        args = decoded_event['args']
-        bar_number = args.get('Bar_Number')
-        warrant_number = args.get('Warrant_Number')
-        tx_hash = decoded_event['transactionHash'].hex()
 
-        if GoldBar.objects.filter(bar_number=bar_number).exists():
-            print('Data Migration Completed')
-            return 'Bar Already Exists'
+        edit_status = EditBarStatus.objects.all().first()
+        if edit_status:
 
-        gold_bar = GoldBar.objects.create(
-            bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
-        # Mint.objects.create(
-        #     bar_details=gold_bar
-        # )
+            args = decoded_event['args']
+            bar_number = args.get('Bar_Number')
+            warrant_number = args.get('Warrant_Number')
+            tx_hash = decoded_event['transactionHash'].hex()
+
+            if GoldBar.objects.filter(bar_number=bar_number).exists():
+                print('Data Migration Completed')
+                return 'Bar Already Exists'
+
+            gold_bar = GoldBar.objects.create(
+                bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
+            # Mint.objects.create(
+            #     bar_details=gold_bar
+            # )
 
         print(
             f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
