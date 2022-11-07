@@ -15,8 +15,12 @@ const TokenMintingTable = () => {
   const MintSchema = Yup.object().shape({
     address: Yup.string().required('Recipient Address is required'),
     quantity: Yup.number().required('Quantity is required'),
-    bar_number: Yup.string().required('Bar Number is required'),
-    warrant_number: Yup.string().required('Warrant Number is required')
+    bar_number: Yup.string()
+      .required('Bar Number is required')
+      .max(10, 'Bar Number cannot be more than 10 characters'),
+    warrant_number: Yup.string()
+      .required('Warrant Number is required')
+      .max(10, 'Warrant Number cannot be more than 10 characters')
   });
 
   const formik = useFormik({

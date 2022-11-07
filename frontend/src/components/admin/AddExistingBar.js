@@ -13,8 +13,12 @@ const AddExistingBar = () => {
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
   const AddBarSchema = Yup.object().shape({
-    bar_number: Yup.string().required('Bar Number is required'),
-    warrant_number: Yup.string().required('Warrant Number is required')
+    bar_number: Yup.string()
+      .required('Bar Number is required')
+      .max(10, 'Bar Number cannot be more than 10 characters'),
+    warrant_number: Yup.string()
+      .required('Warrant Number is required')
+      .max(10, 'Warrant Number cannot be more than 10 characters')
   });
 
   const formik = useFormik({
