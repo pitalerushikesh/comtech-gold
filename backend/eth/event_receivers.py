@@ -63,11 +63,14 @@ def CreateUpdateBarHolder(bar_detail, holder_xinfin_address, token_balance):
     if bar_holder.exists():
         # bar_holder.update(token_balance=token_balance)
         update_bar_holder = bar_holder.first()
-        update_bar_holder.token_balance += token_balance
+
+        manual_balance = int(update_bar_holder.token_balance) + int(token_balance)
+
+        update_bar_holder.token_balance = str(manual_balance)
         update_bar_holder.save()
     else:
         BarHolder.objects.create(
-            bar_details=bar_detail, holder_xinfin_address=holder_xinfin_address, token_balance=token_balance
+            bar_details=bar_detail, holder_xinfin_address=holder_xinfin_address, token_balance=str(token_balance)
         )
 
 
@@ -79,7 +82,7 @@ class TransferEventReceiver(AbstractEventReceiver):
         args = decoded_event['args']
         transfer_from = args.get('from')
         transfer_to = args.get('to')
-        amount = args.get('value')
+        amount = int(args.get('value'))
         updated_amount = amount
 
         if transfer_from == '0x0000000000000000000000000000000000000000':
@@ -118,17 +121,22 @@ class TransferEventReceiver(AbstractEventReceiver):
             if updated_amount == 0:
                 break
             if obj.token_balance >= updated_amount:
-                obj.token_balance -= updated_amount
+                man_obj_token_balance = int(obj.token_balance) - int(updated_amount)
+
+                obj.token_balance = str(man_obj_token_balance)
                 obj.save()
+
                 CreateUpdateBarHolder(
                     _bar_details, transfer_to, updated_amount)
                 updated_amount = 0
                 break
+
             if obj.token_balance < updated_amount and obj.token_balance > 0:
-                updated_amount -= obj.token_balance
+                manual_obj_token_balance = int(obj.token_balance)
+                updated_amount -= manual_obj_token_balance
                 CreateUpdateBarHolder(
                     _bar_details, transfer_to, obj.token_balance)
-                obj.token_balance = 0
+                obj.token_balance = int(0)
                 obj.save()
 
 
