@@ -82,36 +82,43 @@ class TransferEventReceiver(AbstractEventReceiver):
         amount = args.get('value') / 1e18
         updated_amount = amount
 
+
+        # ********************* Minting (commented code for migrating existing bars in market ) ***********************
         if transfer_from == '0x0000000000000000000000000000000000000000':
-            mint_amount = amount
+            # mint_amount = amount
 
-            edit_status = EditBarStatus.objects.all().first()
+            # edit_status = EditBarStatus.objects.all().first()
 
-            if edit_status:
-                bars = GoldBar.objects.filter(is_deleted=True)
-                if bars.exists():
-                    for bar in bars:
-                        if mint_amount > 0:
-                            Mint.objects.create(
-                                bar_details=bar
-                            )
-                            BarHolder.objects.create(
-                                bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000
-                            )
-                            bar.is_deleted = False
-                            bar.save()
-                            mint_amount -= 1000
+            # if edit_status:
+            #     bars = GoldBar.objects.filter(is_deleted=True)
+            #     if bars.exists():
+            #         for bar in bars:
+            #             if mint_amount > 0:
+            #                 Mint.objects.create(
+            #                     bar_details=bar
+            #                 )
+            #                 BarHolder.objects.create(
+            #                     bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000
+            #                 )
+            #                 bar.is_deleted = False
+            #                 bar.save()
+            #                 mint_amount -= 1000
 
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
 
+        # ******************** Burn Transfer ********************
         if transfer_to == '0x0000000000000000000000000000000000000000':
             print(f'Burn From: {transfer_from}, Amount: {amount}')
             return 'Burn Transfer'
 
+        # ******************** Transfer to same address ********************
+
         if transfer_from == transfer_to:
             print(f'No Transfer')
             return 'No Transfer'
+
+        # ******************** Transfer to different address (actual calculation) ********************
             
         from_bar_holding = BarHolder.objects.filter(
             holder_xinfin_address=transfer_from, token_balance__gt=0, bar_details__is_deleted=False)
@@ -248,20 +255,22 @@ class BarAddedEventReceiver(AbstractEventReceiver):
         print(f'Received Mint event: {decoded_event!r}')
         update_blockchain_transaction(decoded_event)
 
-        edit_status = EditBarStatus.objects.all().first()
-        if edit_status:
+        # edit_status = EditBarStatus.objects.all().first()
+        # if edit_status:
 
-            args = decoded_event['args']
-            bar_number = args.get('Bar_Number')
-            warrant_number = args.get('Warrant_Number')
-            tx_hash = decoded_event['transactionHash'].hex()
+        #     args = decoded_event['args']
+        #     bar_number = args.get('Bar_Number')
+        #     warrant_number = args.get('Warrant_Number')
+        #     tx_hash = decoded_event['transactionHash'].hex()
 
-            if GoldBar.objects.filter(bar_number=bar_number).exists():
-                print('Data Migration Completed')
-                return 'Bar Already Exists'
+        #     if GoldBar.objects.filter(bar_number=bar_number).exists():
+        #         print('Data Migration Completed')
+        #         return 'Bar Already Exists'
 
-            gold_bar = GoldBar.objects.create(
-                bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
+        #     gold_bar = GoldBar.objects.create(
+        #         bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
+            
+            # Keep this commented
             # Mint.objects.create(
             #     bar_details=gold_bar
             # )
