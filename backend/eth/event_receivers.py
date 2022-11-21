@@ -70,7 +70,7 @@ def CreateUpdateBarHolder(bar_detail, holder_xinfin_address, token_balance):
         update_bar_holder.save()
     else:
         BarHolder.objects.create(
-            bar_details=bar_detail, holder_xinfin_address=holder_xinfin_address, token_balance=str(token_balance)
+            bar_details=bar_detail, holder_xinfin_address=holder_xinfin_address, token_balance=str(int(token_balance))
         )
 
 
@@ -96,11 +96,11 @@ class TransferEventReceiver(AbstractEventReceiver):
                             bar_details=bar
                         )
                         BarHolder.objects.create(
-                            bar_details=bar, holder_xinfin_address=transfer_to, token_balance=1000*1e18
+                            bar_details=bar, holder_xinfin_address=transfer_to, token_balance=str(1000 * 10**18)
                         )
                         bar.is_deleted = False
                         bar.save()
-                        mint_amount -= 1000*1e18
+                        mint_amount -= int(1000 * 10**18)
 
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
@@ -116,6 +116,7 @@ class TransferEventReceiver(AbstractEventReceiver):
         from_bar_holding = BarHolder.objects.filter(
             holder_xinfin_address=transfer_from, token_balance__gt=0, bar_details__is_deleted=False)
         print(from_bar_holding)
+
         for obj in from_bar_holding:
             _bar_details = obj.bar_details
             if updated_amount == 0:
@@ -128,7 +129,7 @@ class TransferEventReceiver(AbstractEventReceiver):
 
                 CreateUpdateBarHolder(
                     _bar_details, transfer_to, updated_amount)
-                updated_amount = 0
+                updated_amount = int(0)
                 break
 
             if obj.token_balance < updated_amount and obj.token_balance > 0:
@@ -136,7 +137,7 @@ class TransferEventReceiver(AbstractEventReceiver):
                 updated_amount -= manual_obj_token_balance
                 CreateUpdateBarHolder(
                     _bar_details, transfer_to, obj.token_balance)
-                obj.token_balance = int(0)
+                obj.token_balance = str(0)
                 obj.save()
 
 
@@ -147,7 +148,7 @@ class BurnEventReceiver(AbstractEventReceiver):
         args = decoded_event['args']
 
         burn_from = args.get('burn_from')
-        amount = args.get('amount')
+        amount = int(args.get('amount'))
         bar_number = args.get('Bar_Number')
         warrant_number = args.get('Warrant_Number')
         tx_hash = decoded_event['transactionHash'].hex()
@@ -158,81 +159,96 @@ class BurnEventReceiver(AbstractEventReceiver):
         bar_holders = BarHolder.objects.filter(
             bar_details=gold_bar, token_balance__gt=0)
 
-        user_holdings = BarHolder.objects.filter(
-            holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
+        if len(bar_holders) == 1 and bar_holders.first().token_balance == amount and bar_holders.first().holder_xinfin_address == burn_from:
+            bar_holders.first().token_balance = str(0)
+            BurnHistory.objects.create(
+                burnt_bar=gold_bar,
+                adjusted_bar=gold_bar,
+                adjusted_user=burn_from,
+                adjusted_amount=str(amount),
+                tx_hash=tx_hash
+                )
 
-        for obj in bar_holders:
-            updated_bar_balance = obj.token_balance
-            bar_user = obj.holder_xinfin_address
+            user_holdings = BarHolder.objects.filter(
+                holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
+                
+        else:
+            for obj in bar_holders:
+                updated_bar_balance = int(obj.token_balance)
+                bar_user = obj.holder_xinfin_address
 
-            for user_obj in user_holdings:
-                user_bar_details = user_obj.bar_details
+                for user_obj in user_holdings:
+                    user_bar_details = user_obj.bar_details
 
-                if updated_bar_balance == 0:
-                    break
+                    if updated_bar_balance == 0:
+                        break
 
-                # if user in bar is same as burn_from user dont conpensate
-                if bar_user == burn_from:
-                    # CreateUpdateBarHolder(gold_bar, bar_user, 0)
-                    obj.token_balance = 0
-                    obj.save()
+                    # if user in bar is same as burn_from user dont conpensate
+                    if bar_user == burn_from:
+                        # CreateUpdateBarHolder(gold_bar, bar_user, 0)
+                        obj.token_balance = str(0)
+                        obj.save()
 
-                    print(
-                        f'Bar User: {bar_user}, Amount: {updated_bar_balance}')
-                    burn_history = BurnHistory.objects.create(
-                        burnt_bar=gold_bar,
-                        adjusted_bar=gold_bar,
-                        adjusted_user=bar_user, adjusted_amount=updated_bar_balance,
-                        tx_hash=tx_hash
-                    )
-                    print(
-                        f'Burn_history: {burn_history}, adjusted_amount: {updated_bar_balance}')
-                    updated_bar_balance = 0
-                    break
-                if user_bar_details == gold_bar:
-                    continue
+                        print(
+                            f'Bar User: {bar_user}, Amount: {updated_bar_balance}')
+                        burn_history = BurnHistory.objects.create(
+                            burnt_bar=gold_bar,
+                            adjusted_bar=gold_bar,
+                            adjusted_user=bar_user, adjusted_amount=str(updated_bar_balance),
+                            tx_hash=tx_hash
+                        )
+                        print(
+                            f'Burn_history: {burn_history}, adjusted_amount: {updated_bar_balance}')
+                        updated_bar_balance = 0
+                        break
 
-                if user_obj.token_balance >= updated_bar_balance:
-                    user_obj.token_balance -= updated_bar_balance
-                    user_obj.save()
-                    create_upadte_balance = updated_bar_balance
+                    if user_bar_details == gold_bar:
+                        continue
 
-                    # Check for holdings in same bar - handled above
-                    # if bar_user == burn_from:
-                    #     create_upadte_balance = 0
+                    if user_obj.token_balance >= updated_bar_balance:
 
-                    CreateUpdateBarHolder(
-                        user_bar_details, bar_user, create_upadte_balance)
-                    BurnHistory.objects.create(
-                        burnt_bar=gold_bar,
-                        adjusted_bar=user_bar_details,
-                        adjusted_user=bar_user, adjusted_amount=updated_bar_balance,
-                        tx_hash=tx_hash
-                    )
-                    updated_bar_balance = 0
-                    break
+                        manual_calculation = int(user_obj.token_balance) - int(updated_bar_balance)
 
-                if user_obj.token_balance < updated_bar_balance and user_obj.token_balance > 0:
-                    updated_bar_balance -= user_obj.token_balance
-                    _create_upadte_balance = user_obj.token_balance
+                        user_obj.token_balance = str(manual_calculation)
+                        user_obj.save()
+                        create_update_balance = updated_bar_balance
 
-                    # Check for holdings in same bar - handled above
-                    # if bar_user == burn_from:
-                    #     _create_upadte_balance = 0
+                        # Check for holdings in same bar - handled above
+                        # if bar_user == burn_from:
+                        #     create_update_balance = 0
 
-                    CreateUpdateBarHolder(
-                        user_bar_details, bar_user, _create_upadte_balance)
-                    BurnHistory.objects.create(
-                        burnt_bar=gold_bar,
-                        adjusted_bar=user_bar_details,
-                        adjusted_user=bar_user,
-                        adjusted_amount=user_obj.token_balance,
-                        tx_hash=tx_hash
-                    )
-                    user_obj.token_balance = 0
-                    user_obj.save()
-            obj.token_balance = 0
-            obj.save()
+                        CreateUpdateBarHolder(
+                            user_bar_details, bar_user, create_update_balance)
+                        BurnHistory.objects.create(
+                            burnt_bar=gold_bar,
+                            adjusted_bar=user_bar_details,
+                            adjusted_user=bar_user, adjusted_amount=str(updated_bar_balance),
+                            tx_hash=tx_hash
+                        )
+                        updated_bar_balance = 0
+                        break
+
+                    if user_obj.token_balance < updated_bar_balance and user_obj.token_balance > 0:
+                        updated_bar_balance -= int(user_obj.token_balance)
+                        _create_update_balance = user_obj.token_balance
+
+                        # Check for holdings in same bar - handled above
+                        # if bar_user == burn_from:
+                        #     _create_update_balance = 0
+
+                        CreateUpdateBarHolder(
+                            user_bar_details, bar_user, _create_update_balance)
+                        BurnHistory.objects.create(
+                            burnt_bar=gold_bar,
+                            adjusted_bar=user_bar_details,
+                            adjusted_user=bar_user,
+                            adjusted_amount=str(user_obj.token_balance),
+                            tx_hash=tx_hash
+                        )
+                        user_obj.token_balance = str(0)
+                        user_obj.save()
+                obj.token_balance = str(0)
+                obj.save()
 
         Burn.objects.create(bar_details=gold_bar)
         mint_obj = Mint.objects.get(bar_details=gold_bar)
