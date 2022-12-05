@@ -18,9 +18,15 @@ export default function HoldingsTable() {
   const headCells = useMemo(
     () => [
       {
-        accessor: 'holder_xinfin_address',
+        accessor: 'xdc_holder_address',
         Header: 'Holder Address',
         show: true,
+        width: 100
+      },
+      {
+        accessor: 'holder_xinfin_address',
+        Header: 'Holder Address',
+        show: false,
         width: 100
       },
 
