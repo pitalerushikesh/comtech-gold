@@ -64,12 +64,14 @@ const buildApi = (setIsLoading) => {
   const getBarHolder = () => get(`api/bar-holder/`);
   const getBurnHistory = () => get(`api/burn-history/`);
   const getBarHolderByAddress = (address) => get(`api/bar-holder/${address}/`);
+  const getMintHistory = () => get('api/mint-history/');
 
   return {
     getGoldBars,
     getBarHolder,
     getBurnHistory,
-    getBarHolderByAddress
+    getBarHolderByAddress,
+    getMintHistory
   };
 };
 

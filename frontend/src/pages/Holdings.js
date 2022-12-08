@@ -4,6 +4,7 @@ import { Container, Typography } from '@mui/material';
 import AccordionLayout from '../helpers/AccordionLayout';
 import HoldingsTable from 'components/admin/HoldingsTable';
 import BurnHistoryTable from 'components/admin/BurnHistoryTable';
+import MintHistory from 'components/admin/MintHistory';
 
 const Holdings = () => {
   return (
@@ -13,6 +14,7 @@ const Holdings = () => {
           Holdings
         </Typography> */}
         <AccordionLayout title="Holdings" defaultExpanded content={<HoldingsTable />} />
+        <AccordionLayout title="Mint History" content={<MintHistory />} />
         <AccordionLayout title="Burn History" content={<BurnHistoryTable />} />
       </Container>
     </Page>

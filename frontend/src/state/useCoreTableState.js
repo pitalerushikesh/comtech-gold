@@ -3,11 +3,12 @@ import { useHttpApi } from './useHttpApi';
 import constate from 'constate';
 
 const CoreTableState = () => {
-  const { getGoldBars, getBarHolder, getBurnHistory } = useHttpApi();
+  const { getGoldBars, getBarHolder, getBurnHistory, getMintHistory } = useHttpApi();
 
   const [goldBars, setGoldBars] = useState([]);
   const [barHolders, setBarHolders] = useState([]);
   const [burnHistory, setBurnHistory] = useState([]);
+  const [mintHistory, setMintHistory] = useState([]);
 
   const fetchBarHolders = async () => {
     const res = await getBarHolder();
@@ -24,10 +25,16 @@ const CoreTableState = () => {
     setBurnHistory(res);
   };
 
+  const fetchMintHistory = async () => {
+    const res = await getMintHistory();
+    setMintHistory(res);
+  };
+
   useEffect(() => {
     fetchBarHolders();
     fetchGoldBars();
     fetchBurnHistory();
+    fetchMintHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -37,7 +44,9 @@ const CoreTableState = () => {
     barHolders,
     fetchBarHolders,
     burnHistory,
-    fetchBurnHistory
+    fetchBurnHistory,
+    mintHistory,
+    fetchMintHistory
   };
 };
 
