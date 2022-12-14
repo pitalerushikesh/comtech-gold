@@ -66,7 +66,7 @@ def CreateUpdateBarHolder(bar_detail, holder_xinfin_address, token_balance):
 
         manual_balance = int(update_bar_holder.token_balance) + int(token_balance)
 
-        update_bar_holder.token_balance = str(manual_balance)
+        update_bar_holder.token_balance = str(int(manual_balance))
         update_bar_holder.save()
     else:
         BarHolder.objects.create(
@@ -124,7 +124,7 @@ class TransferEventReceiver(AbstractEventReceiver):
             if obj.token_balance >= updated_amount:
                 man_obj_token_balance = int(obj.token_balance) - int(updated_amount)
 
-                obj.token_balance = str(man_obj_token_balance)
+                obj.token_balance = str(int(man_obj_token_balance))
                 obj.save()
 
                 CreateUpdateBarHolder(
@@ -137,7 +137,7 @@ class TransferEventReceiver(AbstractEventReceiver):
                 updated_amount -= manual_obj_token_balance
                 CreateUpdateBarHolder(
                     _bar_details, transfer_to, obj.token_balance)
-                obj.token_balance = str(0)
+                obj.token_balance = str(int(0))
                 obj.save()
 
 
