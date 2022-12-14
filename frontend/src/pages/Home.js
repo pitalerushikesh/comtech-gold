@@ -13,7 +13,8 @@ import {
   TableCell,
   TableBody,
   TableContainer,
-  Box
+  Box,
+  Card
 } from '@mui/material';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -28,6 +29,8 @@ import BurnHistoryTable from 'components/admin/BurnHistoryTable';
 import AddExistingBar from 'components/admin/AddExistingBar';
 import CheckEditBarPause from 'components/admin/CheckEditBarPause';
 import RemoveExistingBar from 'components/admin/RemoveExistingBar';
+import InitiateMint from 'components/admin/InitiateMint';
+import OpenTransaction from 'components/OpenTransaction';
 
 const Home = () => {
   return (
@@ -221,7 +224,10 @@ const Home = () => {
           </AccordionDetails>
         </Accordion>
 
-        <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} />
+        <AccordionLayout defaultExpanded title="Initiate Mint" content={<InitiateMint />} />
+        <AccordionLayout defaultExpanded title="Transactions" content={<OpenTransaction />} />
+
+        {/* <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} /> */}
         <AccordionLayout title="Burn Token" content={<BurnToken />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
 
