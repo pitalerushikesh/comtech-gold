@@ -115,12 +115,14 @@ class TransferEventReceiver(AbstractEventReceiver):
 
 
         # ********************* Minting (commented code for migrating existing bars in market ) ***********************
+        # Rework required after intitator and executor concept is implemented
+        
         if transfer_from == '0x0000000000000000000000000000000000000000':
             mint_amount = amount
 
-            edit_status = EditBarStatus.objects.all().first()
+            edit_status = EditBarStatus.objects.first()
 
-            if edit_status:
+            if edit_status.status == True:
                 bars = GoldBar.objects.filter(is_deleted=True)
                 if bars.exists():
                     for bar in bars:
@@ -324,25 +326,27 @@ class BarAddedEventReceiver(AbstractEventReceiver):
         print(f'Received Mint event: {decoded_event!r}')
         update_blockchain_transaction(decoded_event)
 
-        # edit_status = EditBarStatus.objects.all().first()
-        # if edit_status:
+        edit_status = EditBarStatus.objects.first()
+        if edit_status.status == True:
 
-        #     args = decoded_event['args']
-        #     bar_number = args.get('Bar_Number')
-        #     warrant_number = args.get('Warrant_Number')
-        #     tx_hash = decoded_event['transactionHash'].hex()
+            args = decoded_event['args']
+            bar_number = args.get('Bar_Number')
+            warrant_number = args.get('Warrant_Number')
+            tx_hash = decoded_event['transactionHash'].hex()
 
-        #     if GoldBar.objects.filter(bar_number=bar_number).exists():
-        #         print('Data Migration Completed')
-        #         return 'Bar Already Exists'
+            if GoldBar.objects.filter(bar_number=bar_number).exists():
+                print('Data Migration Completed')
+                return 'Bar Already Exists'
 
-        #     gold_bar = GoldBar.objects.create(
-        #         bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
+            gold_bar = GoldBar.objects.create(
+                bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
             
-            # Keep this commented
-            # Mint.objects.create(
-            #     bar_details=gold_bar
-            # )
+            # Keep this commented 
+            # Rework required after intitator and executor concept is implemented
 
-        # print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
+            Mint.objects.create(
+                bar_details=gold_bar
+            )
+
+        print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
         return 'Manual Bar Minted Successfully'
