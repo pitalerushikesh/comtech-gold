@@ -243,6 +243,22 @@ const AppState = () => {
   );
 
   // eslint-disable-next-line
+  const setInitiator = useCallback(
+    wrapContractCall((addr) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.setInitiatorAddr(addr))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const setExecutor = useCallback(
+    wrapContractCall((addr) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.setExecutorAddr(addr))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
   const checkEditBarStatus = useCallback(
     wrapContractCall(() => controllerContract.methods.isEditBarPaused().call()),
     [wrapContractCall, web3, controllerContract]
@@ -342,7 +358,9 @@ const AppState = () => {
     addExistingBar,
     checkEditBarStatus,
     updateEditBarStatus,
-    RemoveExistingBar
+    RemoveExistingBar,
+    setInitiator,
+    setExecutor
   };
 };
 
