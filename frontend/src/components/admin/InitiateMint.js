@@ -7,7 +7,7 @@ import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
 
 const InitiateMint = () => {
-  const { account, mintToken } = useAppState();
+  const { account, initiateMint } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
 
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
@@ -29,10 +29,7 @@ const InitiateMint = () => {
       try {
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
-        const res = await mintToken(_barNumber, _warrantNumber);
-        // const res = await contract.methods.mint(data.address, data.quantity).send({
-        //   from: account
-        // });
+        const res = await initiateMint(_barNumber, _warrantNumber);
 
         console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
         if (res) {
@@ -110,7 +107,7 @@ const InitiateMint = () => {
               sx={{ mt: 3, height: '2.6rem', width: '7.813rem' }}
               loading={isSubmitting}
             >
-              Mint
+              Initiate Mint
             </LoadingButton>
           </Grid>
         </Grid>

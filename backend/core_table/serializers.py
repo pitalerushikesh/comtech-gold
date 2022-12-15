@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import BarHolder, BurnHistory, GoldBar, Mint
+from .models import BarHolder, BurnHistory, GoldBar, Mint, Burn
 from utils import ethToXdc, toChecksumAddress
 
 
@@ -53,5 +53,14 @@ class MintHistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mint
+        fields = '__all__'
+        depth = 2
+
+class BurnIntiatedSerializer(serializers.ModelSerializer):
+    bar_number = serializers.CharField(source='bar_details.bar_number')
+    warrant_number = serializers.CharField(source='bar_details.warrant_number')
+
+    class Meta:
+        model = Burn
         fields = '__all__'
         depth = 2

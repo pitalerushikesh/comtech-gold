@@ -114,23 +114,23 @@ class TransferEventReceiver(AbstractEventReceiver):
         updated_amount = amount
 
         if transfer_from == '0x0000000000000000000000000000000000000000':
-            mint_amount = amount
+            # mint_amount = amount
 
-            bars = GoldBar.objects.filter(is_deleted=True)
-            if bars.exists():
-                for bar in bars:
-                    if mint_amount > 0:
-                        Mint.objects.create(
-                            bar_details=bar
-                        )
-                        BarHolder.objects.create(
-                            bar_details=bar, holder_xinfin_address=transfer_to, token_balance=str(1000 * 10**18)
-                        )
-                        bar.is_deleted = False
-                        bar.save()
-                        mint_amount -= int(1000 * 10**18)
+            # bars = GoldBar.objects.filter(is_deleted=True)
+            # if bars.exists():
+            #     for bar in bars:
+            #         if mint_amount > 0:
+            #             Mint.objects.create(
+            #                 bar_details=bar
+            #             )
+            #             BarHolder.objects.create(
+            #                 bar_details=bar, holder_xinfin_address=transfer_to, token_balance=str(1000 * 10**18)
+            #             )
+            #             bar.is_deleted = False
+            #             bar.save()
+            #             mint_amount -= int(1000 * 10**18)
 
-            print(f'Mint To: {transfer_to}, Amount: {amount}')
+            # print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
 
         if transfer_to == '0x0000000000000000000000000000000000000000':

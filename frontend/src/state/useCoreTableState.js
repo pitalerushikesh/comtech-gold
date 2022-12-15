@@ -3,12 +3,21 @@ import { useHttpApi } from './useHttpApi';
 import constate from 'constate';
 
 const CoreTableState = () => {
-  const { getGoldBars, getBarHolder, getBurnHistory, getMintHistory } = useHttpApi();
+  const {
+    getGoldBars,
+    getBarHolder,
+    getBurnHistory,
+    getMintHistory,
+    getInitiatedMintHistory,
+    getInitiatedBurn
+  } = useHttpApi();
 
   const [goldBars, setGoldBars] = useState([]);
   const [barHolders, setBarHolders] = useState([]);
   const [burnHistory, setBurnHistory] = useState([]);
   const [mintHistory, setMintHistory] = useState([]);
+  const [initiatedMintHistory, setInitiatedMintHistory] = useState([]);
+  const [initiatedBurn, setInitiatedBurn] = useState([]);
 
   const fetchBarHolders = async () => {
     const res = await getBarHolder();
@@ -30,11 +39,23 @@ const CoreTableState = () => {
     setMintHistory(res);
   };
 
+  const fetchInitiatedMintHistory = async () => {
+    const res = await getInitiatedMintHistory();
+    setInitiatedMintHistory(res);
+  };
+
+  const fetchInitiatedBurn = async () => {
+    const res = await getInitiatedBurn();
+    setInitiatedBurn(res);
+  };
+
   useEffect(() => {
     fetchBarHolders();
     fetchGoldBars();
     fetchBurnHistory();
     fetchMintHistory();
+    fetchInitiatedMintHistory();
+    fetchInitiatedBurn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,7 +67,11 @@ const CoreTableState = () => {
     burnHistory,
     fetchBurnHistory,
     mintHistory,
-    fetchMintHistory
+    fetchMintHistory,
+    initiatedMintHistory,
+    fetchInitiatedMintHistory,
+    initiatedBurn,
+    fetchInitiatedBurn
   };
 };
 

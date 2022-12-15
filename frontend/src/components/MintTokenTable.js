@@ -77,7 +77,7 @@ function Row(props) {
 
 export default function MintTokenTable() {
   // Get  Current logged in web3 account
-  const { mintHistory, fetchMintHistory } = useCoreTableState();
+  const { initiatedMintHistory, fetchInitiatedMintHistory } = useCoreTableState();
   // API call to get open transaction
   // const { getAllSubscriptionsByXinFinAddress } = useHttpApi();
   // const [openTransaction, setOpenTransaction] = React.useState([]);
@@ -88,15 +88,15 @@ export default function MintTokenTable() {
   //   setOpenTransaction(result);
   // };
   const fetchData = () => {
-    fetchMintHistory();
+    fetchInitiatedMintHistory();
     console.log('fetching data');
-    console.log(mintHistory);
+    console.log(initiatedMintHistory);
   };
-  useEffect(() => {
-    fetchMintHistory();
-    console.log('fetching data');
-    console.log(mintHistory);
-  }, []);
+  // useEffect(() => {
+  //   fetchInitiatedMintHistory();
+  //   console.log('fetching data');
+  //   console.log(mintHistory);
+  // }, []);
 
   return (
     <>
@@ -116,10 +116,10 @@ export default function MintTokenTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mintHistory.map((row) => (
+            {initiatedMintHistory.map((row) => (
               <Row key={row.bar_number} row={row} />
             ))}
-            {mintHistory.length === 0 && (
+            {initiatedMintHistory.length === 0 && (
               <TableCell
                 colSpan={4}
                 sx={{

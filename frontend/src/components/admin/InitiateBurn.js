@@ -17,8 +17,8 @@ import { useAppState, useCoreTableState } from 'state';
 import { useSnackbar } from 'notistack';
 
 const InitiateBurn = () => {
-  const { account, burnToken } = useAppState();
-  const { goldBars, fetchGoldBars } = useCoreTableState();
+  const { account, initiateBurn } = useAppState();
+  const { mintHistory } = useCoreTableState();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -35,14 +35,14 @@ const InitiateBurn = () => {
     },
     validationSchema: BurnSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log('🚀 ~ file: BurnToken.js ~ line 36 ~ onSubmit: ~ data', data);
+      console.log('🚀 ~ file: initiateBurn.js ~ line 36 ~ onSubmit: ~ data', data);
       try {
         // const _qty = data.quantity;
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
-        const res = await burnToken(_barNumber, _warrantNumber);
+        const res = await initiateBurn(_barNumber, _warrantNumber);
 
-        console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
+        console.log('🚀 ~ file: initiateBurn.js ~ line 17 ~ onSubmit: ~ res', res);
 
         if (res) {
           enqueueSnackbar('Token burn successful', { variant: 'success' });
@@ -64,7 +64,7 @@ const InitiateBurn = () => {
   //   { label: 'Pulp Fiction', id: 2 }
   // ];
 
-  const options = goldBars.map((bar) => {
+  const options = mintHistory.map((bar) => {
     return {
       label: bar.bar_number,
       id: bar.bar_number,

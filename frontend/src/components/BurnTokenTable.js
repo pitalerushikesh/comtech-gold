@@ -78,7 +78,7 @@ function Row(props) {
 
 export default function BurnTokenTable() {
   // Get  Current logged in web3 account
-  const { mintHistory, fetchMintHistory } = useCoreTableState();
+  const { initiatedBurn, fetchInitiatedBurn } = useCoreTableState();
   // API call to get open transaction
   // const { getAllSubscriptionsByXinFinAddress } = useHttpApi();
   // const [openTransaction, setOpenTransaction] = React.useState([]);
@@ -89,15 +89,15 @@ export default function BurnTokenTable() {
   //   setOpenTransaction(result);
   // };
   const fetchData = () => {
-    fetchMintHistory();
+    fetchInitiatedBurn();
     console.log('fetching data');
-    console.log(mintHistory);
+    console.log(initiatedBurn);
   };
-  useEffect(() => {
-    fetchMintHistory();
-    console.log('fetching data');
-    console.log(mintHistory);
-  }, []);
+  // useEffect(() => {
+  //   fetchInitiatedBurn();
+  //   console.log('fetching data');
+  //   console.log(initiatedBurn);
+  // }, []);
 
   return (
     <>
@@ -117,10 +117,10 @@ export default function BurnTokenTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mintHistory.map((row) => (
+            {initiatedBurn.map((row) => (
               <Row key={row.bar_number} row={row} />
             ))}
-            {mintHistory.length === 0 && (
+            {initiatedBurn.length === 0 && (
               <TableCell
                 colSpan={4}
                 sx={{

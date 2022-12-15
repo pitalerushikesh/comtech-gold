@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .serializers import BarHolderSerializer, BurnHistorySerializer, GoldBarSerializer, MintHistorySerializer
-from .models import BarHolder, BurnHistory, GoldBar, Mint
+from .serializers import BarHolderSerializer, BurnHistorySerializer, GoldBarSerializer, MintHistorySerializer, BurnIntiatedSerializer
+from .models import BarHolder, BurnHistory, GoldBar, Mint, Burn
 from rest_framework.generics import ListAPIView
 from utils import xdcToEth, toChecksumAddress
 
@@ -33,5 +33,13 @@ class GetBurnHistory(ListAPIView):
 
 
 class GetMintHistory(ListAPIView):
-    queryset = Mint.objects.all()
+    queryset = Mint.objects.filter(status='MINT_COMPLETED')
     serializer_class = MintHistorySerializer
+
+class GetInitiatedMintHistory(ListAPIView):
+    queryset = Mint.objects.filter(status='MINT_INITIATED')
+    serializer_class = MintHistorySerializer
+
+class GetInitiatedBurn(ListAPIView):
+    queryset = Burn.objects.filter(status='BURN_INITIATED')
+    serializer_class = BurnIntiatedSerializer
