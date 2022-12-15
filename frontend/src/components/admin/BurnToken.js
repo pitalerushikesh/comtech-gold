@@ -16,7 +16,7 @@ import * as Yup from 'yup';
 import { useAppState, useCoreTableState } from 'state';
 import { useSnackbar } from 'notistack';
 
-const BurnToken = () => {
+const BurnToken = ({ barNumber, warrantNumber }) => {
   const { account, burnToken } = useAppState();
   const { goldBars, fetchGoldBars } = useCoreTableState();
 
@@ -31,8 +31,8 @@ const BurnToken = () => {
   const formik = useFormik({
     initialValues: {
       quantity: 1000,
-      bar_number: '',
-      warrant_number: ''
+      bar_number: barNumber,
+      warrant_number: warrantNumber
     },
     validationSchema: BurnSchema,
     onSubmit: async (data, { resetForm }) => {
@@ -90,20 +90,20 @@ const BurnToken = () => {
           }}
         >
           <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Quantity</FormLabel>
+            <FormLabel>Bar Number</FormLabel>
             <TextField
+              disabled
               sx={{ mt: 1 }}
               fullWidth
               size="small"
-              {...getFieldProps('quantity')}
+              {...getFieldProps('bar_number')}
               autoComplete="off"
-              type="number"
-              disabled
-              error={Boolean(touched.quantity && errors.quantity)}
-              helperText={touched.quantity && errors.quantity}
+              type="text"
+              error={Boolean(touched.bar_number && errors.bar_number)}
+              helperText={touched.bar_number && errors.bar_number}
             />
           </Grid>
-          <Grid item lg={6} md={6} xs={12}>
+          {/* <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Bar Number</FormLabel>
             <Autocomplete
               // freeSolo
@@ -131,7 +131,7 @@ const BurnToken = () => {
                 />
               )}
             />
-          </Grid>
+          </Grid> */}
           {/* <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Warrant Number</FormLabel>
             <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1 }}>
@@ -164,6 +164,20 @@ const BurnToken = () => {
               type="text"
               error={Boolean(touched.warrant_number && errors.warrant_number)}
               helperText={touched.warrant_number && errors.warrant_number}
+            />
+          </Grid>
+          <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Quantity</FormLabel>
+            <TextField
+              sx={{ mt: 1 }}
+              fullWidth
+              size="small"
+              {...getFieldProps('quantity')}
+              autoComplete="off"
+              type="number"
+              disabled
+              error={Boolean(touched.quantity && errors.quantity)}
+              helperText={touched.quantity && errors.quantity}
             />
           </Grid>
         </Grid>

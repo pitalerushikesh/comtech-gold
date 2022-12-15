@@ -19,7 +19,7 @@ import {
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionLayout from '../helpers/AccordionLayout';
-import TokenMintingTable from '../components/admin/TokenMintingTable';
+// import TokenMintingTable from '../components/admin/TokenMintingTable';
 import BlacklistAdminTable from '../components/admin/BlacklistAdminTable';
 import { currentNetwork, ethToXdcAddress } from 'helpers/web3';
 import AddressFieldTools from 'components/AddressFieldTools';
@@ -30,7 +30,10 @@ import AddExistingBar from 'components/admin/AddExistingBar';
 import CheckEditBarPause from 'components/admin/CheckEditBarPause';
 import RemoveExistingBar from 'components/admin/RemoveExistingBar';
 import InitiateMint from 'components/admin/InitiateMint';
-import OpenTransaction from 'components/OpenTransaction';
+import MintTokenTable from 'components/MintTokenTable';
+import InitiateBurn from 'components/admin/InitiateBurn';
+import BurnTokenTable from 'components/BurnTokenTable';
+import InitiatorExecutor from 'components/admin/InitiatorExecutor';
 
 const Home = () => {
   return (
@@ -223,12 +226,18 @@ const Home = () => {
             </TableContainer>
           </AccordionDetails>
         </Accordion>
+        <AccordionLayout
+          defaultExpanded
+          title="Configure Initiator & Executor"
+          content={<InitiatorExecutor />}
+        />
 
         <AccordionLayout defaultExpanded title="Initiate Mint" content={<InitiateMint />} />
-        <AccordionLayout defaultExpanded title="Transactions" content={<OpenTransaction />} />
+        <AccordionLayout defaultExpanded title="Mint Token" content={<MintTokenTable />} />
 
         {/* <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} /> */}
-        <AccordionLayout title="Burn Token" content={<BurnToken />} />
+        <AccordionLayout title="Initiate Burn" content={<InitiateBurn />} />
+        <AccordionLayout title="Burn Token" content={<BurnTokenTable />} />
         <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
 
         {/* ***START*** Remove the Following ui in production */}

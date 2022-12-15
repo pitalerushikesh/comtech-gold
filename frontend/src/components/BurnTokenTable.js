@@ -28,6 +28,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 // import Synaps from '@synaps-io/react-verify';
 import { useCoreTableState } from 'state';
 import TokenMintingTable from './admin/TokenMintingTable';
+import BurnToken from './admin/BurnToken';
 
 function Row(props) {
   const { row } = props;
@@ -66,7 +67,7 @@ function Row(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <TokenMintingTable barNumber={row.bar_number} warrantNumber={row.warrant_number} />
+              <BurnToken barNumber={row.bar_number} warrantNumber={row.warrant_number} />
             </Box>
           </Collapse>
         </TableCell>
@@ -75,7 +76,7 @@ function Row(props) {
   );
 }
 
-export default function OpenTransaction() {
+export default function BurnTokenTable() {
   // Get  Current logged in web3 account
   const { mintHistory, fetchMintHistory } = useCoreTableState();
   // API call to get open transaction
@@ -112,6 +113,7 @@ export default function OpenTransaction() {
               <TableCell sx={{ fontWeight: 'bold', fontSize: '1rem' }}>Bar Number</TableCell>
               <TableCell sx={{ fontWeight: 'bold', fontSize: '1rem' }}>Warrant Number</TableCell>
               <TableCell sx={{ fontWeight: 'bold', fontSize: '1rem' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '1rem' }}> </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
