@@ -1,6 +1,18 @@
 from django.db import models
 import uuid
 
+MINT_STATUS = (
+    ("NOT_EXIST", "Not Exist"),
+    ("MINT_INITIATED", "Mint Initiated"),
+    ("MINT_COMPLETED", "Mint Completed"),
+)
+
+BURN_STATUS = (
+    ("NOT_EXIST", "Not Exist"),
+    ("BURN_INITIATED", "Burn Initiated"),
+    ("BURN_COMPLETED", "Burn Completed"),
+)
+
 # Create your models here.
 
 class GoldBar(models.Model):
@@ -20,6 +32,7 @@ class Mint(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bar_details = models.ForeignKey(GoldBar, on_delete=models.PROTECT)
     burnt = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, default='NOT_EXIST', choices=MINT_STATUS)
     mint_date = models.DateField(auto_now=True, auto_created=True)
 
     def __str__(self):
@@ -32,6 +45,7 @@ class Mint(models.Model):
 class Burn(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bar_details = models.ForeignKey(GoldBar, on_delete=models.PROTECT)
+    status = models.CharField(max_length=20, default='NOT_EXIST', choices=BURN_STATUS)
     burnt_date = models.DateField(auto_now=True, auto_created=True)
 
     def __str__(self):

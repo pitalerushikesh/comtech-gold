@@ -31,6 +31,32 @@ def get_blockchain_executor(decoded_event):
     return BlockChainTransaction.objects.filter(
         transaction_hash=decoded_event.transactionHash.hex()).first().executor
 
+def get_token_status(status):
+    TOKEN_STATUS = {
+        0: "NOT_EXIST",
+        1: "MINT_INITIATED",
+        2: "MINT_COMPLETED",
+        3: "BURN_INITIATED",
+        4: "BURN_COMPLETED",
+    }
+    return TOKEN_STATUS.get(status, "NOT_EXIST")
+
+class MintIntiatedEventReceiver(AbstractEventReceiver):
+    def save(self, decoded_event):
+        print(f'Received MintInitiated event: {decoded_event!r}')
+        update_blockchain_transaction(decoded_event)
+        args = decoded_event['args']
+
+        bar_number = args.get('Bar_Number')
+        warrant_number = args.get('Warrant_Number')
+        _status = args.get('status')
+        tx_hash = decoded_event['transactionHash'].hex()
+
+        gold_bar = GoldBar.objects.create(
+            bar_number=bar_number, warrant_number=warrant_number)
+        Mint.objects.create(
+            bar_details=gold_bar,
+            status=get_token_status(_status))
 
 class MintEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
@@ -43,11 +69,13 @@ class MintEventReceiver(AbstractEventReceiver):
         warrant_number = args.get('Warrant_Number')
         tx_hash = decoded_event['transactionHash'].hex()
 
-        gold_bar = GoldBar.objects.create(
+        gold_bar = GoldBar.objects.get(
             bar_number=bar_number, warrant_number=warrant_number)
-        Mint.objects.create(
+        _mint = Mint.objects.get(
             bar_details=gold_bar
         )
+        _mint.status = get_token_status(2)
+        _mint.save()
         BarHolder.objects.create(
             bar_details=gold_bar, holder_xinfin_address=mint_to, token_balance=amount
         )
@@ -139,6 +167,21 @@ class TransferEventReceiver(AbstractEventReceiver):
                     _bar_details, transfer_to, obj.token_balance)
                 obj.token_balance = str(int(0))
                 obj.save()
+
+class BurnInitiatedEventReceiver(AbstractEventReceiver):
+    def save(self, decoded_event):
+        print(f'Received BurnInitiated event: {decoded_event!r}')
+        update_blockchain_transaction(decoded_event)
+        args = decoded_event['args']
+        bar_number = args.get('Bar_Number')
+        warrant_number = args.get('Warrant_Number')
+        _status = args.get('status')
+        tx_hash = decoded_event['transactionHash'].hex()
+
+        gold_bar = GoldBar.objects.get(
+            bar_number=bar_number, warrant_number=warrant_number)
+        Burn.objects.create(bar_details=gold_bar, 
+        status=get_token_status(_status))
 
 
 class BurnEventReceiver(AbstractEventReceiver):
@@ -250,7 +293,9 @@ class BurnEventReceiver(AbstractEventReceiver):
                 obj.token_balance = str(0)
                 obj.save()
 
-        Burn.objects.create(bar_details=gold_bar)
+        _burn = Burn.objects.get(bar_details=gold_bar)
+        _burn.status = get_token_status(4)
+        _burn.save()
         mint_obj = Mint.objects.get(bar_details=gold_bar)
         mint_obj.burnt = True
         mint_obj.save()

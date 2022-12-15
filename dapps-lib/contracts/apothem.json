@@ -3,7 +3,7 @@
   "chainId": "51",
   "contracts": {
     "Goldtoken": {
-      "address": "0x84bD9f6B49B2C821AcAcb7fD22C5866F5c346b86",
+      "address": "0x013540113Ea6b31F66335aE735610411a4b0F563",
       "abi": [
         {
           "inputs": [],
@@ -440,7 +440,7 @@
       ]
     },
     "CGOController": {
-      "address": "0xe6c6287D47F216dd06910E7aA5330d01130AAef0",
+      "address": "0x70BB2e9F74a40Ee9A7e3F947aa5F7C68add21729",
       "abi": [
         {
           "inputs": [
@@ -539,12 +539,62 @@
           "inputs": [
             {
               "indexed": false,
+              "internalType": "string",
+              "name": "Bar_Number",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "Warrant_Number",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum CGOController.txnStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "name": "BurnInitiated",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
               "internalType": "bool",
               "name": "status",
               "type": "bool"
             }
           ],
           "name": "EditBarStatusPaused",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "Bar_Number",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "Warrant_Number",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum CGOController.txnStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "name": "MintInitiated",
           "type": "event"
         },
         {
@@ -665,6 +715,68 @@
         },
         {
           "inputs": [],
+          "name": "executorAddr",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "Bar_Number",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "Warrant_Number",
+              "type": "string"
+            }
+          ],
+          "name": "initiateBurn",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "Bar_Number",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "Warrant_Number",
+              "type": "string"
+            }
+          ],
+          "name": "initiateMint",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "initiatorAddr",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
           "name": "isEditBarPaused",
           "outputs": [
             {
@@ -756,6 +868,32 @@
           "type": "function"
         },
         {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_executorAddr",
+              "type": "address"
+            }
+          ],
+          "name": "setExecutorAddr",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_initiatorAddr",
+              "type": "address"
+            }
+          ],
+          "name": "setInitiatorAddr",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
           "inputs": [],
           "name": "tokenAddr",
           "outputs": [
@@ -792,6 +930,30 @@
           "name": "transferOwnership",
           "outputs": [],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "name": "txnStatusRecord",
+          "outputs": [
+            {
+              "internalType": "enum CGOController.txnStatus",
+              "name": "",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
           "type": "function"
         },
         {
