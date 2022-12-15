@@ -16,34 +16,33 @@ import * as Yup from 'yup';
 import { useAppState, useCoreTableState } from 'state';
 import { useSnackbar } from 'notistack';
 
-const BurnToken = ({ barNumber, warrantNumber }) => {
-  const { account, burnToken } = useAppState();
-  const { goldBars, fetchGoldBars } = useCoreTableState();
+const InitiateBurn = () => {
+  const { account, initiateBurn } = useAppState();
+  const { mintHistory } = useCoreTableState();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const BurnSchema = Yup.object().shape({
-    quantity: Yup.number().required('Quantity is required'),
     bar_number: Yup.string().required('Bar Number is required'),
     warrant_number: Yup.string().required('Warrant Number is required')
   });
 
   const formik = useFormik({
     initialValues: {
-      quantity: 1000,
-      bar_number: barNumber,
-      warrant_number: warrantNumber
+      // quantity: 1000,
+      bar_number: '',
+      warrant_number: ''
     },
     validationSchema: BurnSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log('🚀 ~ file: BurnToken.js ~ line 36 ~ onSubmit: ~ data', data);
+      console.log('🚀 ~ file: initiateBurn.js ~ line 36 ~ onSubmit: ~ data', data);
       try {
-        const _qty = data.quantity;
+        // const _qty = data.quantity;
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
-        const res = await burnToken(_qty, _barNumber, _warrantNumber);
+        const res = await initiateBurn(_barNumber, _warrantNumber);
 
-        console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
+        console.log('🚀 ~ file: initiateBurn.js ~ line 17 ~ onSubmit: ~ res', res);
 
         if (res) {
           enqueueSnackbar('Token burn successful', { variant: 'success' });
@@ -65,7 +64,7 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
   //   { label: 'Pulp Fiction', id: 2 }
   // ];
 
-  const options = goldBars.map((bar) => {
+  const options = mintHistory.map((bar) => {
     return {
       label: bar.bar_number,
       id: bar.bar_number,
@@ -89,21 +88,21 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
             mt: 2
           }}
         >
-          <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Bar Number</FormLabel>
+          {/* <Grid item lg={6} md={6} xs={12}>
+            <FormLabel>Quantity</FormLabel>
             <TextField
-              disabled
               sx={{ mt: 1 }}
               fullWidth
               size="small"
-              {...getFieldProps('bar_number')}
+              {...getFieldProps('quantity')}
               autoComplete="off"
-              type="text"
-              error={Boolean(touched.bar_number && errors.bar_number)}
-              helperText={touched.bar_number && errors.bar_number}
+              type="number"
+              disabled
+              error={Boolean(touched.quantity && errors.quantity)}
+              helperText={touched.quantity && errors.quantity}
             />
-          </Grid>
-          {/* <Grid item lg={6} md={6} xs={12}>
+          </Grid> */}
+          <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Bar Number</FormLabel>
             <Autocomplete
               // freeSolo
@@ -131,7 +130,7 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
                 />
               )}
             />
-          </Grid> */}
+          </Grid>
           {/* <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Warrant Number</FormLabel>
             <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1 }}>
@@ -166,20 +165,6 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
               helperText={touched.warrant_number && errors.warrant_number}
             />
           </Grid>
-          <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Quantity</FormLabel>
-            <TextField
-              sx={{ mt: 1 }}
-              fullWidth
-              size="small"
-              {...getFieldProps('quantity')}
-              autoComplete="off"
-              type="number"
-              disabled
-              error={Boolean(touched.quantity && errors.quantity)}
-              helperText={touched.quantity && errors.quantity}
-            />
-          </Grid>
         </Grid>
         <Grid
           container
@@ -209,4 +194,4 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
   );
 };
 
-export default BurnToken;
+export default InitiateBurn;

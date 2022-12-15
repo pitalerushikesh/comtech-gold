@@ -12,13 +12,13 @@ class GoldBarAdmin(admin.ModelAdmin):
     readonly_fields = ('escrow_date',)
 
 class MintAdmin(admin.ModelAdmin):
-    list_display = ('bar_details', 'mint_date', 'burnt')
+    list_display = ('bar_details', 'mint_date', 'status', 'burnt')
     list_filter = ('burnt', 'mint_date')
     search_fields = ('bar_details__bar_number', 'mint_date')
     readonly_fields = ('mint_date',)
 
 class BurnAdmin(admin.ModelAdmin):
-    list_display = ('bar_details', 'burnt_date')
+    list_display = ('bar_details', 'status', 'burnt_date')
     list_filter = ('burnt_date',)
     search_fields = ('bar_details__bar_number', 'burnt_date')
     readonly_fields = ('burnt_date',)

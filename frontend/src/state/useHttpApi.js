@@ -66,12 +66,18 @@ const buildApi = (setIsLoading) => {
   const getBarHolderByAddress = (address) => get(`api/bar-holder/${address}/`);
 
   const getEditBarStatus = () => get(`api/edit-bar-status/`);
+  const getMintHistory = () => get('api/mint-history/');
+  const getInitiatedMintHistory = () => get('api/initiated-mint-history/');
+  const getInitiatedBurn = () => get('api/initiated-burn/');
 
   return {
     getGoldBars,
     getBarHolder,
     getBurnHistory,
     getBarHolderByAddress,
+    getMintHistory,
+    getInitiatedMintHistory,
+    getInitiatedBurn,
     getEditBarStatus
   };
 };

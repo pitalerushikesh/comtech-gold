@@ -3,11 +3,22 @@ import { useHttpApi } from './useHttpApi';
 import constate from 'constate';
 
 const CoreTableState = () => {
-  const { getGoldBars, getBarHolder, getBurnHistory, getEditBarStatus } = useHttpApi();
+  const {
+    getGoldBars,
+    getBarHolder,
+    getBurnHistory,
+    getEditBarStatus,
+    getMintHistory,
+    getInitiatedMintHistory,
+    getInitiatedBurn
+  } = useHttpApi();
 
   const [goldBars, setGoldBars] = useState([]);
   const [barHolders, setBarHolders] = useState([]);
   const [burnHistory, setBurnHistory] = useState([]);
+  const [mintHistory, setMintHistory] = useState([]);
+  const [initiatedMintHistory, setInitiatedMintHistory] = useState([]);
+  const [initiatedBurn, setInitiatedBurn] = useState([]);
 
   const [editBarStatus, setEditBarStatus] = useState();
 
@@ -35,11 +46,29 @@ const CoreTableState = () => {
     setEditBarStatus(res[0].status);
   };
 
+  const fetchMintHistory = async () => {
+    const res = await getMintHistory();
+    setMintHistory(res);
+  };
+
+  const fetchInitiatedMintHistory = async () => {
+    const res = await getInitiatedMintHistory();
+    setInitiatedMintHistory(res);
+  };
+
+  const fetchInitiatedBurn = async () => {
+    const res = await getInitiatedBurn();
+    setInitiatedBurn(res);
+  };
+
   useEffect(() => {
     fetchBarHolders();
     fetchGoldBars();
     fetchBurnHistory();
     fetchEditBarStatus();
+    fetchMintHistory();
+    fetchInitiatedMintHistory();
+    fetchInitiatedBurn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -50,7 +79,13 @@ const CoreTableState = () => {
     fetchBarHolders,
     burnHistory,
     fetchBurnHistory,
-    editBarStatus
+    editBarStatus,
+    mintHistory,
+    fetchMintHistory,
+    initiatedMintHistory,
+    fetchInitiatedMintHistory,
+    initiatedBurn,
+    fetchInitiatedBurn
   };
 };
 

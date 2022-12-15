@@ -6,44 +6,30 @@ import { useAppState } from 'state';
 import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
 
-const TokenMintingTable = ({ barNumber, warrantNumber }) => {
-  const { account, mintToken } = useAppState();
+const InitiateMint = () => {
+  const { account, initiateMint } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
 
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
   const MintSchema = Yup.object().shape({
-    address: Yup.string().required('Recipient Address is required'),
-    quantity: Yup.number().required('Quantity is required'),
-    bar_number: Yup.string()
-      .required('Bar Number is required')
-      .max(10, 'Bar Number cannot be more than 10 characters'),
-    warrant_number: Yup.string()
-      .required('Warrant Number is required')
-      .max(10, 'Warrant Number cannot be more than 10 characters')
+    bar_number: Yup.string().required('Bar Number is required'),
+    warrant_number: Yup.string().required('Warrant Number is required')
   });
 
   const formik = useFormik({
     initialValues: {
-      address: '',
-      // address: 'xdc821ab84ce0aC467b3e30F462059577B2cecD8B76',
-      quantity: '1000',
-      bar_number: barNumber,
-      warrant_number: warrantNumber
+      bar_number: '',
+      warrant_number: ''
     },
     validationSchema: MintSchema,
     onSubmit: async (data, { resetForm }) => {
       console.log(data);
 
       try {
-        const _address = toChecksumAddress(xdcToEthAddress(data.address));
-        const _qty = data.quantity;
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
-        const res = await mintToken(_address, _qty, _barNumber, _warrantNumber);
-        // const res = await contract.methods.mint(data.address, data.quantity).send({
-        //   from: account
-        // });
+        const res = await initiateMint(_barNumber, _warrantNumber);
 
         console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
         if (res) {
@@ -75,37 +61,6 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
           }}
         >
           <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Address</FormLabel>
-            <TextField
-              fullWidth
-              sx={{ mt: 1 }}
-              {...getFieldProps('address')}
-              size="small"
-              autoComplete="off"
-              type="text"
-              error={Boolean(touched.address && errors.address)}
-              helperText={touched.address && errors.address}
-              // disabled
-              // inputProps={{ readOnly: true }}
-            />
-          </Grid>
-
-          <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Quantity</FormLabel>
-            <TextField
-              sx={{ mt: 1 }}
-              fullWidth
-              size="small"
-              {...getFieldProps('quantity')}
-              autoComplete="off"
-              type="number"
-              error={Boolean(touched.quantity && errors.quantity)}
-              helperText={touched.quantity && errors.quantity}
-              disabled
-              inputProps={{ readOnly: true }}
-            />
-          </Grid>
-          <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Bar Number</FormLabel>
             <TextField
               fullWidth
@@ -116,7 +71,6 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
               type="text"
               error={Boolean(touched.bar_number && errors.bar_number)}
               helperText={touched.bar_number && errors.bar_number}
-              disabled
             />
           </Grid>
 
@@ -131,7 +85,6 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
               type="text"
               error={Boolean(touched.warrant_number && errors.warrant_number)}
               helperText={touched.warrant_number && errors.warrant_number}
-              disabled
             />
           </Grid>
         </Grid>
@@ -154,7 +107,7 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
               sx={{ mt: 3, height: '2.6rem', width: '7.813rem' }}
               loading={isSubmitting}
             >
-              Mint
+              Initiate Mint
             </LoadingButton>
           </Grid>
         </Grid>
@@ -163,4 +116,4 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
   );
 };
 
-export default TokenMintingTable;
+export default InitiateMint;

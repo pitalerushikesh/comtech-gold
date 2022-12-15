@@ -5,11 +5,11 @@ import AddressFieldTools from 'components/AddressFieldTools';
 import DummyData from './DummyData.json';
 import { useCoreTableState } from 'state';
 
-export default function HoldingsTable() {
-  const { barHolders, fetchBarHolders } = useCoreTableState();
+export default function MintHistory() {
+  const { mintHistory, fetchMintHistory } = useCoreTableState();
 
   const updateData = () => {
-    const res = fetchBarHolders();
+    const res = fetchMintHistory();
     console.log('🚀 ~ file: HoldingsTable.js ~ line 15 ~ updateData ~ res', res);
   };
 
@@ -17,19 +17,6 @@ export default function HoldingsTable() {
 
   const headCells = useMemo(
     () => [
-      {
-        accessor: 'xdc_holder_address',
-        Header: 'Holder Address',
-        show: true,
-        width: 100
-      },
-      {
-        accessor: 'holder_xinfin_address',
-        Header: 'Holder Address',
-        show: false,
-        width: 100
-      },
-
       {
         accessor: 'bar_number',
         Header: 'Bar Number',
@@ -45,12 +32,15 @@ export default function HoldingsTable() {
         // Cell: ({ row: { original } }) => {
         //   return <Box>{original.bar_details.warrant_number}</Box>;
         // }
-      },
-      {
-        accessor: 'token_balance_formatted',
-        Header: 'Token Balance',
-        show: true
       }
+      // {
+      //   accessor: 'warrant_number',
+      //   Header: 'Warrant Number',
+      //   show: true
+      //   // Cell: ({ row: { original } }) => {
+      //   //   return <Box>{original.bar_details.warrant_number}</Box>;
+      //   // }
+      // }
     ],
     []
   );
@@ -60,7 +50,7 @@ export default function HoldingsTable() {
       <EnhancedTable
         tableTitle="Transactions"
         columns={headCells}
-        data={barHolders}
+        data={mintHistory}
         refreshFunction={updateData}
       />
     </>
