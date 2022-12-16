@@ -185,7 +185,7 @@ const InitiateBurn = () => {
               sx={{ mt: 2, height: '2.6rem', width: '7.813rem' }}
               loading={isSubmitting}
             >
-              Burn
+              Initiate Burn
             </LoadingButton>
           </Grid>
         </Grid>

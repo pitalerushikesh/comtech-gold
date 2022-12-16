@@ -36,7 +36,7 @@ class GetEditBarStatus(ListAPIView):
     serializer_class = EditBarStatusSerializer
 
 class GetMintHistory(ListAPIView):
-    queryset = Mint.objects.filter(status='MINT_COMPLETED')
+    queryset = Mint.objects.filter(status='MINT_COMPLETED', bar_details__is_deleted=False)
     serializer_class = MintHistorySerializer
 
 class GetInitiatedMintHistory(ListAPIView):

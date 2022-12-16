@@ -21,7 +21,7 @@ export default function HoldingsTable() {
         accessor: 'xdc_holder_address',
         Header: 'Holder Address',
         show: true,
-        width: 100
+        width: 300
       },
       {
         accessor: 'holder_xinfin_address',

@@ -161,7 +161,7 @@ class TransferEventReceiver(AbstractEventReceiver):
             _bar_details = obj.bar_details
             if updated_amount == 0:
                 break
-            if obj.token_balance >= updated_amount:
+            if int(obj.token_balance) >= updated_amount:
                 man_obj_token_balance = int(obj.token_balance) - int(updated_amount)
 
                 obj.token_balance = str(int(man_obj_token_balance))
@@ -172,7 +172,7 @@ class TransferEventReceiver(AbstractEventReceiver):
                 updated_amount = int(0)
                 break
 
-            if obj.token_balance < updated_amount and obj.token_balance > 0:
+            if int(obj.token_balance) < updated_amount and int(obj.token_balance) > 0:
                 manual_obj_token_balance = int(obj.token_balance)
                 updated_amount -= manual_obj_token_balance
                 CreateUpdateBarHolder(
@@ -214,7 +214,10 @@ class BurnEventReceiver(AbstractEventReceiver):
         bar_holders = BarHolder.objects.filter(
             bar_details=gold_bar, token_balance__gt=0)
 
-        if len(bar_holders) == 1 and bar_holders.first().token_balance == amount and bar_holders.first().holder_xinfin_address == burn_from:
+        user_holdings = BarHolder.objects.filter(
+            holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
+
+        if len(bar_holders) == 1 and int(bar_holders.first().token_balance) == amount and bar_holders.first().holder_xinfin_address == burn_from:
             bar_holders.first().token_balance = str(0)
             BurnHistory.objects.create(
                 burnt_bar=gold_bar,
@@ -223,9 +226,6 @@ class BurnEventReceiver(AbstractEventReceiver):
                 adjusted_amount=str(amount),
                 tx_hash=tx_hash
                 )
-
-            user_holdings = BarHolder.objects.filter(
-                holder_xinfin_address=burn_from, token_balance__gt=0, bar_details__is_deleted=False)
                 
         else:
             for obj in bar_holders:
@@ -260,7 +260,7 @@ class BurnEventReceiver(AbstractEventReceiver):
                     if user_bar_details == gold_bar:
                         continue
 
-                    if user_obj.token_balance >= updated_bar_balance:
+                    if int(user_obj.token_balance) >= updated_bar_balance:
 
                         manual_calculation = int(user_obj.token_balance) - int(updated_bar_balance)
 
@@ -283,7 +283,7 @@ class BurnEventReceiver(AbstractEventReceiver):
                         updated_bar_balance = 0
                         break
 
-                    if user_obj.token_balance < updated_bar_balance and user_obj.token_balance > 0:
+                    if int(user_obj.token_balance) < updated_bar_balance and int(user_obj.token_balance) > 0:
                         updated_bar_balance -= int(user_obj.token_balance)
                         _create_update_balance = user_obj.token_balance
 
