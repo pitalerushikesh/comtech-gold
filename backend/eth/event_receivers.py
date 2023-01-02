@@ -58,6 +58,22 @@ class MintIntiatedEventReceiver(AbstractEventReceiver):
             bar_details=gold_bar,
             status=get_token_status(_status))
 
+class CancelInitiateMintEventReceiver(AbstractEventReceiver):
+    def save(self, decoded_event):
+        print(f'Received CancelInitiateMint event: {decoded_event!r}')
+        update_blockchain_transaction(decoded_event)
+        args = decoded_event['args']
+
+        bar_number = args.get('Bar_Number')
+        warrant_number = args.get('Warrant_Number')
+        _status = args.get('status')
+        tx_hash = decoded_event['transactionHash'].hex()
+        # get the gold bar object and delete the mint object
+        gold_bar = GoldBar.objects.get(
+            bar_number=bar_number, warrant_number=warrant_number)
+        Mint.objects.filter(bar_details=gold_bar).delete()
+        gold_bar.delete()
+
 class MintEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
         print(f'Received Mint event: {decoded_event!r}')
@@ -195,6 +211,19 @@ class BurnInitiatedEventReceiver(AbstractEventReceiver):
         Burn.objects.create(bar_details=gold_bar, 
         status=get_token_status(_status))
 
+class CancelInitiateBurnEventReceiver(AbstractEventReceiver):
+    def save(self, decoded_event):
+        print(f'Received CancelBurn event: {decoded_event!r}')
+        update_blockchain_transaction(decoded_event)
+        args = decoded_event['args']
+        bar_number = args.get('Bar_Number')
+        warrant_number = args.get('Warrant_Number')
+        _status = args.get('status')
+        tx_hash = decoded_event['transactionHash'].hex()
+
+        gold_bar = GoldBar.objects.get(
+            bar_number=bar_number, warrant_number=warrant_number)
+        Burn.objects.get(bar_details=gold_bar).delete()
 
 class BurnEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):

@@ -7,7 +7,7 @@ import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
 
 const TokenMintingTable = ({ barNumber, warrantNumber }) => {
-  const { account, mintToken } = useAppState();
+  const { account, mintToken, cancelInitiateMint } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
 
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
@@ -147,6 +147,31 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
           }}
         >
           <Grid item lg={12} md={12} xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              variant="contained"
+              color="error"
+              sx={{ mt: 3, mr: 3, height: '2.6rem', width: '7.813rem' }}
+              onClick={async () => {
+                try {
+                  console.log(
+                    'Bar Number & Warrant Number 🚀',
+                    values.bar_number,
+                    values.warrant_number
+                  );
+                  const res = await cancelInitiateMint(values.bar_number, values.warrant_number);
+                  if (res) {
+                    enqueueSnackbar('Token mint cancelled', { variant: 'success' });
+                  }
+                } catch (e) {
+                  console.log(e);
+                  if (e.message) {
+                    enqueueSnackbar(e.message, { variant: 'error' });
+                  }
+                }
+              }}
+            >
+              Cancel Mint
+            </Button>
             <LoadingButton
               loadingPosition="start"
               variant="gradient"

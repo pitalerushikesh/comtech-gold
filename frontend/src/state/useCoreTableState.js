@@ -41,9 +41,9 @@ const CoreTableState = () => {
     const res = await getEditBarStatus();
     console.log(
       '🚀 ~ file: useCoreTableState.js ~ line 31 ~ fetchEditBarStatus ~ res',
-      res[0].status
+      res[0]?.status
     );
-    setEditBarStatus(res[0].status);
+    setEditBarStatus(res[0]?.status);
   };
 
   const fetchMintHistory = async () => {

@@ -270,11 +270,33 @@ const AppState = () => {
   );
 
   // eslint-disable-next-line
+  const cancelInitiateMint = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.cancelInitiateMint(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
   const initiateBurn = useCallback(
     wrapContractCall((barNumber, warrantNumber) =>
       sendTransactionHashOnly(
         web3,
         controllerContract.methods.initiateBurn(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const cancelInitiateBurn = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.cancelInitiateBurn(barNumber, warrantNumber)
       )
     ),
     [wrapContractCall, web3, controllerContract]
@@ -384,7 +406,9 @@ const AppState = () => {
     setInitiator,
     setExecutor,
     initiateMint,
-    initiateBurn
+    initiateBurn,
+    cancelInitiateMint,
+    cancelInitiateBurn
   };
 };
 

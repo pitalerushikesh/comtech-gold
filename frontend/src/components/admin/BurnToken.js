@@ -17,7 +17,7 @@ import { useAppState, useCoreTableState } from 'state';
 import { useSnackbar } from 'notistack';
 
 const BurnToken = ({ barNumber, warrantNumber }) => {
-  const { account, burnToken } = useAppState();
+  const { account, burnToken, cancelInitiateBurn } = useAppState();
   const { goldBars, fetchGoldBars } = useCoreTableState();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -193,6 +193,31 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
           }}
         >
           <Grid item lg={12} md={12} xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              variant="contained"
+              color="error"
+              sx={{ mt: 2, height: '2.6rem', width: '7.813rem', mr: 3 }}
+              onClick={async () => {
+                try {
+                  console.log(
+                    'Bar Number & Warrant Number 🚀',
+                    values.bar_number,
+                    values.warrant_number
+                  );
+                  const res = await cancelInitiateBurn(values.bar_number, values.warrant_number);
+                  if (res) {
+                    enqueueSnackbar('Burn Cancelled Successfully', { variant: 'success' });
+                  }
+                } catch (e) {
+                  console.log(e);
+                  if (e.message) {
+                    enqueueSnackbar(e.message, { variant: 'error' });
+                  }
+                }
+              }}
+            >
+              Cancel Burn
+            </Button>
             <LoadingButton
               loadingPosition="start"
               variant="gradient"
