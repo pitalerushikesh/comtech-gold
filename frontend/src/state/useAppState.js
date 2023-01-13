@@ -76,6 +76,10 @@ const AppState = () => {
   const [status, setStatus] = useState(WEB3_STATUS.UNKNOWN);
   const [balance, setBalance] = useState('0');
 
+  const [ownerAddr, setOwnerAddr] = useState('0x0000000000000000000000000000000000000000');
+  const [initiatorAddr, setInitiatorAddr] = useState('0x0000000000000000000000000000000000000000');
+  const [executorAddr, setExecutorAddr] = useState('0x0000000000000000000000000000000000000000');
+
   const { isMultisig } = useMultisigStatus();
 
   // const { throwErrorMessage } = useAppState();
@@ -186,6 +190,7 @@ const AppState = () => {
   //   [wrapContractCall, web3, contract]
   // );
 
+  // eslint-disable-next-line
   const mintToken = useCallback(
     wrapContractCall((addr, amount, barNumber, warrantNumber) =>
       sendTransactionHashOnly(
@@ -196,6 +201,7 @@ const AppState = () => {
     [wrapContractCall, web3, controllerContract]
   );
 
+  // eslint-disable-next-line
   const addExistingBar = useCallback(
     wrapContractCall((barNumber, warrantNumber) =>
       sendTransactionHashOnly(
@@ -218,6 +224,7 @@ const AppState = () => {
   //   [wrapContractCall, web3, contract]
   // );
 
+  // eslint-disable-next-line
   const burnToken = useCallback(
     wrapContractCall((amount, barNumber, warrantNumber) =>
       sendTransactionHashOnly(
@@ -316,6 +323,7 @@ const AppState = () => {
     [wrapContractCall, web3, controllerContract]
   );
 
+  // eslint-disable-next-line
   const RemoveExistingBar = useCallback(
     wrapContractCall((barNumber, warrantNumber) =>
       sendTransactionHashOnly(
@@ -325,6 +333,42 @@ const AppState = () => {
     ),
     [wrapContractCall, web3, controllerContract]
   );
+
+  // eslint-disable-next-line
+  const checkOwner = useCallback(
+    wrapContractCall(() => controllerContract.methods.owner().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const checkInitiator = useCallback(
+    wrapContractCall(() => controllerContract.methods.initiatorAddr().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const checkExecutor = useCallback(
+    wrapContractCall(() => controllerContract.methods.executorAddr().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  useEffect(() => {
+    const ownerAdress = async () => {
+      const _ownerAddr = await checkOwner();
+      setOwnerAddr(_ownerAddr);
+    };
+    ownerAdress();
+    const initiatorAdress = async () => {
+      const _initiatorAddr = await checkInitiator();
+      setInitiatorAddr(_initiatorAddr);
+    };
+    initiatorAdress();
+    const executorAdress = async () => {
+      const _executorAddr = await checkExecutor();
+      setExecutorAddr(_executorAddr);
+    };
+    executorAdress();
+  }, [web3, controllerContract, checkOwner, checkInitiator, checkExecutor]);
 
   useEffect(() => {
     if (!web3 || !account) {
@@ -408,7 +452,10 @@ const AppState = () => {
     initiateMint,
     initiateBurn,
     cancelInitiateMint,
-    cancelInitiateBurn
+    cancelInitiateBurn,
+    ownerAddr,
+    initiatorAddr,
+    executorAddr
   };
 };
 

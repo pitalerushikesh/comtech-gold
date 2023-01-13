@@ -29,7 +29,7 @@ import BurnHistoryTable from 'components/admin/BurnHistoryTable';
 import AddExistingBar from 'components/admin/AddExistingBar';
 import CheckEditBarPause from 'components/admin/CheckEditBarPause';
 import RemoveExistingBar from 'components/admin/RemoveExistingBar';
-import { useCoreTableState } from 'state';
+import { useCoreTableState, useAppState } from 'state';
 import InitiateMint from 'components/admin/InitiateMint';
 import MintTokenTable from 'components/MintTokenTable';
 import InitiateBurn from 'components/admin/InitiateBurn';
@@ -38,6 +38,15 @@ import InitiatorExecutor from 'components/admin/InitiatorExecutor';
 
 const Home = () => {
   const { editBarStatus } = useCoreTableState();
+  const { account, ownerAddr, initiatorAddr, executorAddr } = useAppState();
+  console.log('🚀 ~ file: Home.js:42 ~ Home ~ account', account);
+  console.log('🚀 ~ file: Home.js:42 ~ Home ~ executorAddr', executorAddr);
+  console.log('🚀 ~ file: Home.js:42 ~ Home ~ initiatorAddr', initiatorAddr);
+  console.log('🚀 ~ file: Home.js:42 ~ Home ~ ownerAddr', ownerAddr);
+
+  const initiatorOrExecutor = initiatorAddr === account || executorAddr === account;
+  const onlyInitiator = initiatorAddr === account;
+  // const onlyExecutor = executorAddr === account;
 
   return (
     <Page title="Admin Dashboard | Comtech Gold">
@@ -229,19 +238,32 @@ const Home = () => {
             </TableContainer>
           </AccordionDetails>
         </Accordion>
-        <AccordionLayout
-          defaultExpanded
-          title="Configure Initiator & Executor"
-          content={<InitiatorExecutor />}
-        />
 
-        <AccordionLayout defaultExpanded title="Initiate Mint" content={<InitiateMint />} />
-        <AccordionLayout defaultExpanded title="Mint Token" content={<MintTokenTable />} />
+        {account === ownerAddr && (
+          <AccordionLayout
+            defaultExpanded
+            title="Configure Initiator & Executor"
+            content={<InitiatorExecutor />}
+          />
+        )}
 
-        {/* <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} /> */}
-        <AccordionLayout title="Initiate Burn" content={<InitiateBurn />} />
-        <AccordionLayout title="Burn Token" content={<BurnTokenTable />} />
-        <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
+        {initiatorOrExecutor && (
+          <>
+            {onlyInitiator && (
+              <AccordionLayout defaultExpanded title="Initiate Mint" content={<InitiateMint />} />
+            )}
+
+            <AccordionLayout defaultExpanded title="Mint Token" content={<MintTokenTable />} />
+            {/* <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} /> */}
+
+            {onlyInitiator && <AccordionLayout title="Initiate Burn" content={<InitiateBurn />} />}
+            <AccordionLayout title="Burn Token" content={<BurnTokenTable />} />
+          </>
+        )}
+
+        {account === ownerAddr && (
+          <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
+        )}
 
         {/* ***START*** Remove the Following ui in production */}
 
