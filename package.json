@@ -10,6 +10,6 @@
     "dapps-lib"
   ],
   "scripts": {
-    "docker": "docker-compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml   -f infra/docker-compose.dev.yml   --project-name comtech-improvement   --project-directory ./"
+    "docker": "docker-compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml   -f infra/docker-compose.dev.yml   --project-name comtech-mainnet   --project-directory ./"
   }
 }

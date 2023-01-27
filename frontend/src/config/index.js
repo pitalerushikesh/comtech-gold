@@ -10,6 +10,7 @@ export const API_URL = process.env.REACT_APP_API_URL || `${PAGE_URL}:8000/`;
 //     : process.env.REACT_APP_NODE_API_URL;
 // export const LOGIN_URL = '/login';
 export const NETWORK_ID = parseIntOrDefault(process.env.REACT_APP_NETWORK_ID, 51);
+console.log('🚀 ~ file: index.js:13 ~ NETWORK_ID', NETWORK_ID);
 
 // export const CURRENCY_URL = process.env.REACT_APP_CURRENCY_URL || 'https://free.currconv.com/';
 // export const CURRENCY_API_KEY = process.env.REACT_APP_CURRENCY_API_KEY || '9acf77ffbce518787200';
