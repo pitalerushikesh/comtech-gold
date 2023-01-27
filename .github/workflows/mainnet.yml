@@ -35,9 +35,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            /tmp/.buildx-cache-redis
-            /tmp/.buildx-cache-frontend
-            /tmp/.buildx-cache-backend
+            /tmp/.buildx-cache-comtech-redis
+            /tmp/.buildx-cache-comtech-frontend
+            /tmp/.buildx-cache-comtech-backend
           key: ${{ runner.os }}-comtech-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-comtech-buildx-
@@ -52,9 +52,9 @@ jobs:
           build-args: |
             REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}
           push: true
-          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-redis:main
-          cache-from: type=local,src=/tmp/.buildx-cache-redis
-          cache-to: type=local,dest=/tmp/.buildx-cache-redis-new,mode=max
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-gold-redis:main
+          cache-from: type=local,src=/tmp/.buildx-cache-comtech-redis
+          cache-to: type=local,dest=/tmp/.buildx-cache-comtech-redis-new,mode=max
 
       - name: Build frontend
         uses: docker/build-push-action@v2
@@ -65,9 +65,9 @@ jobs:
             REACT_APP_APP_VERSION=${{ hashFiles('./package-lock.json', './frontend/**', './dapps-lib/**', './injected-connector/**') }}
           file: docker/frontend/Dockerfile
           push: true
-          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-frontend:main
-          cache-from: type=local,src=/tmp/.buildx-cache-frontend
-          cache-to: type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-gold-frontend:main
+          cache-from: type=local,src=/tmp/.buildx-cache-comtech-frontend
+          cache-to: type=local,dest=/tmp/.buildx-cache-comtech-frontend-new,mode=max
 
       - name: Build backend
         uses: docker/build-push-action@v2
@@ -75,18 +75,18 @@ jobs:
           context: .
           file: docker/backend/Dockerfile
           push: true
-          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-backend:main
-          cache-from: type=local,src=/tmp/.buildx-cache-backend
-          cache-to: type=local,dest=/tmp/.buildx-cache-backend-new,mode=max
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-gold-backend:main
+          cache-from: type=local,src=/tmp/.buildx-cache-comtech-backend
+          cache-to: type=local,dest=/tmp/.buildx-cache-comtech-backend-new,mode=max
 
       - name: Move cache
         run: |
-          rm -rf /tmp/.buildx-cache-redis
-          rm -rf /tmp/.buildx-cache-frontend
-          rm -rf /tmp/.buildx-cache-backend
-          mv /tmp/.buildx-cache-redis-new /tmp/.buildx-cache-redis
-          mv /tmp/.buildx-cache-frontend-new /tmp/.buildx-cache-frontend
-          mv /tmp/.buildx-cache-backend-new /tmp/.buildx-cache-backend
+          rm -rf /tmp/.buildx-cache-comtech-redis
+          rm -rf /tmp/.buildx-cache-comtech-frontend
+          rm -rf /tmp/.buildx-cache-comtech-backend
+          mv /tmp/.buildx-cache-comtech-redis-new /tmp/.buildx-cache-comtech-redis
+          mv /tmp/.buildx-cache-comtech-frontend-new /tmp/.buildx-cache-comtech-frontend
+          mv /tmp/.buildx-cache-comtech-backend-new /tmp/.buildx-cache-comtech-backend
 
   publish:
     runs-on: ubuntu-latest
@@ -100,10 +100,10 @@ jobs:
         run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
 
       - name: Create ECS context
-        run: docker context create ecs comtech --from-env
+        run: docker context create ecs yodaplus --from-env
 
       - name: Use ECS context
-        run: docker context use comtech
+        run: docker context use yodaplus
 
       - name: ECR docker login
         run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com
@@ -115,6 +115,6 @@ jobs:
           -f infra/docker-compose.mainnet-tags.yml
           -f infra/docker-compose.ecs.yml
           -f infra/docker-compose.ecs-mainnet.yml
-          --project-name comtech-mainnet
+          --project-name comtech-gold-mainnet
           --project-directory ./
           up || true
