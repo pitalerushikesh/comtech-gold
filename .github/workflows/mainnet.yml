@@ -112,7 +112,7 @@ jobs:
         run: >
           docker compose
           -f infra/docker-compose.base.yml
-          -f infra/docker-compose.tags.yml
+          -f infra/docker-compose.mainnet-tags.yml
           -f infra/docker-compose.ecs.yml
           -f infra/docker-compose.ecs-mainnet.yml
           --project-name comtech-mainnet
