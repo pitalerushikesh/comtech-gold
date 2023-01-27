@@ -100,10 +100,10 @@ jobs:
         run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
 
       - name: Create ECS context
-        run: docker context create ecs yodaplus --from-env
+        run: docker context create ecs comtech --from-env
 
       - name: Use ECS context
-        run: docker context use yodaplus
+        run: docker context use comtech
 
       - name: ECR docker login
         run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com
