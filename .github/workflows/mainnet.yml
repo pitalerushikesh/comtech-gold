@@ -1,4 +1,4 @@
-name: CI Comtech mainnet
+name: CI Comtech Gold Mainnet
 
 on:
   push:
@@ -115,6 +115,6 @@ jobs:
           -f infra/docker-compose.mainnet-tags.yml
           -f infra/docker-compose.ecs.yml
           -f infra/docker-compose.ecs-mainnet.yml
-          --project-name comtech-mainnet
+          --project-name comtech-gold-mainnet
           --project-directory ./
           up || true

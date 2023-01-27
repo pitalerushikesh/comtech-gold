@@ -21,13 +21,13 @@ const NETWORKS = [
     id: 50,
     name: 'XDC Mainnet',
     rpcUrl: 'https://rpc.xinfin.yodaplus.net',
-    deploymentUrl: 'https://tokenization.yodaplus.net/'
+    deploymentUrl: 'https://comtech.yodaplus.net/'
   }),
   buildNetworkConfig(apothemDeployment, {
     id: 51,
     name: 'XDC Apothem Testnet',
     rpcUrl: 'https://rpc-apothem.xinfin.yodaplus.net',
-    deploymentUrl: 'https://tokenization-apothem.yodaplus.net/'
+    deploymentUrl: 'https://comtech-apothem.yodaplus.net/'
   })
 ];
 
