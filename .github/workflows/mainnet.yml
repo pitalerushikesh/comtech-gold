@@ -52,7 +52,7 @@ jobs:
           build-args: |
             REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}
           push: true
-          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-redis:mainnet
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-redis:main
           cache-from: type=local,src=/tmp/.buildx-cache-redis
           cache-to: type=local,dest=/tmp/.buildx-cache-redis-new,mode=max
 
@@ -65,7 +65,7 @@ jobs:
             REACT_APP_APP_VERSION=${{ hashFiles('./package-lock.json', './frontend/**', './dapps-lib/**', './injected-connector/**') }}
           file: docker/frontend/Dockerfile
           push: true
-          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-frontend:mainnet
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-frontend:main
           cache-from: type=local,src=/tmp/.buildx-cache-frontend
           cache-to: type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
 
@@ -75,7 +75,7 @@ jobs:
           context: .
           file: docker/backend/Dockerfile
           push: true
-          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-backend:mainnet
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-backend:main
           cache-from: type=local,src=/tmp/.buildx-cache-backend
           cache-to: type=local,dest=/tmp/.buildx-cache-backend-new,mode=max
 
