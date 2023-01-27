@@ -1,0 +1,120 @@
+name: CI Comtech mainnet
+
+on:
+  push:
+    branches:
+      - deployment/mainnet
+  workflow_dispatch:
+
+env:
+  # AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_DEFAULT_REGION: ap-south-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+  ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  ETHEREUM_NODE_URI: https://rpc.xinfin.yodaplus.net
+  NETWORK_ID: '50'
+  STATIC_URL: https://comtech.yodaplus.net/django/staticfiles/
+  REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: |
+            /tmp/.buildx-cache-redis
+            /tmp/.buildx-cache-frontend
+            /tmp/.buildx-cache-backend
+          key: ${{ runner.os }}-comtech-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-comtech-buildx-
+
+      - name: ECR docker login
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com
+
+      - name: Build redis
+        uses: docker/build-push-action@v2
+        with:
+          context: docker/redis
+          build-args: |
+            REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}
+          push: true
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-redis:mainnet
+          cache-from: type=local,src=/tmp/.buildx-cache-redis
+          cache-to: type=local,dest=/tmp/.buildx-cache-redis-new,mode=max
+
+      - name: Build frontend
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            REACT_APP_NETWORK_ID=${{ env.NETWORK_ID }}
+            REACT_APP_APP_VERSION=${{ hashFiles('./package-lock.json', './frontend/**', './dapps-lib/**', './injected-connector/**') }}
+          file: docker/frontend/Dockerfile
+          push: true
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-frontend:mainnet
+          cache-from: type=local,src=/tmp/.buildx-cache-frontend
+          cache-to: type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
+
+      - name: Build backend
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/backend/Dockerfile
+          push: true
+          tags: 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com/comtech-backend:mainnet
+          cache-from: type=local,src=/tmp/.buildx-cache-backend
+          cache-to: type=local,dest=/tmp/.buildx-cache-backend-new,mode=max
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache-redis
+          rm -rf /tmp/.buildx-cache-frontend
+          rm -rf /tmp/.buildx-cache-backend
+          mv /tmp/.buildx-cache-redis-new /tmp/.buildx-cache-redis
+          mv /tmp/.buildx-cache-frontend-new /tmp/.buildx-cache-frontend
+          mv /tmp/.buildx-cache-backend-new /tmp/.buildx-cache-backend
+
+  publish:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install docker compose
+        run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
+
+      - name: Create ECS context
+        run: docker context create ecs yodaplus --from-env
+
+      - name: Use ECS context
+        run: docker context use yodaplus
+
+      - name: ECR docker login
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin 135135176603.dkr.ecr.${{ env.AWS_DEFAULT_REGION }}.amazonaws.com
+
+      - name: Deploy to ECS
+        run: >
+          docker compose
+          -f infra/docker-compose.base.yml
+          -f infra/docker-compose.tags.yml
+          -f infra/docker-compose.ecs.yml
+          -f infra/docker-compose.ecs-mainnet.yml
+          --project-name comtech-mainnet
+          --project-directory ./
+          up || true

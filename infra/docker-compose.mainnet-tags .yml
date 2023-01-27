@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # Create your ECR service and replace the image name with your own
+  redis:
+    image: 135135176603.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/comtech-redis:mainnet
+
+  frontend:
+    image: 135135176603.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/comtech-frontend:mainnet
+
+  backend:
+    image: 135135176603.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/comtech-backend:mainnet
+
+  celery-worker:
+    image: 135135176603.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/comtech-backend:mainnet
+
+  celery-beat:
+    image: 135135176603.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/comtech-backend:mainnet
