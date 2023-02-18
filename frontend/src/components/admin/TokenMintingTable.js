@@ -3,10 +3,10 @@ import { Grid, FormLabel, TextField, Button } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useAppState } from 'state';
-import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
+import { ethToXdcAddress, toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
 
-const TokenMintingTable = ({ barNumber, warrantNumber }) => {
+const TokenMintingTable = ({ mintAddr, barNumber, warrantNumber }) => {
   const { account, mintToken, cancelInitiateMint } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -25,7 +25,7 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
 
   const formik = useFormik({
     initialValues: {
-      address: '',
+      address: ethToXdcAddress(mintAddr),
       // address: 'xdc821ab84ce0aC467b3e30F462059577B2cecD8B76',
       quantity: '1000',
       bar_number: barNumber,
@@ -85,8 +85,8 @@ const TokenMintingTable = ({ barNumber, warrantNumber }) => {
               type="text"
               error={Boolean(touched.address && errors.address)}
               helperText={touched.address && errors.address}
-              // disabled
-              // inputProps={{ readOnly: true }}
+              disabled
+              inputProps={{ readOnly: true }}
             />
           </Grid>
 

@@ -79,6 +79,9 @@ const AppState = () => {
   const [ownerAddr, setOwnerAddr] = useState('0x0000000000000000000000000000000000000000');
   const [initiatorAddr, setInitiatorAddr] = useState('0x0000000000000000000000000000000000000000');
   const [executorAddr, setExecutorAddr] = useState('0x0000000000000000000000000000000000000000');
+  const [mintWalletAddr, setMintWalletAddr] = useState(
+    '0x0000000000000000000000000000000000000000'
+  );
 
   const { isMultisig } = useMultisigStatus();
 
@@ -266,6 +269,14 @@ const AppState = () => {
   );
 
   // eslint-disable-next-line
+  const setMinterWalletAddr = useCallback(
+    wrapContractCall((addr) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.setMinterWalletAddr(addr))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
   const initiateMint = useCallback(
     wrapContractCall((barNumber, warrantNumber) =>
       sendTransactionHashOnly(
@@ -352,6 +363,12 @@ const AppState = () => {
     [wrapContractCall, web3, controllerContract]
   );
 
+  // eslint-disable-next-line
+  const checkMinterAddress = useCallback(
+    wrapContractCall(() => controllerContract.methods.minterWalletAddr().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
   useEffect(() => {
     const ownerAdress = async () => {
       const _ownerAddr = await checkOwner();
@@ -368,7 +385,12 @@ const AppState = () => {
       setExecutorAddr(_executorAddr);
     };
     executorAdress();
-  }, [web3, controllerContract, checkOwner, checkInitiator, checkExecutor]);
+    const minterWalletAdress = async () => {
+      const _minterWalletAddr = await checkMinterAddress();
+      setMintWalletAddr(_minterWalletAddr);
+    };
+    minterWalletAdress();
+  }, [web3, controllerContract, checkOwner, checkInitiator, checkExecutor, checkMinterAddress]);
 
   useEffect(() => {
     if (!web3 || !account) {
@@ -455,7 +477,9 @@ const AppState = () => {
     cancelInitiateBurn,
     ownerAddr,
     initiatorAddr,
-    executorAddr
+    executorAddr,
+    setMinterWalletAddr,
+    mintWalletAddr
   };
 };
 

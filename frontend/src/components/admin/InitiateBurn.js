@@ -45,7 +45,7 @@ const InitiateBurn = () => {
         console.log('🚀 ~ file: initiateBurn.js ~ line 17 ~ onSubmit: ~ res', res);
 
         if (res) {
-          enqueueSnackbar('Token burn successful', { variant: 'success' });
+          enqueueSnackbar('Token Burn Initiated', { variant: 'success' });
           resetForm();
         }
       } catch (e) {

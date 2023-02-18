@@ -33,7 +33,7 @@ const InitiateMint = () => {
 
         console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
         if (res) {
-          enqueueSnackbar('Token mint successful', { variant: 'success' });
+          enqueueSnackbar('Token Mint Initiated', { variant: 'success' });
           resetForm();
         }
       } catch (e) {

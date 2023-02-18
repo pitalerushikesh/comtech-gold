@@ -33,7 +33,7 @@ function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
 
-  const { account, executorAddr } = useAppState();
+  const { account, executorAddr, mintWalletAddr } = useAppState();
 
   const onlyExecutor = account === executorAddr;
 
@@ -73,7 +73,11 @@ function Row(props) {
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
-                <TokenMintingTable barNumber={row.bar_number} warrantNumber={row.warrant_number} />
+                <TokenMintingTable
+                  mintAddr={mintWalletAddr}
+                  barNumber={row.bar_number}
+                  warrantNumber={row.warrant_number}
+                />
               </Box>
             </Collapse>
           </TableCell>
