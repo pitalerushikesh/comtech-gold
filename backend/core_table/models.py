@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from solo.models import SingletonModel
+from datetime import datetime
 
 MINT_STATUS = (
     ("NOT_EXIST", "Not Exist"),
@@ -17,10 +18,10 @@ BURN_STATUS = (
 # Create your models here.
 
 class GoldBar(models.Model):
-    bar_number = models.CharField(primary_key=True, max_length=10)
-    warrant_number = models.CharField(max_length=10)
+    bar_number = models.CharField(primary_key=True, max_length=20)
+    warrant_number = models.CharField(max_length=15)
     is_deleted = models.BooleanField(default=False)
-    escrow_date = models.DateField(auto_now_add=True, auto_created=True)
+    escrow_date = models.DateField(default=datetime.now, auto_created=True)
 
     def __str__(self):
         return self.bar_number + '|' + str(self.escrow_date)
@@ -34,7 +35,7 @@ class Mint(models.Model):
     bar_details = models.ForeignKey(GoldBar, on_delete=models.PROTECT)
     burnt = models.BooleanField(default=False)
     status = models.CharField(max_length=20, default='NOT_EXIST', choices=MINT_STATUS)
-    mint_date = models.DateField(auto_now=True, auto_created=True)
+    mint_date = models.DateField(default=datetime.now, auto_created=True)
 
     def __str__(self):
         return self.bar_details.bar_number + '|' + str(self.mint_date)
@@ -47,7 +48,7 @@ class Burn(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bar_details = models.ForeignKey(GoldBar, on_delete=models.PROTECT)
     status = models.CharField(max_length=20, default='NOT_EXIST', choices=BURN_STATUS)
-    burnt_date = models.DateField(auto_now=True, auto_created=True)
+    burnt_date = models.DateField(default=datetime.now, auto_created=True)
 
     def __str__(self):
         return self.bar_details.bar_number + '|' + str(self.burnt_date)
@@ -64,7 +65,7 @@ class BurnHistory(models.Model):
     adjusted_amount = models.CharField(max_length=36)
     tx_hash = models.CharField(max_length=66)
 
-    burnt_date = models.DateField(auto_now=True, auto_created=True)
+    burnt_date = models.DateField(default=datetime.now, auto_created=True)
 
     # def __str__(self):
     #     return self.bar_details.bar_number + '|' + str(self.burnt_date)
@@ -78,7 +79,7 @@ class BarHolder(models.Model):
     bar_details = models.ForeignKey(GoldBar, on_delete=models.PROTECT)
     holder_xinfin_address = models.CharField(max_length=42)
     token_balance = models.CharField(max_length=36)
-    holder_date = models.DateField(auto_now=True, auto_created=True)
+    holder_date = models.DateField(default=datetime.now, auto_created=True)
 
     def __str__(self):
         return self.bar_details.bar_number + '|' + self.holder_xinfin_address

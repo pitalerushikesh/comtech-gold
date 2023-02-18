@@ -14,6 +14,9 @@ from django_ethereum_events.models import MonitoredEvent
 from eth.models import BlockChainTransaction, EventsLog, TransactionAction
 from core_table.models import BurnHistory, GoldBar, Mint, Burn, BarHolder, EditBarStatus
 
+from django_ethereum_events.web3_service import Web3Service
+from web3.middleware import geth_poa_middleware
+
 
 def update_blockchain_transaction(decoded_event):
     EventsLog.objects.create(
@@ -41,6 +44,9 @@ def get_token_status(status):
     }
     return TOKEN_STATUS.get(status, "NOT_EXIST")
 
+web3 = Web3Service().web3
+web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
 class MintIntiatedEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
         print(f'Received MintInitiated event: {decoded_event!r}')
@@ -50,13 +56,22 @@ class MintIntiatedEventReceiver(AbstractEventReceiver):
         bar_number = args.get('Bar_Number')
         warrant_number = args.get('Warrant_Number')
         _status = args.get('status')
+        block_number = decoded_event['blockNumber']
         tx_hash = decoded_event['transactionHash'].hex()
+        block_timestamp = args.get('blockTimestamp')
+
+        _timestamp = datetime.fromtimestamp(block_timestamp)
+
+        # block = web3.eth.get_block(block_number)
+        # _timestamp = datetime.fromtimestamp(block.timestamp)
+        # print("🐍 File: eth/event_receivers.py | Line: 64 | save ~ timestamp",_timestamp)
 
         gold_bar = GoldBar.objects.create(
-            bar_number=bar_number, warrant_number=warrant_number)
+            bar_number=bar_number, warrant_number=warrant_number, escrow_date=_timestamp)
         Mint.objects.create(
             bar_details=gold_bar,
-            status=get_token_status(_status))
+            status=get_token_status(_status),
+            mint_date=_timestamp)
 
 class CancelInitiateMintEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
@@ -84,6 +99,9 @@ class MintEventReceiver(AbstractEventReceiver):
         bar_number = args.get('Bar_Number')
         warrant_number = args.get('Warrant_Number')
         tx_hash = decoded_event['transactionHash'].hex()
+        block_timestamp = args.get('blockTimestamp')
+
+        _timestamp = datetime.fromtimestamp(block_timestamp)
 
         gold_bar = GoldBar.objects.get(
             bar_number=bar_number, warrant_number=warrant_number)
@@ -91,9 +109,11 @@ class MintEventReceiver(AbstractEventReceiver):
             bar_details=gold_bar
         )
         _mint.status = get_token_status(2)
+        _mint.mint_date = _timestamp
         _mint.save()
         BarHolder.objects.create(
-            bar_details=gold_bar, holder_xinfin_address=mint_to, token_balance=amount
+            bar_details=gold_bar, holder_xinfin_address=mint_to, token_balance=amount,
+            holder_date=_timestamp
         )
 
         print(
@@ -134,22 +154,31 @@ class TransferEventReceiver(AbstractEventReceiver):
         # Rework required after intitator and executor concept is implemented
         
         if transfer_from == '0x0000000000000000000000000000000000000000':
+            block_number = decoded_event['blockNumber']
             mint_amount = amount
 
             edit_status = EditBarStatus.objects.first()
 
             if edit_status.status == True:
+                block = web3.eth.get_block(block_number)
+                _timestamp = datetime.fromtimestamp(block.timestamp)
+                print("🐍 File: eth/event_receivers.py | Line: 64 | save ~ timestamp",_timestamp)
+                
                 bars = GoldBar.objects.filter(is_deleted=True)
                 if bars.exists():
                     for bar in bars:
                         if mint_amount > 0:
                             Mint.objects.create(
-                                bar_details=bar
+                                bar_details=bar,
+                                status=get_token_status(2),
+                                mint_date=_timestamp
                             )
                             BarHolder.objects.create(
-                                bar_details=bar, holder_xinfin_address=transfer_to, token_balance=str(1000 * 10**18)
+                                bar_details=bar, holder_xinfin_address=transfer_to, token_balance=str(1000 * 10**18),
+                                holder_date=_timestamp
                             )
                             bar.is_deleted = False
+                            bar.escrow_date = _timestamp
                             bar.save()
                             mint_amount -= int(1000 * 10**18)
 
@@ -205,11 +234,15 @@ class BurnInitiatedEventReceiver(AbstractEventReceiver):
         warrant_number = args.get('Warrant_Number')
         _status = args.get('status')
         tx_hash = decoded_event['transactionHash'].hex()
+        block_timestamp = args.get('blockTimestamp')
+
+        _timestamp = datetime.fromtimestamp(block_timestamp)
 
         gold_bar = GoldBar.objects.get(
             bar_number=bar_number, warrant_number=warrant_number)
         Burn.objects.create(bar_details=gold_bar, 
-        status=get_token_status(_status))
+        status=get_token_status(_status),
+        burnt_date=_timestamp)
 
 class CancelInitiateBurnEventReceiver(AbstractEventReceiver):
     def save(self, decoded_event):
@@ -236,6 +269,9 @@ class BurnEventReceiver(AbstractEventReceiver):
         bar_number = args.get('Bar_Number')
         warrant_number = args.get('Warrant_Number')
         tx_hash = decoded_event['transactionHash'].hex()
+        block_timestamp = args.get('blockTimestamp')
+
+        _timestamp = datetime.fromtimestamp(block_timestamp)
 
         gold_bar = GoldBar.objects.get(
             bar_number=bar_number, warrant_number=warrant_number)
@@ -279,7 +315,8 @@ class BurnEventReceiver(AbstractEventReceiver):
                             burnt_bar=gold_bar,
                             adjusted_bar=gold_bar,
                             adjusted_user=bar_user, adjusted_amount=str(updated_bar_balance),
-                            tx_hash=tx_hash
+                            tx_hash=tx_hash,
+                            burnt_date=_timestamp
                         )
                         print(
                             f'Burn_history: {burn_history}, adjusted_amount: {updated_bar_balance}')
@@ -307,7 +344,8 @@ class BurnEventReceiver(AbstractEventReceiver):
                             burnt_bar=gold_bar,
                             adjusted_bar=user_bar_details,
                             adjusted_user=bar_user, adjusted_amount=str(updated_bar_balance),
-                            tx_hash=tx_hash
+                            tx_hash=tx_hash,
+                            burnt_date=_timestamp
                         )
                         updated_bar_balance = 0
                         break
@@ -327,7 +365,8 @@ class BurnEventReceiver(AbstractEventReceiver):
                             adjusted_bar=user_bar_details,
                             adjusted_user=bar_user,
                             adjusted_amount=str(user_obj.token_balance),
-                            tx_hash=tx_hash
+                            tx_hash=tx_hash,
+                            burnt_date=_timestamp
                         )
                         user_obj.token_balance = str(0)
                         user_obj.save()
@@ -336,6 +375,7 @@ class BurnEventReceiver(AbstractEventReceiver):
 
         _burn = Burn.objects.get(bar_details=gold_bar)
         _burn.status = get_token_status(4)
+        _burn.burnt_date = _timestamp
         _burn.save()
         mint_obj = Mint.objects.get(bar_details=gold_bar)
         mint_obj.burnt = True
@@ -373,9 +413,9 @@ class BarAddedEventReceiver(AbstractEventReceiver):
             # Keep this commented 
             # Rework required after intitator and executor concept is implemented
 
-            Mint.objects.create(
-                bar_details=gold_bar
-            )
+            # Mint.objects.create(
+            #     bar_details=gold_bar
+            # )
 
         print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
         return 'Manual Bar Minted Successfully'
