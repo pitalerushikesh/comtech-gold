@@ -11,9 +11,10 @@ class Command(BaseCommand):
 
         ADMIN_PASSWORD = settings.ADMIN_PASSWORD
         ADMIN_USERNAME = settings.ADMIN_USERNAME
+        ADMIN_EMAIL = settings.ADMIN_EMAIL
 
         if not User.objects.filter(username=ADMIN_USERNAME).exists():
-            User.objects.create_superuser('admin', 'shadab@yodaplus.com', ADMIN_PASSWORD)
+            User.objects.create_superuser(ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD)
 
 
 
