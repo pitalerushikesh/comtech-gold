@@ -26,13 +26,16 @@ import SyncIcon from '@mui/icons-material/Sync';
 // import InvestorDocVewUploadModal from 'components/DocMangement/InvestorDocViewUploadModal';
 import UploadIcon from '@mui/icons-material/Upload';
 // import Synaps from '@synaps-io/react-verify';
-import { useCoreTableState } from 'state';
+import { useAppState, useCoreTableState } from 'state';
 import TokenMintingTable from './admin/TokenMintingTable';
 import BurnToken from './admin/BurnToken';
 
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
+
+  const { account, executorAddr } = useAppState();
+  const onlyExecutor = account === executorAddr;
 
   const style = {
     position: 'absolute',
@@ -56,22 +59,26 @@ function Row(props) {
         <TableCell component="th" align="left" scope="row" padding="normal">
           <Chip color="success" label="Initiated" />
         </TableCell>
-        <TableCell align="center">
-          <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
+        {onlyExecutor && (
+          <TableCell align="center">
+            <IconButton size="small" onClick={() => setOpen(!open)}>
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+        )}
       </TableRow>
 
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <BurnToken barNumber={row.bar_number} warrantNumber={row.warrant_number} />
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
+      {onlyExecutor && (
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <BurnToken barNumber={row.bar_number} warrantNumber={row.warrant_number} />
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
     </>
   );
 }

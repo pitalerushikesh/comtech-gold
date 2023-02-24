@@ -207,7 +207,7 @@ export const MinterAddress = () => {
           }}
         >
           <Grid item lg={5} md={5} xs={12}>
-            <FormLabel>Mint Wallet Address</FormLabel>
+            <FormLabel>Escrow Wallet Address</FormLabel>
             <TextField
               sx={{ mt: 1 }}
               fullWidth
@@ -227,7 +227,7 @@ export const MinterAddress = () => {
               sx={{ mt: 4, ml: 2, height: '2.6rem', width: '7.813rem' }}
               loading={isSubmitting}
             >
-              Set Mint Addr.
+              Set Escrow Wallet
             </LoadingButton>
           </Grid>
         </Grid>
