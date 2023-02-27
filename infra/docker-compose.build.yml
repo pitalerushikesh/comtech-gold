@@ -14,6 +14,7 @@ services:
       args:
         - REACT_APP_NETWORK_ID
         - REACT_APP_APP_VERSION
+        - REACT_APP_API_URL
 
   backend:
     build:

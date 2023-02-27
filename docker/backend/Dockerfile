@@ -12,5 +12,3 @@ COPY ./docker/backend ./docker/backend
 COPY ./docker/celery ./docker/celery
 
 RUN python manage.py collectstatic --no-input
-
-EXPOSE 8000
