@@ -20,14 +20,14 @@ const NETWORKS = [
   buildNetworkConfig(mainnetDeployment, {
     id: 50,
     name: 'XDC Mainnet',
-    rpcUrl: 'https://rpc.xinfin.yodaplus.net',
-    deploymentUrl: 'https://tokenization.yodaplus.net/'
+    rpcUrl: 'https://xdcpayrpc.blocksscan.io/',
+    deploymentUrl: 'https://governance.comtechglobal.ae/'
   }),
   buildNetworkConfig(apothemDeployment, {
     id: 51,
     name: 'XDC Apothem Testnet',
-    rpcUrl: 'https://rpc-apothem.xinfin.yodaplus.net',
-    deploymentUrl: 'https://tokenization-apothem.yodaplus.net/'
+    rpcUrl: 'https://apothemxdcpayrpc.blocksscan.io/',
+    deploymentUrl: 'https://governance.comtechglobal.ae/'
   })
 ];
 

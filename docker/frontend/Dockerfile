@@ -18,7 +18,7 @@ ARG REACT_APP_APP_VERSION
 ARG REACT_APP_API_URL
 
 WORKDIR /app/frontend/
-RUN NODE_OPTIONS="--max-old-space-size=8192" npm run build
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 FROM nginx:alpine
 
