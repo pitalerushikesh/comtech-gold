@@ -13,8 +13,12 @@ const InitiateMint = () => {
   console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
   const MintSchema = Yup.object().shape({
-    bar_number: Yup.string().required('Bar Number is required'),
-    warrant_number: Yup.string().required('Warrant Number is required')
+    bar_number: Yup.string()
+      .required('Bar Number is required')
+      .max(20, 'Max. 20 character allowed'),
+    warrant_number: Yup.string()
+      .required('Warrant Number is required')
+      .max(15, 'Max. 15 character allowed')
   });
 
   const formik = useFormik({

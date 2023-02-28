@@ -12,7 +12,7 @@ export const Initiator = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const InitiatorValidation = Yup.object().shape({
-    initiator: Yup.string().required('Initiator is required')
+    initiator: Yup.string().required('Initiator Address is required')
   });
 
   const formik = useFormik({
@@ -72,7 +72,7 @@ export const Initiator = () => {
               loadingPosition="start"
               variant="gradient"
               type="submit"
-              sx={{ mt: 4, ml: 2, height: '2.6rem', width: '7.813rem' }}
+              sx={{ mt: 4, ml: 2, height: '2.6rem', width: '10rem' }}
               loading={isSubmitting}
             >
               Set Initiator
@@ -89,7 +89,7 @@ export const Executor = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const ExecutorValidation = Yup.object().shape({
-    executor: Yup.string().required('Executor is requird')
+    executor: Yup.string().required('Executor Address is requird')
   });
 
   const formik = useFormik({
@@ -148,7 +148,7 @@ export const Executor = () => {
               loadingPosition="start"
               variant="gradient"
               type="submit"
-              sx={{ mt: 4, ml: 2, height: '2.6rem', width: '7.813rem' }}
+              sx={{ mt: 4, ml: 2, height: '2.6rem', width: '10rem' }}
               loading={isSubmitting}
             >
               Set Executor
@@ -165,7 +165,7 @@ export const MinterAddress = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const ExecutorValidation = Yup.object().shape({
-    minter_address: Yup.string().required('Minter Address is requird')
+    minter_address: Yup.string().required('Escrow Wallet Address is requird')
   });
 
   const formik = useFormik({
@@ -224,7 +224,7 @@ export const MinterAddress = () => {
               loadingPosition="start"
               variant="gradient"
               type="submit"
-              sx={{ mt: 4, ml: 2, height: '2.6rem', width: '7.813rem' }}
+              sx={{ mt: 4, ml: 2, height: '2.6rem', width: '10rem' }}
               loading={isSubmitting}
             >
               Set Escrow Wallet

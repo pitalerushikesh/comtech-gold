@@ -32,6 +32,14 @@ export default function MintHistory() {
         // Cell: ({ row: { original } }) => {
         //   return <Box>{original.bar_details.warrant_number}</Box>;
         // }
+      },
+      {
+        accessor: 'mint_date',
+        Header: 'Mint Date',
+        show: true
+        // Cell: ({ row: { original } }) => {
+        //   return <Box>{original.bar_details.warrant_number}</Box>;
+        // }
       }
       // {
       //   accessor: 'warrant_number',
