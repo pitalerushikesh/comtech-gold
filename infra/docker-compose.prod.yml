@@ -1,0 +1,25 @@
+version: '3.8'
+
+volumes:
+  django-static:
+
+services:
+  frontend:
+    build:
+      dockerfile: docker/frontend/Dockerfile
+    volumes:
+      - django-static:/nginx/django
+    ports:
+      - '3000:3000'
+
+  backend:
+    build:
+      dockerfile: docker/backend/Dockerfile
+    volumes:
+      - django-static:/static
+    environment:
+      ENABLE_ADMIN_API: 'True'
+      DJANGO_ALLOWED_HOSTS: '*'
+      STATIC_URL: ${STATIC_URL}
+
+    command: ./docker/backend/run.prod.sh

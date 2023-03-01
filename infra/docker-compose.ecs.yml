@@ -1,0 +1,80 @@
+version: '3.8'
+
+volumes:
+  django-static:
+
+services:
+  db:
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    #       memory: 2Gb
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_DEFAULT_REGION}
+  frontend:
+    volumes:
+      - django-static:/nginx/django
+    ports:
+      - '80:80'
+      - '443:443'
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    #       memory: 2Gb
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_DEFAULT_REGION}
+
+  backend:
+    environment:
+      DJANGO_ALLOWED_HOSTS: '*'
+      STATIC_URL: ${STATIC_URL}
+    volumes:
+      - django-static:/static
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    #       memory: 2Gb
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_DEFAULT_REGION}
+    command: ./docker/backend/run.prod.sh
+
+x-aws-cloudformation:
+  Resources:
+    DbService:
+      Properties:
+        DeploymentConfiguration:
+          MaximumPercent: 100
+          MinimumHealthyPercent: 0
+
+    LoadBalancer:
+      Properties:
+        LoadBalancerAttributes:
+          - Key: idle_timeout.timeout_seconds
+            Value: '120'
+
+    Backend8000TargetGroup:
+      Properties:
+        HealthCheckPath: /
+        Matcher:
+          HttpCode: 200-499
+
+    FrontendTCP80TargetGroup:
+      Properties:
+        HealthCheckPath: /
+        Matcher:
+          HttpCode: 200-499
+
+    FrontendTCP443TargetGroup:
+      Properties:
+        HealthCheckPath: /
+        Matcher:
+          HttpCode: 200-499

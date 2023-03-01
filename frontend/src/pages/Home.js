@@ -6,7 +6,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  IconButton,
   Table,
   TableHead,
   TableRow,
@@ -17,24 +16,32 @@ import {
 } from '@mui/material';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AccordionLayout from '../helpers/AccordionLayout';
-import TokenMintingTable from '../components/admin/TokenMintingTable';
+// import TokenMintingTable from '../components/admin/TokenMintingTable';
 import BlacklistAdminTable from '../components/admin/BlacklistAdminTable';
-import Contract from 'contracts/ABI.json';
-import Web3 from 'web3';
-import { useAppState } from 'state';
 import { currentNetwork, ethToXdcAddress } from 'helpers/web3';
 import AddressFieldTools from 'components/AddressFieldTools';
-import BurnToken from 'components/admin/BurnToken';
+import AddExistingBar from 'components/admin/AddExistingBar';
+import CheckEditBarPause from 'components/admin/CheckEditBarPause';
+import RemoveExistingBar from 'components/admin/RemoveExistingBar';
+import { useCoreTableState, useAppState } from 'state';
+import InitiateMint from 'components/admin/InitiateMint';
+import MintTokenTable from 'components/MintTokenTable';
+import InitiateBurn from 'components/admin/InitiateBurn';
+import BurnTokenTable from 'components/BurnTokenTable';
+import InitiatorExecutor from 'components/admin/InitiatorExecutor';
 
 const Home = () => {
+  const { editBarStatus } = useCoreTableState();
+  const { account, ownerAddr, initiatorAddr, executorAddr } = useAppState();
+
+  const initiatorOrExecutor = initiatorAddr === account || executorAddr === account;
+  const onlyInitiator = initiatorAddr === account;
+  // const onlyExecutor = executorAddr === account;
+
   return (
     <Page title="Admin Dashboard | Comtech Gold">
       <Container>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
-          Comtech Gold
-        </Typography>
         <Accordion
           defaultExpanded
           sx={{
@@ -98,16 +105,6 @@ const Home = () => {
                         >
                           {ethToXdcAddress(currentNetwork.tokenContractAddress)}
                         </Box>
-                        {/* <IconButton
-                          aria-label="subs detail"
-                          onClick={() =>
-                            navigator.clipboard.writeText(
-                              ethToXdcAddress(currentNetwork.tokenContractAddress)
-                            )
-                          }
-                        >
-                          <ContentCopyIcon sx={{ fontSize: '1rem' }} />
-                        </IconButton> */}
                       </Box>
                     </TableCell>
                     <TableCell
@@ -123,59 +120,85 @@ const Home = () => {
                       />
                     </TableCell>
                   </TableRow>
-                  {/* <TableRow>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      Escrow & Settlement
-                    </TableCell>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Comtech Controller Contract</TableCell>
                     <TableCell>
                       <Box
                         sx={{
-                          display: "flex",
-                          flexDirection: "row",
+                          display: 'flex',
+                          flexDirection: 'row',
                           m: 0,
                           p: 0,
-                          alignItems: "center",
+                          alignItems: 'center'
                         }}
                       >
                         <Box
                           sx={{
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden'
                           }}
                         >
-                          sfg
+                          {ethToXdcAddress(currentNetwork.controllerContractAddress)}
                         </Box>
-                        <IconButton
-                          aria-label="subs detail"
-                          onClick={console.log("click")}
-                        >
-                          <ContentCopyIcon sx={{ fontSize: "1rem" }} />
-                        </IconButton>
                       </Box>
                     </TableCell>
                     <TableCell
                       sx={{
-                        display: "flex",
-                        justifyContent: "center",
+                        display: 'flex',
+                        justifyContent: 'center'
                       }}
                     >
-                      AddressFieldTools
                       <AddressFieldTools
-                        address={currentNetwork.escrowManagerAddress}
+                        address={currentNetwork.controllerContractAddress}
                         showInBlockExplorer
                         showAddress={false}
                       />
                     </TableCell>
-                  </TableRow> */}
+                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
           </AccordionDetails>
         </Accordion>
-        <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} />
-        <AccordionLayout title="Burn Token" content={<BurnToken />} />
-        <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
+
+        {account === ownerAddr && (
+          <AccordionLayout
+            defaultExpanded
+            title="Configure Initiator & Executor"
+            content={<InitiatorExecutor />}
+          />
+        )}
+
+        {initiatorOrExecutor && (
+          <>
+            {onlyInitiator && (
+              <AccordionLayout defaultExpanded title="Initiate Mint" content={<InitiateMint />} />
+            )}
+
+            <AccordionLayout defaultExpanded title="Mint Token" content={<MintTokenTable />} />
+            {/* <AccordionLayout defaultExpanded title="Mint Token" content={<TokenMintingTable />} /> */}
+
+            {onlyInitiator && <AccordionLayout title="Initiate Burn" content={<InitiateBurn />} />}
+            <AccordionLayout title="Burn Token" content={<BurnTokenTable />} />
+          </>
+        )}
+
+        {account === ownerAddr && (
+          <AccordionLayout title="Blacklist Admin" content={<BlacklistAdminTable />} />
+        )}
+
+        {/* ***START*** Remove the Following ui in production */}
+
+        {editBarStatus && (
+          <>
+            <AccordionLayout title="Edit Bar Status" content={<CheckEditBarPause />} />
+            <AccordionLayout title="Manual Bar Entry" content={<AddExistingBar />} />
+            <AccordionLayout title="Manual Bar Deletion" content={<RemoveExistingBar />} />
+          </>
+        )}
+
+        {/* ***END*** Remove the Following ui in production */}
       </Container>
     </Page>
   );

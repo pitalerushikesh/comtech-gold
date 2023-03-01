@@ -23,6 +23,7 @@
     "react-helmet-async": "^1.0.9",
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "4.0.0",
+    "react-table": "^7.7.0",
     "tiny-warning": "^1.0.3",
     "web-vitals": "^2.1.4",
     "web3": "^1.7.5",
@@ -49,18 +50,11 @@
       "@babel/preset-react"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/eslint-parser": "^7.14.7",

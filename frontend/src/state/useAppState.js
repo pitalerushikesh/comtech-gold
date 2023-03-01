@@ -76,6 +76,13 @@ const AppState = () => {
   const [status, setStatus] = useState(WEB3_STATUS.UNKNOWN);
   const [balance, setBalance] = useState('0');
 
+  const [ownerAddr, setOwnerAddr] = useState('0x0000000000000000000000000000000000000000');
+  const [initiatorAddr, setInitiatorAddr] = useState('0x0000000000000000000000000000000000000000');
+  const [executorAddr, setExecutorAddr] = useState('0x0000000000000000000000000000000000000000');
+  const [mintWalletAddr, setMintWalletAddr] = useState(
+    '0x0000000000000000000000000000000000000000'
+  );
+
   const { isMultisig } = useMultisigStatus();
 
   // const { throwErrorMessage } = useAppState();
@@ -147,6 +154,19 @@ const AppState = () => {
     [web3, account]
   );
 
+  const controllerContract = useMemo(
+    () =>
+      new web3.eth.Contract(
+        currentNetwork.controllerContractAbi,
+        currentNetwork.controllerContractAddress,
+        {
+          from: account,
+          gasPrice: 1 * 10 ** 9
+        }
+      ),
+    [web3, account]
+  );
+
   const wrapContractCall = useCallback(
     (func) => {
       return (...args) => {
@@ -161,25 +181,61 @@ const AppState = () => {
   );
 
   // eslint-disable-next-line
+
+  // default Mint implementation with CGO token Contract
+  // const mintToken = useCallback(
+  //   wrapContractCall((addr, amount) =>
+  //     sendTransactionHashOnly(
+  //       web3,
+  //       contract.methods.mint(addr, web3.utils.toWei(amount.toString(), 'ether'))
+  //     )
+  //   ),
+  //   [wrapContractCall, web3, contract]
+  // );
+
+  // eslint-disable-next-line
   const mintToken = useCallback(
-    wrapContractCall((addr, amount) =>
+    wrapContractCall((addr, amount, barNumber, warrantNumber) =>
       sendTransactionHashOnly(
         web3,
-        contract.methods.mint(addr, web3.utils.toWei(amount.toString(), 'ether'))
+        controllerContract.methods.mint(addr, amount, barNumber, warrantNumber)
       )
     ),
-    [wrapContractCall, web3, contract]
+    [wrapContractCall, web3, controllerContract]
   );
 
   // eslint-disable-next-line
-  const burnToken = useCallback(
-    wrapContractCall((amount) =>
+  const addExistingBar = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
       sendTransactionHashOnly(
         web3,
-        contract.methods.burn(web3.utils.toWei(amount.toString(), 'ether'))
+        controllerContract.methods.addBarNumWarrantNum(barNumber, warrantNumber)
       )
     ),
-    [wrapContractCall, web3, contract]
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  // default Burn implementation with CGO token Contract
+  // const burnToken = useCallback(
+  //   wrapContractCall((amount) =>
+  //     sendTransactionHashOnly(
+  //       web3,
+  //       contract.methods.burn(web3.utils.toWei(amount.toString(), 'ether'))
+  //     )
+  //   ),
+  //   [wrapContractCall, web3, contract]
+  // );
+
+  // eslint-disable-next-line
+  const burnToken = useCallback(
+    wrapContractCall((amount, barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.burn(amount, barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
   );
 
   // eslint-disable-next-line
@@ -191,10 +247,150 @@ const AppState = () => {
   // eslint-disable-next-line
   const updateBlackList = useCallback(
     wrapContractCall((addr, isBlackList) =>
-      sendTransactionHashOnly(web3, contract.methods.blacklistUpdate(addr, isBlackList))
+      sendTransactionHashOnly(web3, controllerContract.methods.blacklistUpdate(addr, isBlackList))
     ),
-    [wrapContractCall, web3, contract]
+    [wrapContractCall, web3, controllerContract]
   );
+
+  // eslint-disable-next-line
+  const setInitiator = useCallback(
+    wrapContractCall((addr) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.setInitiatorAddr(addr))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const setExecutor = useCallback(
+    wrapContractCall((addr) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.setExecutorAddr(addr))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const setMinterWalletAddr = useCallback(
+    wrapContractCall((addr) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.setMinterWalletAddr(addr))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const initiateMint = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.initiateMint(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const cancelInitiateMint = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.cancelInitiateMint(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const initiateBurn = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.initiateBurn(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const cancelInitiateBurn = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.cancelInitiateBurn(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const checkEditBarStatus = useCallback(
+    wrapContractCall(() => controllerContract.methods.isEditBarPaused().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const updateEditBarStatus = useCallback(
+    wrapContractCall((status) =>
+      sendTransactionHashOnly(web3, controllerContract.methods.pauseEditBar(status))
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const RemoveExistingBar = useCallback(
+    wrapContractCall((barNumber, warrantNumber) =>
+      sendTransactionHashOnly(
+        web3,
+        controllerContract.methods.removeBarNumWarrantNum(barNumber, warrantNumber)
+      )
+    ),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const checkOwner = useCallback(
+    wrapContractCall(() => controllerContract.methods.owner().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const checkInitiator = useCallback(
+    wrapContractCall(() => controllerContract.methods.initiatorAddr().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const checkExecutor = useCallback(
+    wrapContractCall(() => controllerContract.methods.executorAddr().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  // eslint-disable-next-line
+  const checkMinterAddress = useCallback(
+    wrapContractCall(() => controllerContract.methods.minterWalletAddr().call()),
+    [wrapContractCall, web3, controllerContract]
+  );
+
+  useEffect(() => {
+    const ownerAdress = async () => {
+      const _ownerAddr = await checkOwner();
+      setOwnerAddr(_ownerAddr);
+    };
+    ownerAdress();
+    const initiatorAdress = async () => {
+      const _initiatorAddr = await checkInitiator();
+      setInitiatorAddr(_initiatorAddr);
+    };
+    initiatorAdress();
+    const executorAdress = async () => {
+      const _executorAddr = await checkExecutor();
+      setExecutorAddr(_executorAddr);
+    };
+    executorAdress();
+    const minterWalletAdress = async () => {
+      const _minterWalletAddr = await checkMinterAddress();
+      setMintWalletAddr(_minterWalletAddr);
+    };
+    minterWalletAdress();
+  }, [web3, controllerContract, checkOwner, checkInitiator, checkExecutor, checkMinterAddress]);
 
   useEffect(() => {
     if (!web3 || !account) {
@@ -268,7 +464,22 @@ const AppState = () => {
     disconnectWallet,
     checkBlackList,
     updateBlackList,
-    burnToken
+    burnToken,
+    addExistingBar,
+    checkEditBarStatus,
+    updateEditBarStatus,
+    RemoveExistingBar,
+    setInitiator,
+    setExecutor,
+    initiateMint,
+    initiateBurn,
+    cancelInitiateMint,
+    cancelInitiateBurn,
+    ownerAddr,
+    initiatorAddr,
+    executorAddr,
+    setMinterWalletAddr,
+    mintWalletAddr
   };
 };
 

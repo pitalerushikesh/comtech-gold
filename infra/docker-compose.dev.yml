@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      dockerfile: docker/frontend/Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/node_modules/
+    ports:
+      - '3000:3000'
+
+  backend:
+    build:
+      dockerfile: docker/backend/Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - ./dapps-lib:/app/dapps-lib
+      - ./docker:/app/docker
+    environment:
+      ENABLE_ADMIN_API: 'True'
+    command: ./docker/backend/run.dev.sh
+
+  celery-worker:
+    build:
+      dockerfile: docker/backend/Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - ./dapps-lib:/dapps-lib
+      - ./docker:/app/docker
+
+  celery-beat:
+    build:
+      dockerfile: docker/backend/Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - ./dapps-lib:/app/dapps-lib
+      - ./docker:/app/docker

@@ -56,3 +56,8 @@ db.sqlite3
 **/require-local.txt
 
 **/.env
+
+.env
+.env/
+
+venv/
