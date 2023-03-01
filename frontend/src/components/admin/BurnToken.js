@@ -1,16 +1,6 @@
 import React from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  Grid,
-  FormLabel,
-  TextField,
-  Button,
-  FormControl,
-  Select,
-  FormHelperText,
-  MenuItem,
-  Autocomplete
-} from '@mui/material';
+import { Grid, FormLabel, TextField, Button } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useAppState, useCoreTableState } from 'state';
@@ -18,7 +8,7 @@ import { useSnackbar } from 'notistack';
 
 const BurnToken = ({ barNumber, warrantNumber }) => {
   const { account, burnToken, cancelInitiateBurn } = useAppState();
-  const { goldBars, fetchGoldBars } = useCoreTableState();
+  const { goldBars } = useCoreTableState();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -36,21 +26,16 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
     },
     validationSchema: BurnSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log('🚀 ~ file: BurnToken.js ~ line 36 ~ onSubmit: ~ data', data);
       try {
         const _qty = data.quantity;
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
         const res = await burnToken(_qty, _barNumber, _warrantNumber);
-
-        console.log('🚀 ~ file: BurnToken.js ~ line 17 ~ onSubmit: ~ res', res);
-
         if (res) {
           enqueueSnackbar('Token burn successful', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -60,10 +45,6 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
 
   // eslint-disable-next-line no-unused-vars
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
-  // const options = [
-  //   { label: 'The Godfather', id: 1 },
-  //   { label: 'Pulp Fiction', id: 2 }
-  // ];
 
   const options = goldBars.map((bar) => {
     return {
@@ -73,9 +54,6 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
       warrant_number: bar.warrant_number
     };
   });
-
-  const [value, setValue] = React.useState(options[0]);
-  const [inputValue, setInputValue] = React.useState('');
 
   return (
     <FormikProvider value={formik}>
@@ -103,55 +81,6 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
               helperText={touched.bar_number && errors.bar_number}
             />
           </Grid>
-          {/* <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Bar Number</FormLabel>
-            <Autocomplete
-              // freeSolo
-              fullWidth
-              disablePortal
-              size="small"
-              sx={{ mt: 1 }}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-
-                formik.setFieldValue('bar_number', newValue?.value);
-                formik.setFieldValue('warrant_number', newValue?.warrant_number);
-              }}
-              inputValue={inputValue}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
-              // {...getFieldProps('bar_number')}
-              options={options}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  error={Boolean(touched.bar_number && errors.bar_number)}
-                  helperText={touched.bar_number && errors.bar_number}
-                />
-              )}
-            />
-          </Grid> */}
-          {/* <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Warrant Number</FormLabel>
-            <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1 }}>
-              <Select
-                {...getFieldProps('warrant_number')}
-                error={Boolean(touched.warrant_number && errors.warrant_number)}
-                helperText={touched.warrant_number && errors.warrant_number}
-              >
-                <MenuItem className="Mui-selected" key="1" value="1">
-                  1
-                </MenuItem>
-                <MenuItem className="Mui-selected" key="2" value="2">
-                  2
-                </MenuItem>
-              </Select>
-              <FormHelperText sx={{ color: '#d32f2f' }}>
-                {touched.warrant_number && errors.warrant_number}
-              </FormHelperText>
-            </FormControl>
-          </Grid> */}
           <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Warrant Number</FormLabel>
             <TextField
@@ -199,17 +128,11 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
               sx={{ mt: 2, height: '2.6rem', width: '7.813rem', mr: 3 }}
               onClick={async () => {
                 try {
-                  console.log(
-                    'Bar Number & Warrant Number 🚀',
-                    values.bar_number,
-                    values.warrant_number
-                  );
                   const res = await cancelInitiateBurn(values.bar_number, values.warrant_number);
                   if (res) {
                     enqueueSnackbar('Burn Cancelled Successfully', { variant: 'success' });
                   }
                 } catch (e) {
-                  console.log(e);
                   if (e.message) {
                     enqueueSnackbar(e.message, { variant: 'error' });
                   }

@@ -1,16 +1,13 @@
 import { LoadingButton } from '@mui/lab';
-import { Grid, FormLabel, TextField, Button } from '@mui/material';
+import { Grid, FormLabel, TextField } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useAppState } from 'state';
-import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
 
 const InitiateMint = () => {
   const { account, initiateMint } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
-
-  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
   const MintSchema = Yup.object().shape({
     bar_number: Yup.string()
@@ -28,20 +25,15 @@ const InitiateMint = () => {
     },
     validationSchema: MintSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log(data);
-
       try {
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
         const res = await initiateMint(_barNumber, _warrantNumber);
-
-        console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
         if (res) {
           enqueueSnackbar('Token Mint Initiated', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -50,7 +42,7 @@ const InitiateMint = () => {
   });
 
   // eslint-disable-next-line no-unused-vars
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+  const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>

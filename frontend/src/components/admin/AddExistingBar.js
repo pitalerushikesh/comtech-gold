@@ -1,16 +1,13 @@
 import { LoadingButton } from '@mui/lab';
-import { Grid, FormLabel, TextField, Button } from '@mui/material';
+import { Grid, FormLabel, TextField } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useAppState } from 'state';
-import { toChecksumAddress, xdcToEthAddress } from 'helpers/web3';
 import { useSnackbar } from 'notistack';
 
 const AddExistingBar = () => {
   const { account, addExistingBar } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
-
-  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
 
   const AddBarSchema = Yup.object().shape({
     bar_number: Yup.string()
@@ -28,23 +25,15 @@ const AddExistingBar = () => {
     },
     validationSchema: AddBarSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log(data);
-
       try {
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
         const res = await addExistingBar(_barNumber, _warrantNumber);
-        // const res = await contract.methods.mint(data.address, data.quantity).send({
-        //   from: account
-        // });
-
-        console.log('🚀 ~ file: AddExistingBar.js ~ line 128 ~ res ~ res', res);
         if (res) {
           enqueueSnackbar('Bar added successfully', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -53,7 +42,7 @@ const AddExistingBar = () => {
   });
 
   // eslint-disable-next-line no-unused-vars
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+  const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>

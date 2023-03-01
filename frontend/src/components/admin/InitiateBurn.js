@@ -1,16 +1,6 @@
 import React from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  Grid,
-  FormLabel,
-  TextField,
-  Button,
-  FormControl,
-  Select,
-  FormHelperText,
-  MenuItem,
-  Autocomplete
-} from '@mui/material';
+import { Grid, FormLabel, TextField, Autocomplete } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useAppState, useCoreTableState } from 'state';
@@ -35,21 +25,16 @@ const InitiateBurn = () => {
     },
     validationSchema: BurnSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log('🚀 ~ file: initiateBurn.js ~ line 36 ~ onSubmit: ~ data', data);
       try {
         // const _qty = data.quantity;
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
         const res = await initiateBurn(_barNumber, _warrantNumber);
-
-        console.log('🚀 ~ file: initiateBurn.js ~ line 17 ~ onSubmit: ~ res', res);
-
         if (res) {
           enqueueSnackbar('Token Burn Initiated', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -58,11 +43,7 @@ const InitiateBurn = () => {
   });
 
   // eslint-disable-next-line no-unused-vars
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
-  // const options = [
-  //   { label: 'The Godfather', id: 1 },
-  //   { label: 'Pulp Fiction', id: 2 }
-  // ];
+  const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   const options = mintHistory.map((bar) => {
     return {
@@ -88,24 +69,9 @@ const InitiateBurn = () => {
             mt: 2
           }}
         >
-          {/* <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Quantity</FormLabel>
-            <TextField
-              sx={{ mt: 1 }}
-              fullWidth
-              size="small"
-              {...getFieldProps('quantity')}
-              autoComplete="off"
-              type="number"
-              disabled
-              error={Boolean(touched.quantity && errors.quantity)}
-              helperText={touched.quantity && errors.quantity}
-            />
-          </Grid> */}
           <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Bar Number</FormLabel>
             <Autocomplete
-              // freeSolo
               fullWidth
               disablePortal
               size="small"
@@ -131,26 +97,6 @@ const InitiateBurn = () => {
               )}
             />
           </Grid>
-          {/* <Grid item lg={6} md={6} xs={12}>
-            <FormLabel>Warrant Number</FormLabel>
-            <FormControl size="small" variant="outlined" fullWidth sx={{ mt: 1 }}>
-              <Select
-                {...getFieldProps('warrant_number')}
-                error={Boolean(touched.warrant_number && errors.warrant_number)}
-                helperText={touched.warrant_number && errors.warrant_number}
-              >
-                <MenuItem className="Mui-selected" key="1" value="1">
-                  1
-                </MenuItem>
-                <MenuItem className="Mui-selected" key="2" value="2">
-                  2
-                </MenuItem>
-              </Select>
-              <FormHelperText sx={{ color: '#d32f2f' }}>
-                {touched.warrant_number && errors.warrant_number}
-              </FormHelperText>
-            </FormControl>
-          </Grid> */}
           <Grid item lg={6} md={6} xs={12}>
             <FormLabel>Warrant Number</FormLabel>
             <TextField

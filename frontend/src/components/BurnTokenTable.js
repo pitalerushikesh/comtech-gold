@@ -5,29 +5,17 @@ import {
   TableCell,
   TableBody,
   Box,
-  Button,
   TableContainer,
   Chip,
   TableRow,
   TableHead,
-  IconButton,
-  Typography,
-  Modal
+  IconButton
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-// import InvestorStatus from './InvestorStatus';
-// import { useHttpApi, useWeb3, useSubscriptionState } from 'state';
-// import { toChecksumAddress } from 'helpers/web3';
 import EmptyDashboard from 'assets/images/emptyassets.png';
-import AddressFieldTools from 'components/AddressFieldTools';
 import SyncIcon from '@mui/icons-material/Sync';
-// import { titleCase } from 'helpers/text';
-// import InvestorDocVewUploadModal from 'components/DocMangement/InvestorDocViewUploadModal';
-import UploadIcon from '@mui/icons-material/Upload';
-// import Synaps from '@synaps-io/react-verify';
 import { useAppState, useCoreTableState } from 'state';
-import TokenMintingTable from './admin/TokenMintingTable';
 import BurnToken from './admin/BurnToken';
 
 function Row(props) {
@@ -84,27 +72,11 @@ function Row(props) {
 }
 
 export default function BurnTokenTable() {
-  // Get  Current logged in web3 account
   const { initiatedBurn, fetchInitiatedBurn } = useCoreTableState();
-  // API call to get open transaction
-  // const { getAllSubscriptionsByXinFinAddress } = useHttpApi();
-  // const [openTransaction, setOpenTransaction] = React.useState([]);
-  //   const { openTransaction, setOpenTransaction, fetchOpenTransactionData } = useSubscriptionState();
-  // Load the rows from a get request
-  //    const fetchData = async () => {
-  //   const result = await getAllSubscriptionsByXinFinAddress(toChecksumAddress(account));
-  //   setOpenTransaction(result);
-  // };
+
   const fetchData = () => {
     fetchInitiatedBurn();
-    console.log('fetching data');
-    console.log(initiatedBurn);
   };
-  // useEffect(() => {
-  //   fetchInitiatedBurn();
-  //   console.log('fetching data');
-  //   console.log(initiatedBurn);
-  // }, []);
 
   return (
     <>
@@ -149,9 +121,6 @@ export default function BurnTokenTable() {
                     src={EmptyDashboard}
                     alt="Empty Dashboard"
                   />
-                  {/* <Typography sx={{ ml: '10rem' }} variant="p">
-                    {active ? 'No open transaction found' : 'Please connect to Web3 Wallet'}
-                  </Typography> */}
                 </Box>
               </TableCell>
             )}

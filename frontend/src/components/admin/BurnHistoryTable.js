@@ -1,6 +1,5 @@
 import EnhancedTable from 'components/tables/EnhancedTable';
-import React, { useMemo, useEffect } from 'react';
-import { Box } from '@mui/material';
+import React, { useMemo } from 'react';
 import DummyData from './DummyData.json';
 import { useCoreTableState } from 'state';
 
@@ -9,7 +8,6 @@ export default function BurnHistoryTable() {
 
   const updateData = () => {
     const res = fetchBurnHistory();
-    console.log('🚀 ~ file: BurnHistoryTable.js ~ line 13 ~ updateData ~ res', res);
   };
 
   const data = DummyData;
@@ -21,17 +19,11 @@ export default function BurnHistoryTable() {
         Header: 'Bar Number',
         show: true,
         width: 100
-        // Cell: ({ row: { original } }) => {
-        //   return <Box>{original.burnt_bar.bar_number}</Box>;
-        // }
       },
       {
         accessor: 'adjusted_bar_number',
         Header: 'Adjusted Bar',
         show: true
-        // Cell: ({ row: { original } }) => {
-        //   return <Box>{original.adjusted_bar.bar_number}</Box>;
-        // }
       },
       {
         accessor: 'adjusted_amount_formatted',

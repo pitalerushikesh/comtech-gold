@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
-import { Grid, FormLabel, TextField, Button, Box } from '@mui/material';
+import { Grid, FormLabel, TextField, Box } from '@mui/material';
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
 import { useAppState } from 'state';
@@ -21,18 +21,14 @@ export const Initiator = () => {
     },
     validationSchema: InitiatorValidation,
     onSubmit: async (data, { resetForm }) => {
-      console.log('data', data);
-
       try {
         const _addr = toChecksumAddress(xdcToEthAddress(data.initiator));
         const res = await setInitiator(_addr);
-        console.log('🚀 ~ file: Initiator ~ line 29 ~ res ~ res', res);
         if (res) {
           enqueueSnackbar('Initiator Setup Complete', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -40,7 +36,7 @@ export const Initiator = () => {
     }
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+  const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -98,17 +94,14 @@ export const Executor = () => {
     },
     validationSchema: ExecutorValidation,
     onSubmit: async (data, { resetForm }) => {
-      console.log('data', data);
       try {
         const _addr = toChecksumAddress(xdcToEthAddress(data.executor));
         const res = await setExecutor(_addr);
-        console.log('🚀 ~ file: Executor ~ line 105 ~ res ~ res', res);
         if (res) {
           enqueueSnackbar('Executor Setup Complete', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -116,7 +109,7 @@ export const Executor = () => {
     }
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+  const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -174,17 +167,14 @@ export const MinterAddress = () => {
     },
     validationSchema: ExecutorValidation,
     onSubmit: async (data, { resetForm }) => {
-      console.log('data', data);
       try {
         const _addr = toChecksumAddress(xdcToEthAddress(data.minter_address));
         const res = await setMinterWalletAddr(_addr);
-        console.log('🚀 ~ file: Executor ~ line 105 ~ res ~ res', res);
         if (res) {
           enqueueSnackbar('Mint Setup Complete', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -192,7 +182,7 @@ export const MinterAddress = () => {
     }
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+  const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>

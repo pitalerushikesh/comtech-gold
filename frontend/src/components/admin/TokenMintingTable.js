@@ -10,8 +10,6 @@ const TokenMintingTable = ({ mintAddr, barNumber, warrantNumber }) => {
   const { account, mintToken, cancelInitiateMint } = useAppState();
   const { enqueueSnackbar } = useSnackbar();
 
-  console.log('🚀 ~ file: Home.js ~ line 53 ~ Home ~ account', account);
-
   const MintSchema = Yup.object().shape({
     address: Yup.string().required('Recipient Address is required'),
     quantity: Yup.number().required('Quantity is required'),
@@ -33,25 +31,17 @@ const TokenMintingTable = ({ mintAddr, barNumber, warrantNumber }) => {
     },
     validationSchema: MintSchema,
     onSubmit: async (data, { resetForm }) => {
-      console.log(data);
-
       try {
         const _address = toChecksumAddress(xdcToEthAddress(data.address));
         const _qty = data.quantity;
         const _barNumber = data.bar_number;
         const _warrantNumber = data.warrant_number;
         const res = await mintToken(_address, _qty, _barNumber, _warrantNumber);
-        // const res = await contract.methods.mint(data.address, data.quantity).send({
-        //   from: account
-        // });
-
-        console.log('🚀 ~ file: TokenMintingTable.js ~ line 128 ~ res ~ res', res);
         if (res) {
           enqueueSnackbar('Token mint successful', { variant: 'success' });
           resetForm();
         }
       } catch (e) {
-        console.log(e);
         if (e.message) {
           enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -153,17 +143,11 @@ const TokenMintingTable = ({ mintAddr, barNumber, warrantNumber }) => {
               sx={{ mt: 3, mr: 3, height: '2.6rem', width: '7.813rem' }}
               onClick={async () => {
                 try {
-                  console.log(
-                    'Bar Number & Warrant Number 🚀',
-                    values.bar_number,
-                    values.warrant_number
-                  );
                   const res = await cancelInitiateMint(values.bar_number, values.warrant_number);
                   if (res) {
                     enqueueSnackbar('Token mint cancelled', { variant: 'success' });
                   }
                 } catch (e) {
-                  console.log(e);
                   if (e.message) {
                     enqueueSnackbar(e.message, { variant: 'error' });
                   }
