@@ -1,6 +1,6 @@
 {
-  "name": "apothem",
-  "chainId": "51",
+  "name": "mainnet",
+  "chainId": "50",
   "contracts": {
     "Goldtoken": {
       "address": "0x8f9920283470F52128bF11B0c14E798bE704fD15",
