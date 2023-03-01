@@ -3,7 +3,7 @@
   "chainId": "51",
   "contracts": {
     "Goldtoken": {
-      "address": "0x731073599d495aC0e1F11407a85627c1Bdcbaab1",
+      "address": "0x8f9920283470F52128bF11B0c14E798bE704fD15",
       "abi": [
         {
           "inputs": [],
@@ -440,7 +440,7 @@
       ]
     },
     "CGOController": {
-      "address": "0x1614F4Bb66303f178098FC1E1Be89024089530f2",
+      "address": "0x21F74FBF81D68291704805D085982000Babbf096",
       "abi": [
         {
           "inputs": [
