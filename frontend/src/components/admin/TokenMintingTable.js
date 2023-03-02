@@ -15,10 +15,10 @@ const TokenMintingTable = ({ mintAddr, barNumber, warrantNumber }) => {
     quantity: Yup.number().required('Quantity is required'),
     bar_number: Yup.string()
       .required('Bar Number is required')
-      .max(10, 'Bar Number cannot be more than 10 characters'),
+      .max(20, 'Bar Number cannot be more than 20 characters'),
     warrant_number: Yup.string()
       .required('Warrant Number is required')
-      .max(10, 'Warrant Number cannot be more than 10 characters')
+      .max(15, 'Warrant Number cannot be more than 15 characters')
   });
 
   const formik = useFormik({
