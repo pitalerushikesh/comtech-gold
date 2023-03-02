@@ -12,10 +12,10 @@ const InitiateMint = () => {
   const MintSchema = Yup.object().shape({
     bar_number: Yup.string()
       .required('Bar Number is required')
-      .max(20, 'Max. 20 character allowed'),
+      .max(20, 'Bar Number cannot be more than 20 characters'),
     warrant_number: Yup.string()
       .required('Warrant Number is required')
-      .max(15, 'Max. 15 character allowed')
+      .max(15, 'Warrant Number cannot be more than 15 characters')
   });
 
   const formik = useFormik({
