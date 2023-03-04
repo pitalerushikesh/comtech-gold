@@ -1,0 +1,3 @@
+[submodule "yplus-vault"]
+	path = yplus-vault
+	url = git@github.com:yodaplus/gnosis-safe-react.git
