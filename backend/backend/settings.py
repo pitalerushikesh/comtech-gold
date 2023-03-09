@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django_ethereum_events',
     'eth',
     'solo',
-
+    'import_export',
 ]
 
 MIDDLEWARE = [
