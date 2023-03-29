@@ -24,7 +24,8 @@ import AddressFieldTools from 'components/AddressFieldTools';
 import AddExistingBar from 'components/admin/AddExistingBar';
 import CheckEditBarPause from 'components/admin/CheckEditBarPause';
 import RemoveExistingBar from 'components/admin/RemoveExistingBar';
-import { useCoreTableState, useAppState } from 'state';
+import { useAppState } from 'state';
+// import { useCoreTableState } from 'state';
 import InitiateMint from 'components/admin/InitiateMint';
 import MintTokenTable from 'components/MintTokenTable';
 import InitiateBurn from 'components/admin/InitiateBurn';
@@ -32,7 +33,7 @@ import BurnTokenTable from 'components/BurnTokenTable';
 import InitiatorExecutor from 'components/admin/InitiatorExecutor';
 
 const Home = () => {
-  const { editBarStatus } = useCoreTableState();
+  // const { editBarStatus } = useCoreTableState();
   const { account, ownerAddr, initiatorAddr, executorAddr } = useAppState();
 
   const initiatorOrExecutor = initiatorAddr === account || executorAddr === account;
@@ -190,13 +191,13 @@ const Home = () => {
 
         {/* ***START*** Remove the Following ui in production */}
 
-        {editBarStatus && (
+        {/* {editBarStatus && (
           <>
             <AccordionLayout title="Edit Bar Status" content={<CheckEditBarPause />} />
             <AccordionLayout title="Manual Bar Entry" content={<AddExistingBar />} />
             <AccordionLayout title="Manual Bar Deletion" content={<RemoveExistingBar />} />
           </>
-        )}
+        )} */}
 
         {/* ***END*** Remove the Following ui in production */}
       </Container>
