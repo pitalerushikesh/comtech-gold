@@ -154,33 +154,33 @@ class TransferEventReceiver(AbstractEventReceiver):
         # Rework required after intitator and executor concept is implemented
         
         if transfer_from == '0x0000000000000000000000000000000000000000':
-            block_number = decoded_event['blockNumber']
-            mint_amount = amount
+            # block_number = decoded_event['blockNumber']
+            # mint_amount = amount
 
-            edit_status = EditBarStatus.objects.first()
+            # edit_status = EditBarStatus.objects.first()
 
-            if edit_status.status == True:
-                block = web3.eth.get_block(block_number)
-                _timestamp = datetime.fromtimestamp(block.timestamp)
-                print("🐍 File: eth/event_receivers.py | Line: 64 | save ~ timestamp",_timestamp)
+            # if edit_status.status == True:
+            #     block = web3.eth.get_block(block_number)
+            #     _timestamp = datetime.fromtimestamp(block.timestamp)
+            #     print("🐍 File: eth/event_receivers.py | Line: 64 | save ~ timestamp",_timestamp)
                 
-                bars = GoldBar.objects.filter(is_deleted=True)
-                if bars.exists():
-                    for bar in bars:
-                        if mint_amount > 0:
-                            Mint.objects.create(
-                                bar_details=bar,
-                                status=get_token_status(2),
-                                mint_date=_timestamp
-                            )
-                            BarHolder.objects.create(
-                                bar_details=bar, holder_xinfin_address=transfer_to, token_balance=str(1000 * 10**18),
-                                holder_date=_timestamp
-                            )
-                            bar.is_deleted = False
-                            bar.escrow_date = _timestamp
-                            bar.save()
-                            mint_amount -= int(1000 * 10**18)
+            #     bars = GoldBar.objects.filter(is_deleted=True)
+            #     if bars.exists():
+            #         for bar in bars:
+            #             if mint_amount > 0:
+            #                 Mint.objects.create(
+            #                     bar_details=bar,
+            #                     status=get_token_status(2),
+            #                     mint_date=_timestamp
+            #                 )
+            #                 BarHolder.objects.create(
+            #                     bar_details=bar, holder_xinfin_address=transfer_to, token_balance=str(1000 * 10**18),
+            #                     holder_date=_timestamp
+            #                 )
+            #                 bar.is_deleted = False
+            #                 bar.escrow_date = _timestamp
+            #                 bar.save()
+            #                 mint_amount -= int(1000 * 10**18)
 
             print(f'Mint To: {transfer_to}, Amount: {amount}')
             return 'Minting Transfer'
@@ -395,20 +395,20 @@ class BarAddedEventReceiver(AbstractEventReceiver):
         print(f'Received Mint event: {decoded_event!r}')
         update_blockchain_transaction(decoded_event)
 
-        edit_status = EditBarStatus.objects.first()
-        if edit_status.status == True:
+        # edit_status = EditBarStatus.objects.first()
+        # if edit_status.status == True:
 
-            args = decoded_event['args']
-            bar_number = args.get('Bar_Number')
-            warrant_number = args.get('Warrant_Number')
-            tx_hash = decoded_event['transactionHash'].hex()
+        #     args = decoded_event['args']
+        #     bar_number = args.get('Bar_Number')
+        #     warrant_number = args.get('Warrant_Number')
+        #     tx_hash = decoded_event['transactionHash'].hex()
 
-            if GoldBar.objects.filter(bar_number=bar_number).exists():
-                print('Data Migration Completed')
-                return 'Bar Already Exists'
+        #     if GoldBar.objects.filter(bar_number=bar_number).exists():
+        #         print('Data Migration Completed')
+        #         return 'Bar Already Exists'
 
-            gold_bar = GoldBar.objects.create(
-                bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
+        #     gold_bar = GoldBar.objects.create(
+        #         bar_number=bar_number, warrant_number=warrant_number, is_deleted=True)
             
             # Keep this commented 
             # Rework required after intitator and executor concept is implemented
@@ -416,6 +416,4 @@ class BarAddedEventReceiver(AbstractEventReceiver):
             # Mint.objects.create(
             #     bar_details=gold_bar
             # )
-
-        print(f'Warrant Number: {warrant_number}, Bar Number: {bar_number}, tx_hash: {tx_hash}')
         return 'Manual Bar Minted Successfully'

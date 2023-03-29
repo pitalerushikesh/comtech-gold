@@ -139,7 +139,7 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
                 }
               }}
             >
-              Cancel Burn
+              Cancel
             </Button>
             <LoadingButton
               loadingPosition="start"
@@ -148,7 +148,7 @@ const BurnToken = ({ barNumber, warrantNumber }) => {
               sx={{ mt: 2, height: '2.6rem', width: '7.813rem' }}
               loading={isSubmitting}
             >
-              Burn
+              Submit
             </LoadingButton>
           </Grid>
         </Grid>

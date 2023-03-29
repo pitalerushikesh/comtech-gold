@@ -20,7 +20,7 @@ const CoreTableState = () => {
   const [initiatedMintHistory, setInitiatedMintHistory] = useState([]);
   const [initiatedBurn, setInitiatedBurn] = useState([]);
 
-  const [editBarStatus, setEditBarStatus] = useState();
+  // const [editBarStatus, setEditBarStatus] = useState();
 
   const fetchBarHolders = async () => {
     const res = await getBarHolder();
@@ -37,14 +37,14 @@ const CoreTableState = () => {
     setBurnHistory(res);
   };
 
-  const fetchEditBarStatus = async () => {
-    const res = await getEditBarStatus();
-    console.log(
-      '🚀 ~ file: useCoreTableState.js ~ line 31 ~ fetchEditBarStatus ~ res',
-      res[0]?.status
-    );
-    setEditBarStatus(res[0]?.status);
-  };
+  // const fetchEditBarStatus = async () => {
+  //   const res = await getEditBarStatus();
+  //   console.log(
+  //     '🚀 ~ file: useCoreTableState.js ~ line 31 ~ fetchEditBarStatus ~ res',
+  //     res[0]?.status
+  //   );
+  //   setEditBarStatus(res[0]?.status);
+  // };
 
   const fetchMintHistory = async () => {
     const res = await getMintHistory();
@@ -65,7 +65,7 @@ const CoreTableState = () => {
     fetchBarHolders();
     fetchGoldBars();
     fetchBurnHistory();
-    fetchEditBarStatus();
+    // fetchEditBarStatus();
     fetchMintHistory();
     fetchInitiatedMintHistory();
     fetchInitiatedBurn();
@@ -79,7 +79,7 @@ const CoreTableState = () => {
     fetchBarHolders,
     burnHistory,
     fetchBurnHistory,
-    editBarStatus,
+    // editBarStatus,
     mintHistory,
     fetchMintHistory,
     initiatedMintHistory,

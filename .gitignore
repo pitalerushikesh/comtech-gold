@@ -51,6 +51,7 @@ Thumbs.db
 Pipfile
 Pipfile.lock
 db.sqlite3
+*.sql
 
 # Local python requirement file
 **/require-local.txt
@@ -61,3 +62,4 @@ db.sqlite3
 .env/
 
 venv/
+dump/
