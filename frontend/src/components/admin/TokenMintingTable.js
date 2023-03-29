@@ -154,7 +154,7 @@ const TokenMintingTable = ({ mintAddr, barNumber, warrantNumber }) => {
                 }
               }}
             >
-              Cancel Mint
+              Cancel
             </Button>
             <LoadingButton
               loadingPosition="start"
@@ -163,7 +163,7 @@ const TokenMintingTable = ({ mintAddr, barNumber, warrantNumber }) => {
               sx={{ mt: 3, height: '2.6rem', width: '7.813rem' }}
               loading={isSubmitting}
             >
-              Mint
+              Submit
             </LoadingButton>
           </Grid>
         </Grid>
