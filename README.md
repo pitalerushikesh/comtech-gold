@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+## Comtech Maker Checker Documentation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Comtech Maker-Checker App Components
 
-## Available Scripts
+- Comtech Maker-Checker Smart Contract
+  https://github.com/yodaplus/comtech-gold-contract
+- Comtech Maker-Checker DApp
+  https://github.com/yodaplus/comtech-gold
 
-In the project directory, you can run:
+## Comtech Maker-Checker Smart Contract
 
-### `npm start`
+Maker-Checker Smart Contract is responsible for CGO Token Action and setting up `Initiator` , `Executor` and `Mint Escrow Wallet`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Initiator role
+  It initiates the mint/burn Action
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Executor role
+  It act as a verifier to mint/burn Action.
 
-### `npm test`
+- Admin role
+  Smart Contract's admin is responsible to setup Initiator, Executor and Mint Wallet Address.
+- Smart Contract holds the Bar Details.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Smart Contract Implemetation
 
-### `npm run build`
+**![](https://lh4.googleusercontent.com/uSropg-wyXTosr-Gb6JdBDSjLW1KXtWQ24wacPf85J2-PBQ1cjpGNDyADDnEIrgHC-1oV-1v_uf1rv6X3bjBbR_eg8-ZfdmoQxs6w6CB9AUnwKBFLusVniHhjywNERBfK6IqIM_fXAzPn50FT1L5GnosuA=s2048)**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Comtech Maker-Checker DApp
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Maker-Checker consist of frontend, backend interact with smart contract.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## backend implementation (Python - Django)
 
-### `npm run eject`
+- Database and logic implemetation for bar assignment to the holder wallet.
+- Bar details are fully based on event driven approach with blockchain.
+- Celery (with web3 layer) - Cron Job for Bar details record and holding assignment - reassignment.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## frontend implemetation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- UI interaction for Admin, Initiator and Executor.
+- web3 layer for contract interaction
+  (Intiate Mint, MInt, Intiate Burn, Burn, etc.)
+- Initiator, Executor can be a normal XDCPay/Metamask Wallet or Multisig safe.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+> Note: We are using the Yodaplus Multisig safe (Optional)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Multisig safe introduce the execution policy:
+  1. Multiple owner of the safe.
+  2. Configure the `m` of `n` policy for the owners of the safe to execute any transaction.
 
-## Learn More
+## Comtech Maker-Checker Workflow diagram
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+https://lucid.app/lucidchart/357a7291-b7f3-4f4e-966c-a6834cd538af/edit?viewport_loc=-523%2C-116%2C2560%2C1129%2C0_0&invitationId=inv_765ab176-84b7-4d87-ae09-367b73c961c5
+**![](https://lh5.googleusercontent.com/wwof0xd1eyDK4K7Cv5reH6zh5wKIyDEYBkO-ZDvCB-AQc_iUb7bAi-0YBwIfdEXQLLlLUKFMIscVKA61GgSJfXJNezLftn-x-TipxpAV2doo4aEriAqrnaIPaK-fik6GBPDbN6XfSlV6mZ4cgBs2-vNTXg=s2048)**
