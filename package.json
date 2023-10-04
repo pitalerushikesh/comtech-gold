@@ -11,6 +11,6 @@
   ],
   "scripts": {
     "docker": "docker-compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml   -f infra/docker-compose.dev.yml   --project-name comtech-improvement   --project-directory ./",
-    "docker-prod": "docker-compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml   -f infra/docker-compose.prod.yml   --project-name comtech-gold   --project-directory ./"
+    "docker-prod": "docker-compose   -f infra/docker-compose.base.yml   -f infra/docker-compose.build.yml   -f infra/docker-compose.prod.yml   --project-name cgold   --project-directory ./"
   }
 }
