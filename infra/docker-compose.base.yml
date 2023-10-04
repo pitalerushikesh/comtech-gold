@@ -27,7 +27,7 @@ services:
       - db
     ports:
       - target: 8000
-        published: 8000
+        published: 8080
         x-aws-protocol: http
     environment:
       USE_POSTGRES: 'True'
