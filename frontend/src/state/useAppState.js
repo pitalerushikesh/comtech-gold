@@ -71,7 +71,6 @@ const useMultisigStatus = () => {
 
 const AppState = () => {
   const { activate, deactivate, active, account, library: walletWeb3, chainId } = useWeb3React();
-  console.log('🚀 ~ file: useAppState.js ~ line 70 ~ AppState ~ account', account);
 
   const [status, setStatus] = useState(WEB3_STATUS.UNKNOWN);
   const [balance, setBalance] = useState('0');
@@ -82,6 +81,8 @@ const AppState = () => {
   const [mintWalletAddr, setMintWalletAddr] = useState(
     '0x0000000000000000000000000000000000000000'
   );
+  // State to hold gas price
+  const [gasPrice, setGasPrice] = useState(null);
 
   const { isMultisig } = useMultisigStatus();
 
@@ -139,6 +140,22 @@ const AppState = () => {
     [onboard]
   );
 
+  // Effect to fetch gas price
+  useEffect(() => {
+    const fetchGasPrice = async () => {
+      try {
+        const price = await web3.eth.getGasPrice();
+        setGasPrice(price);
+      } catch (error) {
+        console.error('Error fetching gas price:', error);
+      }
+    };
+
+    if (web3) {
+      fetchGasPrice();
+    }
+  }, [web3]);
+
   const disconnectWallet = async () => {
     onboard.walletReset();
     deactivate();
@@ -149,9 +166,9 @@ const AppState = () => {
     () =>
       new web3.eth.Contract(currentNetwork.tokenContractAbi, currentNetwork.tokenContractAddress, {
         from: account,
-        gasPrice: 1 * 10 ** 9
+        ...(gasPrice && { gasPrice })
       }),
-    [web3, account]
+    [web3, account, currentNetwork, gasPrice]
   );
 
   const controllerContract = useMemo(
@@ -161,10 +178,10 @@ const AppState = () => {
         currentNetwork.controllerContractAddress,
         {
           from: account,
-          gasPrice: 1 * 10 ** 9
+          ...(gasPrice && { gasPrice })
         }
       ),
-    [web3, account]
+    [web3, account, currentNetwork, gasPrice]
   );
 
   const wrapContractCall = useCallback(

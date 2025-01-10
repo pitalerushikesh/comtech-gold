@@ -1,7 +1,5 @@
 import { parseIntOrDefault } from 'helpers/numbers';
 
-console.debug('process.env', process.env);
-
 export const PAGE_URL = `${window.location.protocol}//${window.location.hostname}`;
 export const API_URL = process.env.REACT_APP_API_URL || `${PAGE_URL}:8000/`;
 // export const NODE_API_URL =
