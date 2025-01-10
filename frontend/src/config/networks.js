@@ -20,13 +20,15 @@ const NETWORKS = [
   buildNetworkConfig(mainnetDeployment, {
     id: 50,
     name: 'XDC Mainnet',
-    rpcUrl: 'https://xdcpayrpc.blocksscan.io/',
+    // change it with your own rpcUrl or configure process.env
+    rpcUrl: 'https://erpc.xdcrpc.com/',
     deploymentUrl: 'https://governance.comtechglobal.ae/'
   }),
   buildNetworkConfig(apothemDeployment, {
     id: 51,
     name: 'XDC Apothem Testnet',
-    rpcUrl: 'https://apothemxdcpayrpc.blocksscan.io/',
+    // change it with your own rpcUrl or configure process.env
+    rpcUrl: 'https://erpc.apothem.network/',
     deploymentUrl: 'https://governance.comtechglobal.ae/'
   })
 ];
